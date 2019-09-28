@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es2017",
+    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "typings/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".idea",
+    "dist"
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "name": "notes-hub-api",
+  "version": "0.0.0",
+  "description": "NotesHub",
+  "author": "Filip Pietroń",
+  "main": "index.js",
+  "private": true,
+  "engines": {
+    "node": ">=8.12.0",
+    "npm": ">=2.15.11",
+    "yarn": ">=0.20.3"
+  },
+  "scripts": {
+    "start": "clear && gulp serve",
+    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
+    "lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'",
+    "dev": "ts-node-dev --no-notify --respawn src/index.ts",
+    "dev-transpile": "ts-node-dev --no-notify --respawn src/index.ts -- --transpile-only",
+    "lint:watch": "yarn lint -- --watch",
+    "precommit": "yarn lint",
+    "migrate": "sequelize db:migrate",
+    "undo-all": "sequelize db:migrate:undo:all",
+    "reset-db": "sequelize db:migrate:undo:all && sequelize db:migrate",
+    "generate-migration": "sequelize migration:generate",
+    "lintstaged": "lint-staged",
+    "sequelize": "sequelize"
+  },
+  "pre-commit": [
+    "lintstaged"
+  ],
+  "lint-staged": {
+    "linters": {
+      "*.ts": [
+        "tslint  -c tslint.json --project tsconfig.json --fix",
+        "git add -f"
+      ],
+      "*.json": [
+        "jsonlint -i",
+        "git add -f"
+      ]
+    }
+  },
+  "keywords": [
+    "hapi",
+    "node",
+    "typescript",
+    "sequelize"
+  ],
+  "dependencies": {
+    "@hapi/good": "^8.2.0",
+    "@hapi/good-console": "^8.1.0",
+    "@hapi/good-squeeze": "^5.2.0",
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/inert": "^5.2.1",
+    "@hapi/joi": "^15.1.0",
+    "@hapi/nes": "^11.2.0",
+    "@hapi/vision": "^5.5.2",
+    "@types/humps": "^1.1.2",
+    "@types/mime-types": "^2.1.0",
+    "@types/sharp": "^0.22.2",
+    "babel-polyfill": "^6.26.0",
+    "boom": "5.2.0",
+    "cross-fetch": "^3.0.2",
+    "crypto-js": "^3.1.9-1",
+    "del": "^3.0.0",
+    "dotenv": "4.0.0",
+    "glob": "^7.1.3",
+    "hapi-swagger": "^10.0.2",
+    "hoek": "^5.0.2",
+    "http-status": "^1.3.2",
+    "inert": "4.2.1",
+    "pg": "^7.11.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
+    "toidentifier": "^1.0.0",
+    "tslint": "^5.18.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.5.3",
+    "uuid": "^3.1.0",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^3.1.43",
+    "@types/del": "^3.0.1",
+    "@types/download": "^6.2.4",
+    "@types/glob": "^7.1.1",
+    "@types/handlebars": "^4.0.39",
+    "@types/hapi__hapi": "^18.2.5",
+    "@types/hapi__inert": "^5.2.0",
+    "@types/hapi__nes": "^11.0.2",
+    "@types/hapi__vision": "^5.5.0",
+    "@types/http-status": "^0.2.30",
+    "@types/inert": "^4.2.1",
+    "@types/joi": "^10.6.0",
+    "@types/kue": "^0.11.10",
+    "@types/mkdirp": "^0.5.2",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.11.3",
+    "@types/request": "^2.48.1",
+    "@types/request-promise": "^4.1.42",
+    "@types/sequelize": "4.27.44",
+    "@types/sinon": "^7.0.6",
+    "@types/uuid": "^3.4.4",
+    "@types/vision": "^4.1.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.18.0",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "eslint": "3.16.1",
+    "eslint-config-airbnb-base": "7.1.0",
+    "eslint-plugin-import": "1.16.0",
+    "eslint-watch": "2.1.14",
+    "fs-jetpack": "1.2.0",
+    "gulp": "3.9.1",
+    "gulp-babel": "6.1.2",
+    "gulp-load-plugins": "1.5.0",
+    "gulp-newer": "1.3.0",
+    "gulp-nodemon": "^2.4.2",
+    "gulp-prompt": "0.2.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-shell": "0.6.3",
+    "gulp-sourcemaps": "1.12.0",
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "gulp-util": "3.0.8",
+    "husky": "0.13.4",
+    "inquirer": "^5.1.0",
+    "jsonlint": "^1.6.3",
+    "lint-staged": "^8.1.5",
+    "pre-commit": "1.2.2",
+    "run-sequence": "1.2.2",
+    "sinon": "^7.2.4",
+    "ts-node-dev": "^1.0.0-pre.32",
+    "validate-commit-msg": "2.14.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2"
+    ],
+    "plugins": [
+      "add-module-exports"
+    ]
+  }
+}
