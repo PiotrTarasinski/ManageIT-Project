@@ -12,6 +12,7 @@ import HomePage from 'pages/home/HomePage';
 import LoginPage from 'pages/login/LoginPage';
 import RegisterPage from 'pages/register/RegisterPage';
 import ProjectsPage from 'pages/projects/ProjectsPage';
+import Swal from 'sweetalert2';
 
 interface IStoreProps {
   isAuth: boolean;
@@ -25,7 +26,17 @@ type RouteProps = RouteComponentProps<any> & any;
 class App extends React.Component<Props> {
   authorizedRender = (props: RouteProps, Component: React.ComponentClass) => {
     const { isAuth } = this.props;
-    return isAuth ? <Component {...props} /> : <Redirect to={this.redirectRoute(props)} />;
+    if (isAuth) {
+      return <Component {...props} />;
+    } else {
+      Swal.fire({
+        title: 'Unauthorized',
+        text: 'You are not logged in',
+        type: 'error',
+        confirmButtonText: 'Login',
+      });
+      return <Redirect to={this.redirectRoute(props)} />;
+    }
   };
 
   redirectRoute = (props: RouteProps) => ({

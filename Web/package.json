@@ -30,6 +30,7 @@
     "redux-promise-middleware": "^6.1.1",
     "redux-thunk": "^2.3.0",
     "superagent": "^5.1.0",
+    "sweetalert2": "^8.18.0",
     "tslint": "^5.20.0",
     "tslint-react": "^4.1.0",
     "typescript": "^3.6.3"
