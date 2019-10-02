@@ -18,7 +18,8 @@ class Swagger implements IPlugin {
       const options: HapiSwagger.RegisterOptions = {
         info: {
           title: 'NotesHub Documentation',
-          version: app.version
+          version: app.version,
+          description: 'Password for every user is Test1@ \nUser that is logged in is szymko@szymko.szymko \nValidation token_id is: 02e73780-e7b7-470b-a539-4f785770ebf1'
         },
         basePath: '/api/v1',
         grouping: 'tags',

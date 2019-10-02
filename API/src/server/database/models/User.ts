@@ -49,7 +49,8 @@ export const UserFactory =
         type: DataTypes.STRING
       },
       email: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        unique: true
       },
       avatar: {
         type: DataTypes.STRING
