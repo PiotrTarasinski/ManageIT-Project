@@ -13,6 +13,7 @@ import LoginPage from 'pages/login/LoginPage';
 import RegisterPage from 'pages/register/RegisterPage';
 import ProjectsPage from 'pages/projects/ProjectsPage';
 import Swal from 'sweetalert2';
+import Navbar from 'components/navbar/Navbar';
 
 interface IStoreProps {
   isAuth: boolean;
@@ -48,6 +49,7 @@ class App extends React.Component<Props> {
     return (
       <Router basename="/">
         <React.Fragment>
+          <Navbar />
           <Switch>
             <Route path="/home" component={HomePage} />
             <Route path="/login" component={LoginPage} />
