@@ -9,9 +9,9 @@ import { encryption } from '../../../../utils';
 class AuthController extends Controller {
 
   async login() {
-    const { username, password } = this.req.payload;
+    const { email, password } = this.req.payload;
 
-    const user = await new AuthMethods().getUserByEmail(username);
+    const user = await new AuthMethods().getUserByEmail(email);
 
     if (!user) {
       throw ApiError.boom(null, { message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
