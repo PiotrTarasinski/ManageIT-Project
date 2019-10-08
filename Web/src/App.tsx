@@ -13,7 +13,9 @@ import LoginPage from 'pages/login/LoginPage';
 import RegisterPage from 'pages/register/RegisterPage';
 import ProjectsPage from 'pages/projects/ProjectsPage';
 import Swal from 'sweetalert2';
-import Navbar from 'components/navbar/Navbar';
+import MainContainer from 'components/containers/mainContainer/MainContainer';
+import Navigation from 'components/navigation/Navigation';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 interface IStoreProps {
   isAuth: boolean;
@@ -48,8 +50,9 @@ class App extends React.Component<Props> {
   render() {
     return (
       <Router basename="/">
-        <React.Fragment>
-          <Navbar />
+        <CssBaseline />
+        <MainContainer>
+          <Navigation />
           <Switch>
             <Route path="/home" component={HomePage} />
             <Route path="/login" component={LoginPage} />
@@ -60,7 +63,7 @@ class App extends React.Component<Props> {
             />
             <Redirect from="*" to="/home" />
           </Switch>
-        </React.Fragment>
+        </MainContainer>
       </Router>
     );
   }
