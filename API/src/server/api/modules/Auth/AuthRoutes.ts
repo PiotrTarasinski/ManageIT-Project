@@ -1,9 +1,9 @@
 import { documentation } from '../../../../utils';
-import * as Joi from 'joi';
+import * as Joi from '@hapi/joi';
 import { RouteConfig } from '../../../../typings/Hapi';
 import AuthController from './AuthController';
 import MainRoutes from '../../shared/routes/MainRoutes';
-import passwordPolicyJoiExtension from '../../shared/joiExtensions/passwordPolicy';
+import customJoi from '../../shared/joiExtensions/customExtensions';
 
 class AuthRoutes extends MainRoutes {
 
@@ -17,12 +17,12 @@ class AuthRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new AuthController(req, res).login(),
           description: 'Login into the application',
-          notes: 'I turned off authentication on all the endpoints for now',
+          notes: 'Password needs to fullfill 3  out of 4 rules: lowecase, uppercase, special and number.',
           tags: documentation('private', 'Auth'),
           validate: {
             payload: {
               email: Joi.string().required().email(),
-              password: passwordPolicyJoiExtension.matchesPasswordPolicy()
+              password: customJoi.passwordPolicy()
             }
           },
           auth: false
@@ -64,7 +64,9 @@ class AuthRoutes extends MainRoutes {
             payload: {
               email: Joi.string().email().required(),
               password: Joi.string().required(),
-              confirmPassword: Joi.string().valid(Joi.ref('password')).required()
+              confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+              name: Joi.string().required(),
+              avatar: Joi.string().base64()
             }
           },
           auth: false

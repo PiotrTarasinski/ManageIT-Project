@@ -54,7 +54,7 @@ class AuthController extends Controller {
   }
 
   async signUp() {
-    const { payload } = this.req;
+    const { payload } = this.req.payload;
     const methods = new AuthMethods();
 
     const user = await methods.createUser(payload);

@@ -8,7 +8,7 @@ export interface UserAttributes {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  name?: string;
+  name: string;
   password: string;
   email: string;
   avatar?: string;
