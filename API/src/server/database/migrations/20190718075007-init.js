@@ -1,7 +1,6 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-
     const { DataTypes } = Sequelize;
 
     await queryInterface.createTable('users', {
@@ -23,10 +22,11 @@ module.exports = {
         allowNull: false
       },
       name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING
       },
       email: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        unique: true
       },
       avatar: {
         type: DataTypes.STRING

@@ -1,5 +1,7 @@
 import * as Joi from 'joi';
-import { app } from '../../../../../config';
+import { app } from '../../../../config';
+import ApiError from '../../error/ApiError';
+import httpStatus = require('http-status');
 
 const passwordPolicy: Joi.Extension = {
   base: Joi.string().required(),
@@ -11,15 +13,10 @@ const passwordPolicy: Joi.Extension = {
     {
       name: 'matchesPasswordPolicy',
       validate(params: any, value: any, state: Joi.State, options: Joi.ValidationOptions): any {
-
-        return passwordPolicyFulfilled(value)
-          ? value
-          : this.createError(
-            'passwordPolicy.notFullFilled',
-            { v: value },
-            state,
-            options
-          );
+        if (passwordPolicyFulfilled(value)) {
+          return value;
+        }
+        throw ApiError.boom(null, { message: 'Password policy not fullfilled', statusCode: httpStatus.BAD_REQUEST });
       }
     }
   ]

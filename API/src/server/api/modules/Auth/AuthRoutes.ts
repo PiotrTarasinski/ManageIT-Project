@@ -3,6 +3,7 @@ import * as Joi from 'joi';
 import { RouteConfig } from '../../../../typings/Hapi';
 import AuthController from './AuthController';
 import MainRoutes from '../../shared/routes/MainRoutes';
+import passwordPolicyJoiExtension from '../../shared/joiExtensions/passwordPolicy';
 
 class AuthRoutes extends MainRoutes {
 
@@ -16,15 +17,12 @@ class AuthRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new AuthController(req, res).login(),
           description: 'Login into the application',
-          notes: `Before using any other endpoint copy the access_token
-from the Response Headers panel and paste it into the input
-at the top of the page (next to Bearer, without removing the blank space)
-then press Enter.`,
+          notes: 'I turned off authentication on all the endpoints for now',
           tags: documentation('private', 'Auth'),
           validate: {
             payload: {
-              username: Joi.string().allow('').required(),
-              password: Joi.string().allow('').required()
+              email: Joi.string().required().email(),
+              password: passwordPolicyJoiExtension.matchesPasswordPolicy()
             }
           },
           auth: false

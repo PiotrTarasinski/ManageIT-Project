@@ -20,7 +20,7 @@
     "precommit": "yarn lint",
     "migrate": "sequelize db:migrate",
     "undo-all": "sequelize db:migrate:undo:all",
-    "reset-db": "sequelize db:migrate:undo:all && sequelize db:migrate",
+    "reset-db": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all",
     "generate-migration": "sequelize migration:generate",
     "lintstaged": "lint-staged",
     "sequelize": "sequelize"
