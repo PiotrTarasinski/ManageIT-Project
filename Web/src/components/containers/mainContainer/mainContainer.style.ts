@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       position: 'relative',
       display: 'flex',
-      flexDirection: 'column',
       width: '100%',
       height: '100vh',
       backgroundImage: `url(${background})`,
