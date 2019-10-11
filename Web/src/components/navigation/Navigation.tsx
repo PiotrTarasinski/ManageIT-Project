@@ -1,7 +1,5 @@
 import React from 'react';
 
-import logo from 'assets/images/logos/manageIT.png';
-
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -19,9 +17,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import useStyles from './navigation.style';
-import { Link } from 'react-router-dom';
 
-export default function Navigation() {
+import logo from 'assets/images/logos/manageIT.png';
+import { Link } from 'react-router-dom';
+import { AppState, UserState, Action } from 'models/types/store';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+interface IDispatchProps {
+  // action: () => void;
+}
+
+type Props = UserState & IDispatchProps;
+
+function Navigation(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -33,6 +42,8 @@ export default function Navigation() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  console.log(props);
 
   return (
     <React.Fragment>
@@ -100,3 +111,16 @@ export default function Navigation() {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = (state: AppState) => ({
+  isAuth: state.user.isAuth,
+});
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
+  // action: () => dispatch(action()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Navigation);
