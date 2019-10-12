@@ -9,9 +9,27 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
     },
-    content: {
+    main: {
+      display: 'flex',
+      flexDirection: 'column',
       flexGrow: 1,
+      position: 'relative',
+      maxHeight: '100vh',
+      overflow: 'hidden',
+    },
+    container: {
+      position: 'relative',
+      flexGrow: 1,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+    },
+    content: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: theme.spacing(3),
+      minHeight: '100%',
     },
   }),
 );

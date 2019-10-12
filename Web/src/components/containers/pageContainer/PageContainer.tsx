@@ -10,9 +10,11 @@ const PageContainer = (props: IProps) => {
   const { children } = props;
 
   return (
-    <main className={classes.content}>
+    <main className={classes.main}>
       <div className={classes.toolbar} />
-      {children}
+      <div className={classes.container}>
+        <div className={classes.content}>{children}</div>
+      </div>
     </main>
   );
 };

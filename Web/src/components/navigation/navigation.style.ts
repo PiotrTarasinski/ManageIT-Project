@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-const drawerWidth = 240;
+const drawerWidth = 284;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,6 +58,11 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 0,
       [theme.breakpoints.up('sm')]: {
         width: theme.spacing(9) + 1,
+        '@media (hover: hover)': {
+          '&:hover': {
+            width: drawerWidth,
+          },
+        },
       },
     },
     toolbar: {
