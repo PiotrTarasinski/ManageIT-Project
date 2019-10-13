@@ -24,10 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'hidden',
     },
     content: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
       padding: theme.spacing(3),
       minHeight: '100%',
     },
