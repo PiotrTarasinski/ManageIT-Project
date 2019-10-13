@@ -12,6 +12,7 @@ import HomePage from 'pages/home/HomePage';
 import LoginPage from 'pages/login/LoginPage';
 import RegisterPage from 'pages/register/RegisterPage';
 import ProjectsPage from 'pages/projects/ProjectsPage';
+import ProfilePage from 'pages/profile/ProfilePage';
 import Swal from 'sweetalert2';
 import MainContainer from 'components/containers/mainContainer/MainContainer';
 import Navigation from 'components/navigation/Navigation';
@@ -60,6 +61,10 @@ class App extends React.Component<Props> {
             <Route
               path="/projects"
               render={props => this.authorizedRender({ ...props }, ProjectsPage)}
+            />
+            <Route
+              path="/profile"
+              render={props => this.authorizedRender({ ...props }, ProfilePage)}
             />
             <Redirect from="*" to="/home" />
           </Switch>

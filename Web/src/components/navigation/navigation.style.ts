@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { deepPurple, red } from '@material-ui/core/colors';
 
 const drawerWidth = 284;
 
@@ -34,13 +35,18 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       '&:hover': {
         opacity: 0.85,
-        cursor: 'pointer',
       },
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
+      '& .MuiListItem-gutters ': {
+        paddingLeft: 24,
+      },
+      '& .MuiListItemIcon-root': {
+        minWidth: 48,
+      },
     },
     drawerOpen: {
       width: drawerWidth,
@@ -71,6 +77,37 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-end',
       padding: theme.spacing(0, 1),
       ...theme.mixins.toolbar,
+    },
+    drawerProfileMenu: {
+      paddingTop: theme.spacing(2),
+    },
+    drawerAvatar: {
+      width: '160px !important',
+      height: '160px !important',
+      margin: '0 auto',
+      border: '2px solid',
+      borderColor: deepPurple['A200'],
+      transition: theme.transitions.create(['opacity'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      '&:hover': {
+        opacity: 0.75,
+      },
+    },
+    userName: {
+      fontSize: theme.typography.pxToRem(18),
+      textAlign: 'center',
+      color: deepPurple['A200'],
+      fontWeight: theme.typography.fontWeightMedium,
+      paddingTop: theme.spacing(1),
+    },
+    logoutButton: {
+      color: red['500'],
+      marginBottom: theme.spacing(1),
+      '& .MuiListItemIcon-root': {
+        color: red['500'],
+      },
     },
   }),
 );

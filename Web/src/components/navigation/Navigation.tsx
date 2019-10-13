@@ -14,15 +14,20 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './navigation.style';
 
 import logo from 'assets/images/logos/manageIT.png';
+import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link } from 'react-router-dom';
 import { AppState, UserState, Action } from 'models/types/store';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Collapse, Avatar, Typography } from '@material-ui/core';
 
 interface IDispatchProps {
   // action: () => void;
@@ -33,17 +38,9 @@ type Props = UserState & IDispatchProps;
 function Navigation(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  console.log(props);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerProfileOpen, setDrawerProfileOpen] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -51,16 +48,16 @@ function Navigation(props: Props) {
         position="fixed"
         elevation={0}
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: drawerOpen,
         })}
       >
         <Toolbar>
           <IconButton
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={() => setDrawerOpen(true)}
             edge="start"
             className={clsx(classes.menuButton, {
-              [classes.hide]: open,
+              [classes.hide]: drawerOpen,
             })}
           >
             <MenuIcon />
@@ -72,41 +69,65 @@ function Navigation(props: Props) {
       </AppBar>
       <Drawer
         variant="permanent"
+        onMouseLeave={() => (!drawerOpen ? setDrawerProfileOpen(false) : null)}
         className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerClose]: !drawerOpen,
         })}
         classes={{
           paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
+            [classes.drawerOpen]: drawerOpen,
+            [classes.drawerClose]: !drawerOpen,
           }),
         }}
-        open={open}
+        open={drawerOpen}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={() => setDrawerOpen(false)}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button onClick={() => setDrawerProfileOpen(!drawerProfileOpen)}>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText>My Profile</ListItemText>
+            {drawerProfileOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse
+            in={drawerProfileOpen}
+            className={classes.drawerProfileMenu}
+            timeout="auto"
+            unmountOnExit
+          >
+            <Link to="/profile">
+              <Avatar
+                alt="Avatar"
+                src={props.avatar ? props.avatar : defaultAvatar}
+                className={classes.drawerAvatar}
+              />
+            </Link>
+            <Typography className={classes.userName}>Username Here</Typography>
+            <List>
+              <ListItem button component={Link} to="/profile">
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText>Profile Settings</ListItemText>
+              </ListItem>
+              <ListItem button className={classes.logoutButton}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </ListItem>
+              <Divider />
+            </List>
+          </Collapse>
         </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <List></List>
       </Drawer>
     </React.Fragment>
   );
