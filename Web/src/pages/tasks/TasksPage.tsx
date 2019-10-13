@@ -1,10 +1,10 @@
 import * as React from 'react';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
 
-export class LoginPage extends React.Component {
+export class TasksPage extends React.Component {
   render() {
-    return <PageContainer>LoginPage</PageContainer>;
+    return <PageContainer>TasksPage</PageContainer>;
   }
 }
 
-export default LoginPage;
+export default TasksPage;

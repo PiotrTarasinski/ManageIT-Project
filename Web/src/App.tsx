@@ -12,7 +12,17 @@ import HomePage from 'pages/home/HomePage';
 import LoginPage from 'pages/login/LoginPage';
 import RegisterPage from 'pages/register/RegisterPage';
 import ProjectsPage from 'pages/projects/ProjectsPage';
+import ProfilePage from 'pages/profile/ProfilePage';
 import Swal from 'sweetalert2';
+import MainContainer from 'components/containers/mainContainer/MainContainer';
+import Navigation from 'components/navigation/Navigation';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import DashBoardPage from 'pages/dashboard/DashBoardPage';
+import BacklogPage from 'pages/backlog/BacklogPage';
+import SprintPage from 'pages/sprint/SprintPage';
+import TeamPage from 'pages/team/TeamPage';
+import TasksPage from 'pages/tasks/TasksPage';
+import RaportPage from 'pages/raport/RaportPage';
 
 interface IStoreProps {
   isAuth: boolean;
@@ -47,7 +57,9 @@ class App extends React.Component<Props> {
   render() {
     return (
       <Router basename="/">
-        <React.Fragment>
+        <CssBaseline />
+        <MainContainer>
+          <Navigation />
           <Switch>
             <Route path="/home" component={HomePage} />
             <Route path="/login" component={LoginPage} />
@@ -56,9 +68,31 @@ class App extends React.Component<Props> {
               path="/projects"
               render={props => this.authorizedRender({ ...props }, ProjectsPage)}
             />
+            <Route
+              path="/profile"
+              render={props => this.authorizedRender({ ...props }, ProfilePage)}
+            />
+            <Route
+              path="/dashboard"
+              render={props => this.authorizedRender({ ...props }, DashBoardPage)}
+            />
+            <Route path="/team" render={props => this.authorizedRender({ ...props }, TeamPage)} />
+            <Route
+              path="/backlog"
+              render={props => this.authorizedRender({ ...props }, BacklogPage)}
+            />
+            <Route
+              path="/sprint"
+              render={props => this.authorizedRender({ ...props }, SprintPage)}
+            />
+            <Route path="/tasks" render={props => this.authorizedRender({ ...props }, TasksPage)} />
+            <Route
+              path="/raport"
+              render={props => this.authorizedRender({ ...props }, RaportPage)}
+            />
             <Redirect from="*" to="/home" />
           </Switch>
-        </React.Fragment>
+        </MainContainer>
       </Router>
     );
   }

@@ -1,8 +1,9 @@
 import * as React from 'react';
+import PageContainer from 'components/containers/pageContainer/PageContainer';
 
 export class RegisterPage extends React.Component {
   render() {
-    return <div>RegisterPage</div>;
+    return <PageContainer>RegisterPage</PageContainer>;
   }
 }
 
