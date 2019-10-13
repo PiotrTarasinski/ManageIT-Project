@@ -34,7 +34,7 @@ import { Link } from 'react-router-dom';
 import { AppState, UserState, Action } from 'models/types/store';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { Collapse, Avatar, Typography } from '@material-ui/core';
+import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-ui/core';
 
 interface IDispatchProps {
   // action: () => void;
@@ -48,6 +48,7 @@ function Navigation(props: Props) {
 
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [drawerProfileOpen, setDrawerProfileOpen] = React.useState(false);
+  const [userMenu, setUserMenu] = React.useState<null | HTMLElement>(null);
 
   return (
     <React.Fragment>
@@ -72,6 +73,53 @@ function Navigation(props: Props) {
           <Link to="/home" className={classes.logo}>
             <img src={logo} alt="ManageIT" />
           </Link>
+          <div className={classes.spacer}></div>
+          <Button
+            aria-controls="user-menu"
+            aria-haspopup="true"
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              setUserMenu(event.currentTarget)
+            }
+          >
+            <Avatar
+              alt="Avatar"
+              className={classes.appBarAvatar}
+              src={props.avatar ? props.avatar : defaultAvatar}
+            />
+            <Typography className={classes.appBarUsername}>
+              {props.name ? props.name : 'Username'}
+            </Typography>
+          </Button>
+          <Menu
+            id="user-menu"
+            anchorEl={userMenu}
+            keepMounted
+            open={Boolean(userMenu)}
+            onClose={() => setUserMenu(null)}
+            getContentAnchorEl={null}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            className={classes.appBarUserMenu}
+          >
+            <MenuItem component={Link} to="/profile" onClick={() => setUserMenu(null)}>
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText>My Profile</ListItemText>
+            </MenuItem>
+            <MenuItem className={classes.appBarLogoutButton} onClick={() => setUserMenu(null)}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText>Logout</ListItemText>
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -116,7 +164,9 @@ function Navigation(props: Props) {
                 className={classes.drawerAvatar}
               />
             </Link>
-            <Typography className={classes.userName}>Username Here</Typography>
+            <Typography className={classes.drawerUsername}>
+              {props.name ? props.name : 'Username'}
+            </Typography>
             <Divider />
             <List>
               <ListItem button component={Link} to="/profile">
@@ -125,7 +175,7 @@ function Navigation(props: Props) {
                 </ListItemIcon>
                 <ListItemText>Profile Settings</ListItemText>
               </ListItem>
-              <ListItem button className={classes.logoutButton}>
+              <ListItem button className={classes.drawerLogoutButton}>
                 <ListItemIcon>
                   <ExitToAppIcon />
                 </ListItemIcon>

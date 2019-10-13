@@ -29,12 +29,50 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'none',
     },
     logo: {
+      paddingTop: 4,
+      paddingBottom: 4,
       transition: theme.transitions.create(['opacity'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
+      '& img': {
+        display: 'block',
+        margin: 'auto 0',
+        maxWidth: '100%',
+      },
       '&:hover': {
         opacity: 0.85,
+      },
+    },
+    spacer: {
+      flexGrow: 1,
+      paddingRight: theme.spacing(1),
+    },
+    appBarAvatar: {
+      border: '1px solid',
+      borderColor: deepPurple['A200'],
+    },
+    appBarUsername: {
+      fontSize: theme.typography.pxToRem(16),
+      textAlign: 'center',
+      color: deepPurple['A200'],
+      fontWeight: theme.typography.fontWeightMedium,
+      textTransform: 'none',
+      marginLeft: theme.spacing(2),
+
+      [theme.breakpoints.down('xs')]: {
+        display: 'none',
+      },
+    },
+    appBarUserMenu: {
+      '& .MuiListItemIcon-root': {
+        minWidth: 42,
+      },
+    },
+    appBarLogoutButton: {
+      color: red['500'],
+      '& .MuiListItemIcon-root': {
+        color: red['500'],
       },
     },
     drawer: {
@@ -98,7 +136,7 @@ const useStyles = makeStyles((theme: Theme) =>
         opacity: 0.75,
       },
     },
-    userName: {
+    drawerUsername: {
       fontSize: theme.typography.pxToRem(18),
       textAlign: 'center',
       color: deepPurple['A200'],
@@ -106,7 +144,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
     },
-    logoutButton: {
+    drawerLogoutButton: {
       color: red['500'],
       marginBottom: theme.spacing(1),
       '& .MuiListItemIcon-root': {
