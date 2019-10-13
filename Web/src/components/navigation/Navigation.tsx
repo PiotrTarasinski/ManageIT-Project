@@ -16,7 +16,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
+import ViewListIcon from '@material-ui/icons/ViewList';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import GroupIcon from '@material-ui/icons/Group';
+import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './navigation.style';
@@ -110,6 +117,7 @@ function Navigation(props: Props) {
               />
             </Link>
             <Typography className={classes.userName}>Username Here</Typography>
+            <Divider />
             <List>
               <ListItem button component={Link} to="/profile">
                 <ListItemIcon>
@@ -126,8 +134,49 @@ function Navigation(props: Props) {
               <Divider />
             </List>
           </Collapse>
+          <ListItem button component={Link} to="/projects">
+            <ListItemIcon>
+              <ViewListIcon />
+            </ListItemIcon>
+            <ListItemText>Projects List</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/dashboard">
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText>Dashboard</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/team">
+            <ListItemIcon>
+              <GroupIcon />
+            </ListItemIcon>
+            <ListItemText>Team</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/backlog">
+            <ListItemIcon>
+              <DeveloperBoardIcon />
+            </ListItemIcon>
+            <ListItemText>Backlog</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/sprint">
+            <ListItemIcon>
+              <AccountTreeIcon />
+            </ListItemIcon>
+            <ListItemText>Active Sprint</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/tasks">
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText>Task List</ListItemText>
+          </ListItem>
+          <ListItem button component={Link} to="/raport">
+            <ListItemIcon>
+              <TrendingDownIcon />
+            </ListItemIcon>
+            <ListItemText>Raports</ListItemText>
+          </ListItem>
         </List>
-        <List></List>
       </Drawer>
     </React.Fragment>
   );

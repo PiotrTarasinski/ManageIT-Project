@@ -67,6 +67,9 @@ const useStyles = makeStyles((theme: Theme) =>
         '@media (hover: hover)': {
           '&:hover': {
             width: drawerWidth,
+            transition: theme.transitions.create('width', {
+              delay: '0.2s',
+            }),
           },
         },
       },
@@ -101,6 +104,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: deepPurple['A200'],
       fontWeight: theme.typography.fontWeightMedium,
       paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
     },
     logoutButton: {
       color: red['500'],
