@@ -1,8 +1,10 @@
 import * as React from 'react';
 import useStyles from './pageContainer.style';
+import clsx from 'clsx';
 
 interface IProps {
   children: React.ReactNode;
+  className?: any;
 }
 
 const PageContainer = (props: IProps) => {
@@ -13,7 +15,7 @@ const PageContainer = (props: IProps) => {
     <main className={classes.main}>
       <div className={classes.toolbar} />
       <div className={classes.container}>
-        <div className={classes.content}>{children}</div>
+        <div className={clsx(classes.content, props.className)}>{children}</div>
       </div>
     </main>
   );
