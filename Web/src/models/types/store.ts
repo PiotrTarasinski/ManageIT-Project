@@ -4,6 +4,7 @@ export interface Action {
 }
 
 export interface AppState {
+  readonly app: ApplicationState;
   readonly user: UserState;
 }
 
@@ -13,4 +14,8 @@ export interface UserState {
   readonly email?: string;
   readonly name?: string;
   readonly avatar?: string;
+}
+
+export interface ApplicationState {
+  readonly sidebarVisible: boolean;
 }

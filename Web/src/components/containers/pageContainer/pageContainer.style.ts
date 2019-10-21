@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowX: 'hidden',
     },
     content: {
-      padding: theme.spacing(3),
+      padding: theme.spacing(0),
       minHeight: '100%',
     },
   }),

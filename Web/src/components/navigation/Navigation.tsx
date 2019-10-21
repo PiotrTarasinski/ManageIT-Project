@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
@@ -30,17 +30,27 @@ import useStyles from './navigation.style';
 
 import logo from 'assets/images/logos/manageIT.png';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { AppState, UserState, Action } from 'models/types/store';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-ui/core';
+import { ROUTES } from 'models/variables/routes';
 
 interface IDispatchProps {
   // action: () => void;
 }
 
-type Props = UserState & IDispatchProps;
+interface IStoreProps {
+  isAuth: boolean;
+  sidebarVisible: boolean;
+}
+
+interface ComponentProps {
+  location: any;
+}
+
+type Props = IStoreProps & ComponentProps & UserState;
 
 function Navigation(props: Props) {
   const classes = useStyles();
@@ -50,27 +60,37 @@ function Navigation(props: Props) {
   const [drawerProfileOpen, setDrawerProfileOpen] = React.useState(false);
   const [userMenu, setUserMenu] = React.useState<null | HTMLElement>(null);
 
+  const { sidebarVisible } = props;
+
+  useEffect(() => {
+    if (!sidebarVisible) {
+      setDrawerOpen(false);
+    }
+  }, [sidebarVisible]);
+
   return (
     <React.Fragment>
       <AppBar
         position="fixed"
         elevation={0}
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: drawerOpen,
+          [classes.appBarShift]: drawerOpen && sidebarVisible,
         })}
       >
         <Toolbar>
-          <IconButton
-            aria-label="open drawer"
-            onClick={() => setDrawerOpen(true)}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: drawerOpen,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Link to="/home" className={classes.logo}>
+          {sidebarVisible && (
+            <IconButton
+              aria-label="open drawer"
+              onClick={() => setDrawerOpen(true)}
+              edge="start"
+              className={clsx(classes.menuButton, {
+                [classes.hide]: drawerOpen,
+              })}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Link to={ROUTES.home.pathname} className={classes.logo}>
             <img src={logo} alt="ManageIT" />
           </Link>
           <div className={classes.spacer}></div>
@@ -107,7 +127,11 @@ function Navigation(props: Props) {
             }}
             className={classes.appBarUserMenu}
           >
-            <MenuItem component={Link} to="/profile" onClick={() => setUserMenu(null)}>
+            <MenuItem
+              component={Link}
+              to={ROUTES.profile.pathname}
+              onClick={() => setUserMenu(null)}
+            >
               <ListItemIcon>
                 <AccountBoxIcon />
               </ListItemIcon>
@@ -122,125 +146,130 @@ function Navigation(props: Props) {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        onMouseLeave={() => (!drawerOpen ? setDrawerProfileOpen(false) : null)}
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: drawerOpen,
-          [classes.drawerClose]: !drawerOpen,
-        })}
-        classes={{
-          paper: clsx({
+      {sidebarVisible && (
+        <Drawer
+          variant="permanent"
+          onMouseLeave={() => (!drawerOpen ? setDrawerProfileOpen(false) : null)}
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: drawerOpen,
             [classes.drawerClose]: !drawerOpen,
-          }),
-        }}
-        open={drawerOpen}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={() => setDrawerOpen(false)}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <ListItem button onClick={() => setDrawerProfileOpen(!drawerProfileOpen)}>
-            <ListItemIcon>
-              <AccountBoxIcon />
-            </ListItemIcon>
-            <ListItemText>My Profile</ListItemText>
-            {drawerProfileOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse
-            in={drawerProfileOpen}
-            className={classes.drawerProfileMenu}
-            timeout="auto"
-            unmountOnExit
-          >
-            <Link to="/profile">
-              <Avatar
-                alt="Avatar"
-                src={props.avatar ? props.avatar : defaultAvatar}
-                className={classes.drawerAvatar}
-              />
-            </Link>
-            <Typography className={classes.drawerUsername}>
-              {props.name ? props.name : 'Username'}
-            </Typography>
-            <Divider />
-            <List>
-              <ListItem button component={Link} to="/profile">
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText>Profile Settings</ListItemText>
-              </ListItem>
-              <ListItem button className={classes.drawerLogoutButton}>
-                <ListItemIcon>
-                  <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
-              </ListItem>
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: drawerOpen,
+              [classes.drawerClose]: !drawerOpen,
+            }),
+          }}
+          open={drawerOpen}
+        >
+          <div className={classes.toolbar}>
+            <IconButton onClick={() => setDrawerOpen(false)}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <ListItem button onClick={() => setDrawerProfileOpen(!drawerProfileOpen)}>
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText>My Profile</ListItemText>
+              {drawerProfileOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse
+              in={drawerProfileOpen}
+              className={classes.drawerProfileMenu}
+              timeout="auto"
+              unmountOnExit
+            >
+              <Link to={ROUTES.profile.pathname}>
+                <Avatar
+                  alt="Avatar"
+                  src={props.avatar ? props.avatar : defaultAvatar}
+                  className={classes.drawerAvatar}
+                />
+              </Link>
+              <Typography className={classes.drawerUsername}>
+                {props.name ? props.name : 'Username'}
+              </Typography>
               <Divider />
-            </List>
-          </Collapse>
-          <ListItem button component={Link} to="/projects">
-            <ListItemIcon>
-              <ViewListIcon />
-            </ListItemIcon>
-            <ListItemText>Projects List</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/dashboard">
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText>Dashboard</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/team">
-            <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            <ListItemText>Team</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/backlog">
-            <ListItemIcon>
-              <DeveloperBoardIcon />
-            </ListItemIcon>
-            <ListItemText>Backlog</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/sprint">
-            <ListItemIcon>
-              <AccountTreeIcon />
-            </ListItemIcon>
-            <ListItemText>Active Sprint</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/tasks">
-            <ListItemIcon>
-              <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText>Task List</ListItemText>
-          </ListItem>
-          <ListItem button component={Link} to="/raport">
-            <ListItemIcon>
-              <TrendingDownIcon />
-            </ListItemIcon>
-            <ListItemText>Raports</ListItemText>
-          </ListItem>
-        </List>
-      </Drawer>
+              <List>
+                <ListItem button component={Link} to={ROUTES.profile.pathname}>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText>Profile Settings</ListItemText>
+                </ListItem>
+                <ListItem button className={classes.drawerLogoutButton}>
+                  <ListItemIcon>
+                    <ExitToAppIcon />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
+                </ListItem>
+                <Divider />
+              </List>
+            </Collapse>
+            <ListItem button component={Link} to={ROUTES.projects.pathname}>
+              <ListItemIcon>
+                <ViewListIcon />
+              </ListItemIcon>
+              <ListItemText>Projects List</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.dashboard.pathname}>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText>Dashboard</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.team.pathname}>
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+              <ListItemText>Team</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.backlog.pathname}>
+              <ListItemIcon>
+                <DeveloperBoardIcon />
+              </ListItemIcon>
+              <ListItemText>Backlog</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.sprint.pathname}>
+              <ListItemIcon>
+                <AccountTreeIcon />
+              </ListItemIcon>
+              <ListItemText>Active Sprint</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.tasks.pathname}>
+              <ListItemIcon>
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText>Task List</ListItemText>
+            </ListItem>
+            <ListItem button component={Link} to={ROUTES.raport.pathname}>
+              <ListItemIcon>
+                <TrendingDownIcon />
+              </ListItemIcon>
+              <ListItemText>Raports</ListItemText>
+            </ListItem>
+          </List>
+        </Drawer>
+      )}
     </React.Fragment>
   );
 }
 
 const mapStateToProps = (state: AppState) => ({
   isAuth: state.user.isAuth,
+  sidebarVisible: state.app.sidebarVisible,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
   // action: () => dispatch(action()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Navigation);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(Navigation),
+);
