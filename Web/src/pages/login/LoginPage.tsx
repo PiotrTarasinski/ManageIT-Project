@@ -13,9 +13,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { TextField, Checkbox } from 'final-form-material-ui';
-import EmailIcon from '@material-ui/icons/Email';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { Email, Visibility, VisibilityOff } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
 import { ROUTES } from 'models/variables/routes';
 import { Link } from 'react-router-dom';
@@ -32,11 +30,19 @@ const onSubmit = async (values: any) => {
 
 const validate = (values: any) => {
   const errors: any = {};
-  if (!values.email) {
+
+  const { email, password } = values;
+  if (!email) {
     errors.email = 'Email is required!';
   }
-  if (!values.password) {
+  if (email && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    errors.email = 'Invalid email!';
+  }
+  if (!password) {
     errors.password = 'Password is required!';
+  }
+  if (password && (password.length < 6 || password.length > 24)) {
+    errors.password = 'Password must be 6-24 characters!';
   }
   return errors;
 };
@@ -53,7 +59,7 @@ function LoginPage(props: Props) {
       <Container maxWidth="sm">
         <Paper className={classes.formContainer} elevation={24}>
           <Typography className={classes.header} variant="h1" component="h1">
-            Login
+            Sign In
           </Typography>
           <Form
             onSubmit={onSubmit}
@@ -74,7 +80,7 @@ function LoginPage(props: Props) {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
-                            <EmailIcon htmlColor={grey['700']} />
+                            <Email htmlColor={grey['700']} />
                           </InputAdornment>
                         ),
                       }}
