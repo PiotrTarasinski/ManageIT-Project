@@ -114,7 +114,7 @@ function RegisterPage(props: Props) {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <Field
                       fullWidth
                       name="password"
@@ -126,7 +126,7 @@ function RegisterPage(props: Props) {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <Field
                       fullWidth
                       name="confirmPassword"
