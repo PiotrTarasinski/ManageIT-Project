@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
     formInner: {
       width: '100%',
     },
+    formHelperText: {
+      marginLeft: 14,
+      marginRight: 14,
+    },
     submitButton: {
       margin: theme.spacing(2, 0, 6, 0),
       fontSize: 17,
