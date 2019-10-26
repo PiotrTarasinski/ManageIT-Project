@@ -1,4 +1,4 @@
-import * as application from './application/application';
+import * as application from './application';
 
 const StoreAction = {
   application,
