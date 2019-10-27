@@ -4,13 +4,18 @@ export interface Action {
 }
 
 export interface AppState {
+  readonly app: ApplicationState;
   readonly user: UserState;
 }
 
 export interface UserState {
   readonly isAuth: boolean;
-  readonly id?: number;
+  readonly id?: string;
   readonly email?: string;
   readonly name?: string;
   readonly avatar?: string;
+}
+
+export interface ApplicationState {
+  readonly sidebarVisible: boolean;
 }
