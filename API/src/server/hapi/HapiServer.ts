@@ -2,6 +2,7 @@ import { env } from '../../config';
 import { Lifecycle, Server, ServerRequestExtType } from '@hapi/hapi';
 import ApiError from '../api/error/ApiError';
 import httpStatus = require('http-status');
+import * as Joi from '@hapi/joi';
 
 class HapiServer extends Server {
   constructor() {
@@ -17,9 +18,10 @@ class HapiServer extends Server {
         },
         validate: {
           failAction: async (req, h, err) => {
+            console.log(typeof err);
             if (env.NODE_ENV === 'development' && err) {
-              console.log(err['name']);
-              throw ApiError.boom(null, { message: err.message, statusCode: httpStatus.BAD_REQUEST });
+              throw err;
+              // throw ApiError.boom(null, { message: err.message, statusCode: httpStatus.BAD_REQUEST });
             }
             throw ApiError.boom(null, { message: 'Invalid request payload.', statusCode: httpStatus.BAD_REQUEST });
           }

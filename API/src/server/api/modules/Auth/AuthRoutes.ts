@@ -63,10 +63,9 @@ class AuthRoutes extends MainRoutes {
           validate: {
             payload: {
               email: Joi.string().email().required(),
-              password: Joi.string().required(),
+              password: customJoi.passwordPolicy(),
               confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-              name: Joi.string().required(),
-              avatar: Joi.string().base64()
+              name: Joi.string().required()
             }
           },
           auth: false
