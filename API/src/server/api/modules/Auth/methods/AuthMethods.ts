@@ -1,6 +1,5 @@
 import { Op } from 'sequelize';
 import * as httpStatus from 'http-status';
-import { v4 } from 'uuid';
 import db from '../../../../database';
 import ApiError from '../../../error/ApiError';
 import { UserInstance } from '../../../../database/models/User';
@@ -19,9 +18,23 @@ class AuthMethods {
     });
   }
 
+  async findAndDeleteToken(id: string) {
+    db.SessionToken.findAll({
+      where: {
+        userId: id
+      }
+    })
+    .then(tokens => {
+      tokens.forEach(token => {
+        token.destroy();
+      });
+    });
+  }
+
   async createUser(payload: {
     email: string;
     password: string;
+    name: string;
   }) {
     const user = await this.getUserByEmail(payload.email);
 
@@ -31,7 +44,8 @@ class AuthMethods {
 
     const newUser = await db.User.create({
       email: payload.email,
-      password: encryption.hash(payload.password)
+      password: encryption.hash(payload.password),
+      name: payload.name
     });
 
     return newUser;

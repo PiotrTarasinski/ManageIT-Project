@@ -5,9 +5,7 @@ import AuthFormatter from './formatters/AuthFormatter';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
 
-
 class AuthController extends Controller {
-
   async login() {
     const { email, password } = this.req.payload;
 
@@ -21,12 +19,13 @@ class AuthController extends Controller {
 
     if (user.id && user.password === hashedPassword) {
 
+      await new AuthMethods().findAndDeleteToken(user.id);
+
       const token = await new AuthMethods().createNewSessionTokenForUser(user, this.req.headers);
 
       const formattedUser = await new AuthFormatter().format(user);
 
-      return this.res(formattedUser)
-        .header('access_token', <string>token.id);
+      return this.res(formattedUser).header('access_token', <string>token.id);
     }
 
     throw ApiError.boom(null, { statusCode: 401 });
@@ -38,8 +37,7 @@ class AuthController extends Controller {
     if (this.user && this.user.id) {
       const formattedUser = await new AuthFormatter().format(this.user);
 
-      return this.res(formattedUser)
-        .header('access_token', token);
+      return this.res(formattedUser).header('access_token', token);
     }
 
     return this.res().header('access_token', token);
@@ -56,17 +54,16 @@ class AuthController extends Controller {
   }
 
   async signUp() {
-    const { payload } = this.req;
-    const methods = new AuthMethods();
+    const payload = await this.req.payload;
 
-    const user = await methods.createUser(payload);
+    console.log(payload);
+
+    const user = await new AuthMethods().createUser(payload);
 
     const formattedUser = await new AuthFormatter().format(user);
 
     return this.res(formattedUser);
   }
-
 }
-
 
 export default AuthController;

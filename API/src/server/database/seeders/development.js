@@ -9,7 +9,7 @@ module.exports = [
       updated_at: new Date(2019, 10, 1),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Szymko Tokarzeszczak',
-      email: 'szymko@szymko.szymko'
+      email: 'szymko@szymko.com'
     }
   },
   {
