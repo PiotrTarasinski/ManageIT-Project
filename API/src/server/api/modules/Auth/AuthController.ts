@@ -62,7 +62,7 @@ class AuthController extends Controller {
 
     const formattedUser = await new AuthFormatter().format(user);
 
-    return this.res(formattedUser);
+    return this.res({ message: 'User created successfully' });
   }
 }
 
