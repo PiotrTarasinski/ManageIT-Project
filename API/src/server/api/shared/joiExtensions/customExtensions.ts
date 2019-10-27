@@ -11,7 +11,7 @@ const customJoi = Joi.extend(
       {
         name: 'passwordPolicy',
         validate(params: any, value: any, state: Joi.State, options: Joi.ValidationOptions): any {
-          if ([upperCase(value), lowerCase(value), specialCharacters(value), numbers(value)].filter(passed => passed).length > 2) {
+          if ([upperCase(value), lowerCase(value), specialCharacters(value), numbers(value)].filter(passed => passed).length === 4) {
             return value;
           }
           return this.createError('custom.notFullfilled', { v: value }, state, options);
