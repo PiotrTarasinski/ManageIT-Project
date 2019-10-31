@@ -60,14 +60,16 @@ class AuthRoutes extends MainRoutes {
           notes: 'Creates a user account',
           tags: documentation('private', 'Auth'),
           plugins: {},
-          validate: {
-            payload: {
-              email: Joi.string().email().required(),
-              password: customJoi.passwordPolicy(),
-              confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-              name: Joi.string().required()
-            }
-          },
+          auth: false
+        }
+      },
+      {
+        method: 'POST',
+        path: '/test',
+        options: {
+          handler: (req, res) => new AuthController(req, res).test(),
+          tags: documentation('private', 'Auth'),
+          plugins: {},
           auth: false
         }
       }

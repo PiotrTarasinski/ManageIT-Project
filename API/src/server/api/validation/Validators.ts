@@ -1,0 +1,88 @@
+export const Validator = {
+  errorMessage(key: string, message: string) {
+    return { key, message };
+  },
+
+  isEmail(toTest: string, key: string): { key: string; message: string } | null {
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(toTest)) {
+      return this.errorMessage(key, 'email is invalid.');
+    }
+    return null;
+  },
+
+  isString(toTest: string, key: string): { key: string; message: string } | null {
+    if (typeof toTest !== 'string') {
+      return this.errorMessage(key, `${key} must be a string.`);
+    }
+    return null;
+  },
+
+  isNumber(toTest: string, key: string): { key: string; message: string } | null {
+    if (typeof toTest !== 'number') {
+      return this.errorMessage(key, `${key} must be a number.`);
+    }
+    return null;
+  },
+
+  lengthMin(toTest: string, key: string, value: number): { key: string; message: string } | null {
+    if (toTest) {
+      if (toTest.length < value) {
+        return this.errorMessage(key, `${key} min length is ${value} characters.`);
+      }
+    }
+    return null;
+  },
+
+  lengthMax(toTest: string, key: string, value: number): { key: string; message: string } | null {
+    if (toTest) {
+      if (toTest.length > value) {
+        return this.errorMessage(key, `${key} max length is ${value} characters.`);
+      }
+    }
+    return null;
+  },
+
+  required(toTest: string, key: string): { key: string; message: string } | null {
+    if (!toTest) {
+      return this.errorMessage(key, `${key} is required.`);
+    }
+    return null;
+  },
+
+  containsLowercase(toTest: string, key: string): { key: string; message: string } | null {
+    if (!/[a-z]/.test(toTest)) {
+      return this.errorMessage(key, `${key} must contain a lowercase letter.`);
+    }
+    return null;
+  },
+
+  containsUppercase(toTest: string, key: string): { key: string; message: string } | null {
+    if (!/[A-Z]/.test(toTest)) {
+      return this.errorMessage(key, `${key} must contain an uppercase letter.`);
+    }
+    return null;
+  },
+
+  containsNumber(toTest: string, key: string): { key: string; message: string } | null {
+    if (!/\d/.test(toTest)) {
+      return this.errorMessage(key, `${key} must contain a number.`);
+    }
+    return null;
+  },
+
+  containsSpecialChar(toTest: string, key: string): { key: string; message: string } | null {
+    if (!/[\W]/.test(toTest)) {
+      return this.errorMessage(key, `${key} must contain a special character.`);
+    }
+    return null;
+  },
+
+  ref(toTest: string, key: string, toRef: string, keyRef: string) {
+    if (toTest !== toRef) {
+      return this.errorMessage(key, `${key} must be the same as ${keyRef}.`);
+    }
+    return null;
+  }
+};
+
+export default Validator;

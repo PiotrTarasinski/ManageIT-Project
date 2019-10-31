@@ -4,6 +4,8 @@ import ApiError from '../../error/ApiError';
 import AuthFormatter from './formatters/AuthFormatter';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
+import Validator from '../../validation/Validators';
+import validate from '../../validation/Validate';
 
 class AuthController extends Controller {
   async login() {
@@ -56,13 +58,27 @@ class AuthController extends Controller {
   async signUp() {
     const payload = await this.req.payload;
 
-    console.log(payload);
+    const validationResponse = validate.signUp(payload);
 
-    const user = await new AuthMethods().createUser(payload);
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.code);
+    }
 
-    const formattedUser = await new AuthFormatter().format(user);
+    const response = await new AuthMethods().createUser(payload);
 
-    return this.res(formattedUser);
+    return this.res(response).code(response.code);
+  }
+
+  async test() {
+    const payload = await this.req.payload;
+
+    const temp = [Validator.isEmail(payload.email, 'email'), Validator.required(payload.email, 'email')];
+    // temp.push(Validator.isEmail(payload.email, 'email'));
+    // temp.push(Validator.isString(payload.email, 'email'));
+
+    console.log(temp);
+
+    return this.res(payload);
   }
 }
 
