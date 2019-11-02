@@ -2,12 +2,15 @@ import { env } from '../../config';
 import { Lifecycle, Server, ServerRequestExtType } from '@hapi/hapi';
 import ApiError from '../api/error/ApiError';
 import httpStatus = require('http-status');
-import * as Joi from '@hapi/joi';
+import { join } from 'path';
 
 class HapiServer extends Server {
   constructor() {
     super({
       routes: {
+        files: {
+          relativeTo: join(__dirname, '../../public')
+        },
         cors: {
           origin: ['*'],
           exposedHeaders: ['access_token']
@@ -20,6 +23,7 @@ class HapiServer extends Server {
           failAction: async (req, h, err) => {
             console.log(typeof err);
             if (env.NODE_ENV === 'development' && err) {
+              console.log(join(__dirname, '../../public'));
               throw err;
               // throw ApiError.boom(null, { message: err.message, statusCode: httpStatus.BAD_REQUEST });
             }

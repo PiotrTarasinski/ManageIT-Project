@@ -5,7 +5,7 @@ type AuthResponseFormat = {
   id: string;
   email: string;
   name: string;
-  avatar: string | undefined;
+  avatar: string | null | undefined;
 };
 
 class AuthFormatter implements ResponseFormatter<UserInstance, AuthResponseFormat> {

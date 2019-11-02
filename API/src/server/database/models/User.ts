@@ -11,7 +11,7 @@ export interface UserAttributes {
   name: string;
   password: string;
   email: string;
-  avatar?: string;
+  avatar?: string | null;
 
   /**
    * Associations
