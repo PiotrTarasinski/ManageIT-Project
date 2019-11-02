@@ -1,7 +1,5 @@
 import { Op } from 'sequelize';
-import * as httpStatus from 'http-status';
 import db from '../../../../database';
-import ApiError from '../../../error/ApiError';
 import { UserInstance } from '../../../../database/models/User';
 import { encryption } from '../../../../../utils';
 import CustomResponse from '../../../error/CustomError';

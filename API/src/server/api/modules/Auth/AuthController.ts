@@ -1,26 +1,29 @@
-import * as httpStatus from 'http-status';
 import Controller from '../../shared/controller/Controller';
-import ApiError from '../../error/ApiError';
 import AuthFormatter from './formatters/AuthFormatter';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
-import Validator from '../../validation/Validators';
 import validate from '../../validation/Validate';
+import CustomResponse from '../../error/CustomError';
 
 class AuthController extends Controller {
   async login() {
-    const { email, password } = this.req.payload;
+    const payload = await this.req.payload;
 
-    const user = await new AuthMethods().getUserByEmail(email);
+    const validationResponse = validate.login(payload); // Custom validation
 
-    if (!user) {
-      throw ApiError.boom(null, { message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.code); // Return error if fails
     }
 
-    const hashedPassword: string = encryption.hash(password);
+    const user = await new AuthMethods().getUserByEmail(payload.email);
+
+    if (!user) {
+      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credemtials.' }));
+    }
+
+    const hashedPassword: string = encryption.hash(payload.password);
 
     if (user.id && user.password === hashedPassword) {
-
       await new AuthMethods().findAndDeleteToken(user.id);
 
       const token = await new AuthMethods().createNewSessionTokenForUser(user, this.req.headers);
@@ -30,7 +33,7 @@ class AuthController extends Controller {
       return this.res(formattedUser).header('access_token', <string>token.id);
     }
 
-    throw ApiError.boom(null, { statusCode: 401 });
+    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credemtials.' }));
   }
 
   async validateToken() {
@@ -67,18 +70,6 @@ class AuthController extends Controller {
     const response = await new AuthMethods().createUser(payload);
 
     return this.res(response).code(response.code);
-  }
-
-  async test() {
-    const payload = await this.req.payload;
-
-    const temp = [Validator.isEmail(payload.email, 'email'), Validator.required(payload.email, 'email')];
-    // temp.push(Validator.isEmail(payload.email, 'email'));
-    // temp.push(Validator.isString(payload.email, 'email'));
-
-    console.log(temp);
-
-    return this.res(payload);
   }
 }
 

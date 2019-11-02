@@ -8,38 +8,83 @@ interface SignUp {
   name: string;
 }
 
+interface Login {
+  email: string;
+  password: string;
+}
+
 const Validate = {
+
+  passwordPolicy(password: string) {
+
+    return [
+      validators.lengthMax(password, 'password', 24),
+      validators.lengthMin(password, 'password', 6),
+      validators.containsLowercase(password, 'password'),
+      validators.containsUppercase(password, 'password'),
+      validators.containsSpecialChar(password, 'password'),
+      validators.containsNumber(password, 'password'),
+      validators.isString(password, 'password'),
+      validators.required(password, 'password')
+    ];
+
+  },
+
+  namePolicy(name: string) {
+
+    return [
+      validators.lengthMin(name, 'name', 1),
+      validators.isString(name, 'name'),
+      validators.required(name, 'name')
+    ];
+
+  },
+
+  emailPolicy(email: string) {
+
+    return [
+      validators.isEmail(email, 'email'),
+      validators.required(email, 'email')
+    ];
+
+  },
+
   signUp(payload: SignUp) {
+
+    const { email, name, password, confirmPassword } = payload;
+
+    const array = [
+      validators.ref(confirmPassword, 'confirmPassword', payload.password, 'password')
+    ]
+    .concat(this.passwordPolicy(password))
+    .concat(this.namePolicy(name))
+    .concat(this.emailPolicy(email));
+
+    return this.makeResponse(array);
+
+  },
+
+  login(payload: Login) {
+
+    const { email, password } = payload;
+
+    const array = this.passwordPolicy(password)
+    .concat(this.emailPolicy(email));
+
+    return this.makeResponse(array);
+
+  },
+
+  makeResponse(array: ({key: string, message: string} | null)[]) {
     const errObject: { [key: string]: string } = {};
-    [
-      validators.isEmail(payload.email, 'email'),
-      validators.required(payload.email, 'email'),
-
-      validators.lengthMin(payload.name, 'name', 1),
-      validators.isString(payload.name, 'name'),
-      validators.required(payload.name, 'name'),
-
-      validators.lengthMax(payload.password, 'password', 24),
-      validators.lengthMin(payload.password, 'password', 6),
-      validators.containsLowercase(payload.password, 'password'),
-      validators.containsUppercase(payload.password, 'password'),
-      validators.containsSpecialChar(payload.password, 'password'),
-      validators.containsNumber(payload.password, 'password'),
-      validators.isString(payload.password, 'password'),
-      validators.required(payload.password, 'password'),
-
-      validators.ref(payload.confirmPassword, 'confirmPassword', payload.password, 'password')
-    ].forEach(element => {
+    array.forEach(element => {
       if (element) {
         errObject[element.key] = element.message;
       }
     });
-
     if (Object.keys(errObject).length === 0) {
-        // console.log(errObject);
       return CustomResponse(200, '');
     }
-    console.log(errObject);
 
     return CustomResponse(400, 'Invalid payload input', errObject);
   }
