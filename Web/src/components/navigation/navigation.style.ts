@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'block',
         margin: 'auto 0',
         maxWidth: '100%',
+        minWidth: 160,
       },
       '&:hover': {
         opacity: 0.85,

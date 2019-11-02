@@ -5,30 +5,43 @@ import { Typography, InputAdornment, Grid, IconButton, Button, TextField } from 
 import { Email, Visibility, VisibilityOff, Person } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
 import { ROUTES } from 'models/variables/routes';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { API } from 'store/api';
 import { IRegisterForm } from 'models/types/forms';
 import { validate } from './registerForm.validation';
+import Swal from 'sweetalert2';
+import { withRouter } from 'react-router-dom';
+
 // import { FORM_ERROR } from 'final-form';
 
-const onSubmit = async (values: IRegisterForm) => {
-  const { name, email, password, confirmPassword } = values;
-  return API.user
-    .signUp(name, email, password, confirmPassword)
-    .then(res => {
-      console.log(res);
-    })
-    .catch(error => {
-      console.log(error);
-      // return { email: 'Unknown username' };
-      // return { [FORM_ERROR]: 'Login Failed' };
-    });
-};
+type Props = RouteComponentProps<any>;
 
-function RegisterForm() {
+function RegisterForm(props: Props) {
   const classes = useStyles();
 
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const onSubmit = async (values: IRegisterForm) => {
+    const { name, email, password, confirmPassword } = values;
+    return API.user
+      .signUp(name, email, password, confirmPassword)
+      .then(() => {
+        Swal.fire({
+          title: 'Success',
+          text: 'Now you can login to your account',
+          type: 'success',
+          confirmButtonText: 'Login',
+          timer: 3000,
+        }).then(() => {
+          props.history.push(ROUTES.login.pathname);
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        // return { email: 'Unknown username' };
+        // return { [FORM_ERROR]: 'Login Failed' };
+      });
+  };
 
   return (
     <Form
@@ -197,4 +210,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default withRouter(RegisterForm);
