@@ -1,9 +1,7 @@
 import { documentation } from '../../../../utils';
-import * as Joi from '@hapi/joi';
 import { RouteConfig } from '../../../../typings/Hapi';
 import AuthController from './AuthController';
 import MainRoutes from '../../shared/routes/MainRoutes';
-import customJoi from '../../shared/joiExtensions/customExtensions';
 
 class AuthRoutes extends MainRoutes {
 
@@ -19,12 +17,6 @@ class AuthRoutes extends MainRoutes {
           description: 'Login into the application',
           notes: 'Password needs to fullfill 3  out of 4 rules: lowecase, uppercase, special and number.',
           tags: documentation('private', 'Auth'),
-          validate: {
-            payload: {
-              email: Joi.string().required().email(),
-              password: customJoi.passwordPolicy()
-            }
-          },
           auth: false
         }
       },
@@ -60,14 +52,6 @@ class AuthRoutes extends MainRoutes {
           notes: 'Creates a user account',
           tags: documentation('private', 'Auth'),
           plugins: {},
-          validate: {
-            payload: {
-              email: Joi.string().email().required(),
-              password: customJoi.passwordPolicy(),
-              confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-              name: Joi.string().required()
-            }
-          },
           auth: false
         }
       }

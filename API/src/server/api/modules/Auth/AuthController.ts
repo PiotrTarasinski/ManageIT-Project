@@ -1,24 +1,29 @@
-import * as httpStatus from 'http-status';
 import Controller from '../../shared/controller/Controller';
-import ApiError from '../../error/ApiError';
 import AuthFormatter from './formatters/AuthFormatter';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
+import validate from '../../validation/Validate';
+import CustomResponse from '../../error/CustomError';
 
 class AuthController extends Controller {
   async login() {
-    const { email, password } = this.req.payload;
+    const payload = await this.req.payload;
 
-    const user = await new AuthMethods().getUserByEmail(email);
+    const validationResponse = validate.login(payload); // Custom validation
 
-    if (!user) {
-      throw ApiError.boom(null, { message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.code); // Return error if fails
     }
 
-    const hashedPassword: string = encryption.hash(password);
+    const user = await new AuthMethods().getUserByEmail(payload.email);
+
+    if (!user) {
+      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credemtials.' }));
+    }
+
+    const hashedPassword: string = encryption.hash(payload.password);
 
     if (user.id && user.password === hashedPassword) {
-
       await new AuthMethods().findAndDeleteToken(user.id);
 
       const token = await new AuthMethods().createNewSessionTokenForUser(user, this.req.headers);
@@ -28,7 +33,7 @@ class AuthController extends Controller {
       return this.res(formattedUser).header('access_token', <string>token.id);
     }
 
-    throw ApiError.boom(null, { statusCode: 401 });
+    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credemtials.' }));
   }
 
   async validateToken() {
@@ -56,13 +61,15 @@ class AuthController extends Controller {
   async signUp() {
     const payload = await this.req.payload;
 
-    console.log(payload);
+    const validationResponse = validate.signUp(payload);
 
-    const user = await new AuthMethods().createUser(payload);
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.code);
+    }
 
-    const formattedUser = await new AuthFormatter().format(user);
+    const response = await new AuthMethods().createUser(payload);
 
-    return this.res({ message: 'User created successfully' });
+    return this.res(response).code(response.code);
   }
 }
 
