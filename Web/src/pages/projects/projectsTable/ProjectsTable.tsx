@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,10 +14,7 @@ import { AppState, Action } from 'models/types/store';
 import { ProjectState } from 'models/types/project';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { StoreAction } from 'store/actions';
-
 import { CheckCircle, Delete, Cancel, Settings, EmojiObjectsRounded } from '@material-ui/icons';
-
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link } from 'react-router-dom';
 import { ROUTES } from 'models/variables/routes';
@@ -160,40 +157,35 @@ const rows: ProjectsListData[] = [
   ),
 ];
 
+const getRows = (
+  order: Order,
+  orderBy: string,
+  page: number,
+  rowsPerPage: number,
+  search: string,
+) => {
+  return rows;
+};
+
 const renderProjectState = (classes: ReturnType<typeof useStyles>, projectState: ProjectState) => {
-  if (projectState === 'Completed')
-    return (
-      <Chip
-        className={clsx(classes.completedStateChip, classes.projectStateChip)}
-        icon={<CheckCircle />}
-        label={projectState}
-      />
-    );
-  if (projectState === 'In Development')
-    return (
-      <Chip
-        className={clsx(classes.inDevelopmentStateChip, classes.projectStateChip)}
-        icon={<Settings />}
-        label={projectState}
-      />
-    );
-  if (projectState === 'Planning')
-    return (
-      <Chip
-        className={clsx(classes.planningStateChip, classes.projectStateChip)}
-        icon={<EmojiObjectsRounded />}
-        label={projectState}
-      />
-    );
-  if (projectState === 'Cancelled')
-    return (
-      <Chip
-        className={clsx(classes.cancelledStateChip, classes.projectStateChip)}
-        icon={<Cancel />}
-        label={projectState}
-      />
-    );
-  return <Chip label={projectState} />;
+  let icon: JSX.Element | undefined = undefined;
+  if (projectState === 'Completed') icon = <CheckCircle />;
+  if (projectState === 'In Development') icon = <Settings />;
+  if (projectState === 'Planning') icon = <EmojiObjectsRounded />;
+  if (projectState === 'Cancelled') icon = <Cancel />;
+
+  return (
+    <Chip
+      label={projectState}
+      icon={icon}
+      className={clsx(classes.projectStateChip, {
+        [classes.completedStateChip]: projectState === 'Completed',
+        [classes.inDevelopmentStateChip]: projectState === 'In Development',
+        [classes.planningStateChip]: projectState === 'Planning',
+        [classes.cancelledStateChip]: projectState === 'Cancelled',
+      })}
+    />
+  );
 };
 
 type Props = IStoreProps & IDispatchProps;
@@ -201,11 +193,18 @@ type Props = IStoreProps & IDispatchProps;
 function ProjectsTable(props: Props) {
   const classes = useStyles();
 
+  const [data, setData] = React.useState<ProjectsListData[]>([]);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string>('projectName');
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(15);
+  const [rowCount, setRowCount] = React.useState<number>(0);
   const [search, setSearch] = React.useState<string>('');
+
+  useEffect(() => {
+    console.log(order, orderBy, page, rowsPerPage, search);
+    setData(getRows(order, orderBy, page, rowsPerPage, search));
+  });
 
   let timer: any;
 
@@ -253,10 +252,10 @@ function ProjectsTable(props: Props) {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            rowCount={rows.length}
+            rowCount={data.length}
           />
           <TableBody>
-            {rows.map(row => {
+            {data.map(row => {
               return (
                 <TableRow
                   hover
@@ -318,7 +317,7 @@ function ProjectsTable(props: Props) {
       <TablePagination
         rowsPerPageOptions={[10, 15, 20]}
         component="div"
-        count={rows.length}
+        count={rowCount}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -338,11 +337,4 @@ const mapStateToProps = (state: AppState) => ({
   userId: state.user.id,
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
-  // signIn: (user: UserState) => dispatch(StoreAction.user.signIn(user)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProjectsTable);
+export default connect(mapStateToProps)(ProjectsTable);
