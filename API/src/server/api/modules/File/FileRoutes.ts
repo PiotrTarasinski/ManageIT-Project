@@ -36,11 +36,6 @@ class FileRoutes extends MainRoutes {
             maxBytes: 10485760,
             output: 'stream',
             parse: true
-          },
-          validate: {
-            payload: {
-              file: Joi.any().required()
-            }
           }
         }
       },
