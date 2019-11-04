@@ -23,6 +23,7 @@ export const sequelize = new Sequelize(
     host: env.DB.HOST,
     port: <number>env.DB.PORT,
     dialect: env.DB.DIALECT,
+    operatorsAliases: false,
     logging: (env.NODE_ENV === 'development' && env.DB.FORCE_SUPRESS_LOGS) || env.NODE_ENV === 'production' ? (sql: any) => logger.info(sql) : false,
     pool: {
       max: 5,
