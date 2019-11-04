@@ -23,7 +23,7 @@ class Controller {
   public req: Hapi.Request & { payload: any };
 
   protected res: (value?: Hapi.ResponseValue) => Hapi.ResponseObject;
-  protected token: SessionTokenInstance;
+  // protected token: SessionTokenInstance;
 
   protected fileFolder: string;
 
@@ -32,7 +32,7 @@ class Controller {
     this.res = (value?: any) => res.response(value);
 
     this.user = _.get(req, 'auth.credentials.user', {});
-    this.token = _.get(req, 'auth.credentials.token', {});
+    // this.token = _.get(req, 'auth.credentials.token', {});
 
     this.fileFolder = join(__dirname, '../../../../public');
 

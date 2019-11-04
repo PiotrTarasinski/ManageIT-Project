@@ -1,9 +1,10 @@
 import Controller from '../../shared/controller/Controller';
-import AuthFormatter from './formatters/AuthFormatter';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
 import validate from '../../validation/Validate';
 import CustomResponse from '../../error/CustomError';
+import Token from '../../shared/token/Token';
+import AuthFormatter from '../../shared/formatter/UserFormatter';
 
 class AuthController extends Controller {
   async login() {
@@ -12,13 +13,13 @@ class AuthController extends Controller {
     const validationResponse = validate.login(payload); // Custom validation
 
     if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.code); // Return error if fails
+      return this.res(validationResponse).code(validationResponse.statusCode); // Return error if fails
     }
 
     const user = await new AuthMethods().getUserByEmail(payload.email);
 
     if (!user) {
-      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credemtials.' }));
+      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credemtials.' })).code(401);
     }
 
     const hashedPassword: string = encryption.hash(payload.password);
@@ -26,36 +27,18 @@ class AuthController extends Controller {
     if (user.id && user.password === hashedPassword) {
       await new AuthMethods().findAndDeleteToken(user.id);
 
-      const token = await new AuthMethods().createNewSessionTokenForUser(user, this.req.headers);
+      console.log(user.toJSON());
 
-      const formattedUser = await new AuthFormatter().format(user);
+      const token = await new Token().generateTokenForUserInstance(user);
 
-      return this.res(formattedUser).header('access_token', <string>token.id);
+      return this.res(CustomResponse(200, 'Successfully logged in.')).header('access_token', token);
     }
 
-    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credemtials.' }));
+    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credemtials.' })).code(401);
   }
 
   async validateToken() {
-    const token: string = this.token ? <string>this.token.id : '';
-
-    if (this.user && this.user.id) {
-      const formattedUser = await new AuthFormatter().format(this.user);
-
-      return this.res(formattedUser).header('access_token', token);
-    }
-
-    return this.res().header('access_token', token);
-  }
-
-  async logout() {
-    try {
-      await this.token.destroy();
-
-      return this.res();
-    } catch (e) {
-      return this.res();
-    }
+    return this.res(CustomResponse(200, 'Token OK.')).code(200);
   }
 
   async signUp() {
@@ -64,12 +47,12 @@ class AuthController extends Controller {
     const validationResponse = validate.signUp(payload);
 
     if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.code);
+      return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
     const response = await new AuthMethods().createUser(payload);
 
-    return this.res(response).code(response.code);
+    return this.res(response).code(response.statusCode);
   }
 }
 

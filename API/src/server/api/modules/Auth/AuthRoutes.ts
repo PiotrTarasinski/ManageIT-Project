@@ -1,7 +1,11 @@
 import { documentation } from '../../../../utils';
 import { RouteConfig } from '../../../../typings/Hapi';
 import AuthController from './AuthController';
+import * as jwt from 'jsonwebtoken';
+import * as fs from 'fs';
 import MainRoutes from '../../shared/routes/MainRoutes';
+import { join } from 'path';
+import { resolve, reject } from 'bluebird';
 
 class AuthRoutes extends MainRoutes {
 
@@ -15,7 +19,6 @@ class AuthRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new AuthController(req, res).login(),
           description: 'Login into the application',
-          notes: 'Password needs to fullfill 3  out of 4 rules: lowecase, uppercase, special and number.',
           tags: documentation('private', 'Auth'),
           auth: false
         }
@@ -31,17 +34,6 @@ class AuthRoutes extends MainRoutes {
           validate: {}
         }
       },
-      {
-        method: 'DELETE',
-        path: '/logout',
-        options: {
-          handler: (req, res) => new AuthController(req, res).logout(),
-          description: 'Log out',
-          notes: 'Logs out of the app',
-          tags: documentation('private', 'Auth'),
-          plugins: {}
-        }
-      },
 
       {
         method: 'POST',
@@ -53,6 +45,36 @@ class AuthRoutes extends MainRoutes {
           tags: documentation('private', 'Auth'),
           plugins: {},
           auth: false
+        }
+      },
+      {
+        method: 'POST',
+        path: '/test',
+        options: {
+          handler: async (req, res) => {
+            const privateKey = await new Promise((resolve, reject) => {
+              fs.readFile('src/server/key/cert_priv.pub', 'UTF-8', (err, content) => {
+                if (err) {
+                  reject(err);
+                }
+                resolve(content);
+              });
+            });
+            const publicKey = await new Promise((resolve, reject) => {
+              fs.readFile('src/server/key/cert.pub', 'UTF-8', (err, content) => {
+                if (err) {
+                  reject(err);
+                }
+                resolve(content);
+              });
+            });
+            const signed = jwt.sign(req.payload, privateKey as string, { algorithm: 'RS256', noTimestamp: true });
+            const decoded = jwt.verify(signed, publicKey as string);
+            console.log(signed);
+            return res.response(decoded);
+          },
+          tags: documentation('private', 'Auth'),
+          plugins: {}
         }
       }
     ];
