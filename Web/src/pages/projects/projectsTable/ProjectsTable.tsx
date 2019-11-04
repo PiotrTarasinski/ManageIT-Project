@@ -14,6 +14,8 @@ import { AppState, Action } from 'models/types/store';
 import { ProjectState } from 'models/types/project';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
+import { useSnackbar } from 'notistack';
 import { CheckCircle, Delete, Cancel, Settings, EmojiObjectsRounded } from '@material-ui/icons';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link } from 'react-router-dom';
@@ -198,8 +200,9 @@ function ProjectsTable(props: Props) {
   const [orderBy, setOrderBy] = React.useState<string>('projectName');
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(15);
-  const [rowCount, setRowCount] = React.useState<number>(0);
+  const [rowCount, setRowCount] = React.useState<number>(50);
   const [search, setSearch] = React.useState<string>('');
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     console.log(order, orderBy, page, rowsPerPage, search);
@@ -232,14 +235,40 @@ function ProjectsTable(props: Props) {
     setPage(0);
   };
 
-  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, id: string) => {
-    console.log(id);
+  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
     event.stopPropagation();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Please confirm that you want to leave the project`,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirm',
+    }).then(result => {
+      if (result.value) {
+        enqueueSnackbar(`Successfully left project ${row.projectName}`, {
+          key: 'leaveProject',
+          variant: 'success',
+        });
+      }
+    });
   };
 
-  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, id: string) => {
-    console.log(id);
+  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
     event.stopPropagation();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Please confirm that you want to delete the project`,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirm',
+    }).then(result => {
+      if (result.value) {
+        enqueueSnackbar(`Successfully removed project ${row.projectName}`, {
+          key: 'leaveProject',
+          variant: 'success',
+        });
+      }
+    });
   };
 
   return (
@@ -288,7 +317,7 @@ function ProjectsTable(props: Props) {
                         <IconButton
                           aria-label="delete project"
                           onClick={(event: React.MouseEvent<HTMLElement>) =>
-                            handleDeleteProject(event, row.id)
+                            handleDeleteProject(event, row)
                           }
                         >
                           <Delete />
@@ -300,7 +329,7 @@ function ProjectsTable(props: Props) {
                         <IconButton
                           aria-label="leave project"
                           onClick={(event: React.MouseEvent<HTMLElement>) =>
-                            handleLeaveProject(event, row.id)
+                            handleLeaveProject(event, row)
                           }
                         >
                           <Cancel />
