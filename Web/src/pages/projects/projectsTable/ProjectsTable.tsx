@@ -264,7 +264,7 @@ function ProjectsTable(props: Props) {
     }).then(result => {
       if (result.value) {
         enqueueSnackbar(`Successfully removed project ${row.projectName}`, {
-          key: 'leaveProject',
+          key: 'deleteProject',
           variant: 'success',
         });
       }
