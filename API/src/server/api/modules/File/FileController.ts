@@ -25,9 +25,14 @@ class FileController extends Controller {
 
   async deleteAvatar() {
     const user = this.user;
-    const response = await new FileMethods().deleteAvatar(this.avatarFolder, user);
 
-    return this.res(response).code(response.statusCode);
+    const fileResponse = await new FileMethods().deleteAvatar(this.avatarFolder, user);
+
+    if (fileResponse.response.statusCode === 200) {
+      return this.res(fileResponse.response).code(fileResponse.response.statusCode).header('access_token', fileResponse.accessToken as string);
+    }
+
+    return this.res(fileResponse.response).code(fileResponse.response.statusCode);
   }
 }
 

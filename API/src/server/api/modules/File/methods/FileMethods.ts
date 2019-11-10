@@ -80,32 +80,41 @@ class FileMethods {
       });
   }
 
-  async deleteAvatar(avatarFolder: string, user: UserInstance) {
+  async deleteAvatar(avatarFolder: string, user: UserInstance): Promise<FileResponse> {
     const filename = join(avatarFolder, `${user.id}.jpg`);
 
     return await this.unlinkFilePromise(filename)
       .then(async () => {
         if (user.id) {
-          if (
-            db.User.update(
-              {
-                avatar: null
-              },
-              {
-                where: {
-                  id: user.id
-                }
+          const updated = await db.User.update(
+            {
+              avatar: null
+            },
+            {
+              where: {
+                id: user.id
               }
-            )
-          ) {
-            return CustomResponse(200, 'Avatar changed successfully.'); // OK
+            }
+          );
+          if (updated[0]) {
+            const token = await new Token().generateTokenForUserInstance(updated[1][0]);
+            return {
+              response: CustomResponse(200, 'Avatar changed successfully.'),
+              accessToken: token
+            }; // OK
           }
-          return CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' }); // DATABASE ERR
+          return {
+            response: CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' })
+          }; // DATABASE ERR
         }
-        return CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' }); // FETCH USER ERR
+        return {
+          response: CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' })
+        }; // FETCH USER ERR
       })
       .catch(err => {
-        return CustomResponse(500, err, { formError: 'Internal server error.' }); // FILE REMOVAL ERR
+        return {
+          response: CustomResponse(500, err, { formError: 'Internal server error.' })
+        }; // FILE REMOVAL ERR
       });
   }
 }
