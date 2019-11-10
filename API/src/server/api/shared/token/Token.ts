@@ -1,7 +1,7 @@
 import { UserInstance } from '../../../database/models/User';
 import * as jwt from 'jsonwebtoken';
 import * as fs from 'fs';
-import UserFormatter, { UserResponseFormat } from '../formatter/UserFormatter';
+import UserFormatter from '../formatter/UserFormatter';
 
 export class Token {
   async generateTokenForUserInstance(user: UserInstance) {

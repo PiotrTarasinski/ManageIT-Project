@@ -13,7 +13,6 @@ class FileController extends Controller {
     }
     const user = this.user;
 
-    console.log(user.id);
     const fileResponse = await new FileMethods().updateAvatar(this.avatarFolder, user, file);
 
     if (fileResponse.response.statusCode === 200) {

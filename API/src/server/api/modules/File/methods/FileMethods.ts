@@ -93,7 +93,8 @@ class FileMethods {
             {
               where: {
                 id: user.id
-              }
+              },
+              returning: true
             }
           );
           if (updated[0]) {
@@ -113,7 +114,7 @@ class FileMethods {
       })
       .catch(err => {
         return {
-          response: CustomResponse(500, err, { formError: 'Internal server error.' })
+          response: CustomResponse(500, 'Error deleting file.', { formError: 'Internal server error.' })
         }; // FILE REMOVAL ERR
       });
   }
