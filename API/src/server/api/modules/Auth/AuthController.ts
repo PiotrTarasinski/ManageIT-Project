@@ -27,8 +27,6 @@ class AuthController extends Controller {
     if (user.id && user.password === hashedPassword) {
       await new AuthMethods().findAndDeleteToken(user.id);
 
-      console.log(user.toJSON());
-
       const token = await new Token().generateTokenForUserInstance(user);
 
       return this.res(CustomResponse(200, 'Successfully logged in.')).header('access_token', token);
