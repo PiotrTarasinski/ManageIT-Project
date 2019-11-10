@@ -1,11 +1,14 @@
-import * as httpStatus from 'http-status';
 import db from '../../../../database';
-import ApiError from '../../../error/ApiError';
 import { UserInstance } from '../../../../database/models/User';
 import * as fs from 'fs';
 import { join, extname } from 'path';
-import CustomResponse from '../../../error/CustomError';
-import { reject, resolve } from 'bluebird';
+import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
+import Token from '../../../shared/token/Token';
+
+interface FileResponse {
+  response: CustomResponseType;
+  accessToken?: string;
+}
 
 class FileMethods {
   public extArray = ['.png', '.jpg', '.jpeg', '.JPG', '.JPEG', '.PNG'];
@@ -32,9 +35,11 @@ class FileMethods {
     });
   }
 
-  async updateAvatar(avatarFolder: string, user: UserInstance, file: any) {
+  async updateAvatar(avatarFolder: string, user: UserInstance, file: any): Promise<FileResponse> {
     if (!this.extArray.includes(extname(file.hapi.filename))) {
-      return CustomResponse(400, 'Wrong file extension', { formError: 'Wrong file extension.' });
+      return {
+        response: CustomResponse(400, 'Wrong file extension', { formError: 'Wrong file extension.' })
+      };
     }
 
     const filename = join(avatarFolder, `${user.id}.jpg`);
@@ -42,55 +47,74 @@ class FileMethods {
     return await this.writeFilePromise(filename, file._data)
       .then(async () => {
         if (user.id) {
-          if (
-            await db.User.update(
-              {
-                avatar: `/api/v1/file/avatar/${user.id}.jpg`
+          const updated = await db.User.update(
+            {
+              avatar: `/api/v1/file/avatar/${user.id}.jpg`
+            },
+            {
+              where: {
+                id: user.id
               },
-              {
-                where: {
-                  id: user.id
-                }
-              }
-            )
-          ) {
-            return CustomResponse(200, 'Avatar removed successfully.'); // OK
+              returning: true
+            }
+          );
+          if (updated[0]) {
+            const token = await new Token().generateTokenForUserInstance(updated[1][0]);
+            return {
+              response: CustomResponse(200, 'Avatar changed successfully.'),
+              accessToken: token
+            }; // OK
           }
-          return CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' }); // DATABASE ERR
+          return {
+            response: CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' })
+          };
         }
-        return CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' }); // FETCH USER ERR
+        return {
+          response: CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' })
+        };
       })
       .catch(err => {
-        return CustomResponse(500, err, { formError: 'Internal server error.' }); // FILE WRITE ERR
+        return {
+          response: CustomResponse(500, err, { formError: 'Internal server error.' })
+        };
       });
   }
 
-  async deleteAvatar(avatarFolder: string, user: UserInstance) {
+  async deleteAvatar(avatarFolder: string, user: UserInstance): Promise<FileResponse> {
     const filename = join(avatarFolder, `${user.id}.jpg`);
 
     return await this.unlinkFilePromise(filename)
       .then(async () => {
         if (user.id) {
-          if (
-            db.User.update(
-              {
-                avatar: null
-              },
-              {
-                where: {
-                  id: user.id
-                }
+          const updated = await db.User.update(
+            {
+              avatar: null
+            },
+            {
+              where: {
+                id: user.id
               }
-            )
-          ) {
-            return CustomResponse(200, 'Avatar changed successfully.'); // OK
+            }
+          );
+          if (updated[0]) {
+            const token = await new Token().generateTokenForUserInstance(updated[1][0]);
+            return {
+              response: CustomResponse(200, 'Avatar changed successfully.'),
+              accessToken: token
+            }; // OK
           }
-          return CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' }); // DATABASE ERR
+          return {
+            response: CustomResponse(500, 'Error writning to database.', { formError: 'Internal server error.' })
+          }; // DATABASE ERR
         }
-        return CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' }); // FETCH USER ERR
+        return {
+          response: CustomResponse(500, "Couldn't fetch user info.", { formError: 'Internal server error.' })
+        }; // FETCH USER ERR
       })
       .catch(err => {
-        return CustomResponse(500, err, { formError: 'Internal server error.' }); // FILE REMOVAL ERR
+        return {
+          response: CustomResponse(500, err, { formError: 'Internal server error.' })
+        }; // FILE REMOVAL ERR
       });
   }
 }

@@ -1,7 +1,6 @@
 import Controller from '../../shared/controller/Controller';
 import { join } from 'path';
 import FileMethods from './methods/FileMethods';
-import ApiError from '../../error/ApiError';
 import CustomResponse from '../../error/CustomError';
 
 class FileController extends Controller {
@@ -13,16 +12,27 @@ class FileController extends Controller {
       return this.res(CustomResponse(400, 'There is no file.', { file: 'There is no file.' })).code(400);
     }
     const user = this.user;
-    const response = await new FileMethods().updateAvatar(this.avatarFolder, user, file);
 
-    return this.res(response).code(response.code);
+    console.log(user.id);
+    const fileResponse = await new FileMethods().updateAvatar(this.avatarFolder, user, file);
+
+    if (fileResponse.response.statusCode === 200) {
+      return this.res(fileResponse.response).code(fileResponse.response.statusCode).header('access_token', fileResponse.accessToken as string);
+    }
+
+    return this.res(fileResponse.response).code(fileResponse.response.statusCode);
   }
 
   async deleteAvatar() {
     const user = this.user;
-    const response = await new FileMethods().deleteAvatar(this.avatarFolder, user);
 
-    return this.res(response).code(response.code);
+    const fileResponse = await new FileMethods().deleteAvatar(this.avatarFolder, user);
+
+    if (fileResponse.response.statusCode === 200) {
+      return this.res(fileResponse.response).code(fileResponse.response.statusCode).header('access_token', fileResponse.accessToken as string);
+    }
+
+    return this.res(fileResponse.response).code(fileResponse.response.statusCode);
   }
 }
 

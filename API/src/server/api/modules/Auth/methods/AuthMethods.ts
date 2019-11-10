@@ -1,6 +1,5 @@
 import { Op } from 'sequelize';
 import db from '../../../../database';
-import { UserInstance } from '../../../../database/models/User';
 import { encryption } from '../../../../../utils';
 import CustomResponse from '../../../error/CustomError';
 
@@ -43,11 +42,6 @@ class AuthMethods {
     return CustomResponse(200, 'User registered successfully.');
   }
 
-  async createNewSessionTokenForUser(localUser: UserInstance, headers?: any) {
-    return await db.SessionToken.create({
-      userId: <string>localUser.id
-    });
-  }
 }
 
 export default AuthMethods;

@@ -1,19 +1,20 @@
-export interface CustomResponse {
-  code: number;
+export interface CustomResponseType {
+  statusCode: number;
   message: string;
   errors?: { [key: string]: string };
+  accessToken?: string;
 }
 
-const CustomResponse = (code: number, message: string, errors?: { [key: string]: string }): CustomResponse => {
+const CustomResponse = (statusCode: number, message: string, errors?: { [key: string]: string }, accessToken?: string): CustomResponseType => {
   if (errors) {
     return {
-      code,
+      statusCode,
       message,
       errors
     };
   }
   return {
-    code,
+    statusCode,
     message
   };
 };
