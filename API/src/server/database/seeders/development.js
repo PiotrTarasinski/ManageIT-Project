@@ -110,14 +110,5 @@ module.exports = [
       name: 'Tyle Wogole',
       email: 'pioter@pomusz'
     }
-  },
-  {
-    model: 'session_tokens',
-    data: {
-      id: '02e73780-e7b7-470b-a539-4f785770ebf1',
-      created_at: new Date(2019, 10, 1),
-      updated_at: new Date(2019, 10, 1),
-      user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
-    }
   }
 ];

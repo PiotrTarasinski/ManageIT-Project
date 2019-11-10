@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import * as Hapi from '@hapi/hapi';
 import { UserInstance } from '../../../database/models/User';
-import { SessionTokenInstance } from '../../../database/models/SessionToken';
 import { join } from 'path';
 
 type FindingQuery = {
@@ -23,7 +22,6 @@ class Controller {
   public req: Hapi.Request & { payload: any };
 
   protected res: (value?: Hapi.ResponseValue) => Hapi.ResponseObject;
-  // protected token: SessionTokenInstance;
 
   protected fileFolder: string;
 

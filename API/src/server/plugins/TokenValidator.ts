@@ -1,17 +1,10 @@
-import * as Joi from 'joi';
 import * as Hapi from '@hapi/hapi';
 import * as Boom from 'boom';
-import * as moment from 'moment';
 import IPlugin from './interface/IPlugin';
 import db from '../database';
 import { UserInstance } from '../database/models/User';
-import { SessionTokenInstance } from '../database/models/SessionToken';
-import ApiError from '../api/error/ApiError';
-import { app, env } from '../../config';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
-import { resolve, reject } from 'bluebird';
-import CustomResponse, { CustomResponseType } from '../api/error/CustomError';
 
 
 type TokenResponse = {

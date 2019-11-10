@@ -1,6 +1,5 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SessionTokenAttributes, SessionTokenInstance } from './SessionToken';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -16,11 +15,10 @@ export interface UserAttributes {
   /**
    * Associations
    */
-  sessionTokens?: SessionTokenAttributes[];
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
-  getSessionTokens: Sequelize.HasManyGetAssociationsMixin<SessionTokenInstance>;
+
 }
 
 export const UserFactory =
@@ -59,10 +57,6 @@ export const UserFactory =
 
     const User = sequelize
       .define<UserInstance, UserAttributes>('user', attributes);
-
-    User.associate = (models) => {
-      User.hasMany(models.SessionToken, { as: 'sessionTokens', foreignKey: 'userId' });
-    };
 
     return User;
   };
