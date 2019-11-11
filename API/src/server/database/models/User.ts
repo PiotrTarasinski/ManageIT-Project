@@ -1,5 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
+import { ProjectAttributes } from './Project';
+import { UserProjectInstance } from './UserProject';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -15,10 +17,11 @@ export interface UserAttributes {
   /**
    * Associations
    */
+  leadIn?: ProjectAttributes[];
+  projectsIn?: ProjectAttributes[];
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
-
 }
 
 export const UserFactory =
@@ -57,6 +60,11 @@ export const UserFactory =
 
     const User = sequelize
       .define<UserInstance, UserAttributes>('user', attributes);
+
+    User.associate = (models) => {
+      User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId' });
+      User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'user_id' });
+    };
 
     return User;
   };
