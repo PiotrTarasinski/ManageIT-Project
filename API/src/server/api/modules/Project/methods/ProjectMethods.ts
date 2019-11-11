@@ -16,7 +16,13 @@ class ProjectMethods {
       include: [
         {
           model: db.Project,
-          as: 'projectsIn'
+          as: 'projectsIn',
+          include: [
+            {
+              model: db.User,
+              as: 'lead'
+            }
+          ]
         }
       ]
     });
