@@ -37,12 +37,10 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-ui/core';
 import { ROUTES } from 'models/variables/routes';
 
-interface IDispatchProps {
-  // action: () => void;
-}
-
 interface IStoreProps {
   isAuth: boolean;
+  name?: string;
+  avatar?: string;
   sidebarVisible: boolean;
 }
 
@@ -60,7 +58,7 @@ function Navigation(props: Props) {
   const [drawerProfileOpen, setDrawerProfileOpen] = React.useState(false);
   const [userMenu, setUserMenu] = React.useState<null | HTMLElement>(null);
 
-  const { sidebarVisible } = props;
+  const { isAuth, name, avatar, sidebarVisible } = props;
 
   useEffect(() => {
     if (!sidebarVisible) {
@@ -72,7 +70,6 @@ function Navigation(props: Props) {
     <React.Fragment>
       <AppBar
         position="fixed"
-        elevation={0}
         className={clsx(classes.appBar, {
           [classes.appBarShift]: drawerOpen && sidebarVisible,
         })}
@@ -104,11 +101,9 @@ function Navigation(props: Props) {
             <Avatar
               alt="Avatar"
               className={classes.appBarAvatar}
-              src={props.avatar ? props.avatar : defaultAvatar}
+              src={avatar ? avatar : defaultAvatar}
             />
-            <Typography className={classes.appBarUsername}>
-              {props.name ? props.name : 'Username'}
-            </Typography>
+            <Typography className={classes.appBarUsername}>{name ? name : 'Username'}</Typography>
           </Button>
           <Menu
             id="user-menu"
@@ -185,13 +180,11 @@ function Navigation(props: Props) {
               <Link to={ROUTES.profile.pathname}>
                 <Avatar
                   alt="Avatar"
-                  src={props.avatar ? props.avatar : defaultAvatar}
+                  src={avatar ? avatar : defaultAvatar}
                   className={classes.drawerAvatar}
                 />
               </Link>
-              <Typography className={classes.drawerUsername}>
-                {props.name ? props.name : 'Username'}
-              </Typography>
+              <Typography className={classes.drawerUsername}>{name ? name : 'Username'}</Typography>
               <Divider />
               <List>
                 <ListItem button component={Link} to={ROUTES.profile.pathname}>
@@ -260,6 +253,8 @@ function Navigation(props: Props) {
 
 const mapStateToProps = (state: AppState) => ({
   isAuth: state.user.isAuth,
+  name: state.user.name,
+  avatar: state.user.avatar,
   sidebarVisible: state.app.sidebarVisible,
 });
 

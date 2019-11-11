@@ -25,6 +25,7 @@
     "final-form": "^4.18.5",
     "final-form-material-ui": "^0.3.0",
     "node-sass": "^4.12.0",
+    "notistack": "^0.9.5",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-final-form": "^6.3.0",

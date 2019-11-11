@@ -10,6 +10,7 @@ export interface AppState {
 
 export interface UserState {
   readonly isAuth: boolean;
+  readonly token?: string;
   readonly id?: string;
   readonly email?: string;
   readonly name?: string;
