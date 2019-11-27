@@ -30,25 +30,25 @@ import useStyles from './navigation.style';
 
 import logo from 'assets/images/logos/manageIT.png';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { AppState, UserState, Action } from 'models/types/store';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-ui/core';
 import { ROUTES } from 'models/variables/routes';
+import { StoreAction } from 'store/actions';
+import { History } from 'history';
+
+interface IDispatchProps {
+  handleLogOut: (history: History) => void;
+}
 
 interface IStoreProps {
-  isAuth: boolean;
-  name?: string;
-  avatar?: string;
+  user: UserState;
   sidebarVisible: boolean;
 }
 
-interface ComponentProps {
-  location: any;
-}
-
-type Props = IStoreProps & ComponentProps & UserState;
+type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
 function Navigation(props: Props) {
   const classes = useStyles();
@@ -58,7 +58,12 @@ function Navigation(props: Props) {
   const [drawerProfileOpen, setDrawerProfileOpen] = React.useState(false);
   const [userMenu, setUserMenu] = React.useState<null | HTMLElement>(null);
 
-  const { isAuth, name, avatar, sidebarVisible } = props;
+  const { sidebarVisible, user } = props;
+
+  const logOut = () => {
+    setUserMenu(null);
+    return props.handleLogOut(props.history);
+  };
 
   useEffect(() => {
     if (!sidebarVisible) {
@@ -101,9 +106,9 @@ function Navigation(props: Props) {
             <Avatar
               alt="Avatar"
               className={classes.appBarAvatar}
-              src={avatar ? avatar : defaultAvatar}
+              src={user.avatar || defaultAvatar}
             />
-            <Typography className={classes.appBarUsername}>{name ? name : 'Username'}</Typography>
+            <Typography className={classes.appBarUsername}>{user.name || 'Username'}</Typography>
           </Button>
           <Menu
             id="user-menu"
@@ -124,7 +129,7 @@ function Navigation(props: Props) {
           >
             <MenuItem
               component={Link}
-              to={ROUTES.profile.pathname}
+              to={`${ROUTES.profile.pathname}/${user.id}`}
               onClick={() => setUserMenu(null)}
             >
               <ListItemIcon>
@@ -132,7 +137,7 @@ function Navigation(props: Props) {
               </ListItemIcon>
               <ListItemText>My Profile</ListItemText>
             </MenuItem>
-            <MenuItem className={classes.appBarLogoutButton} onClick={() => setUserMenu(null)}>
+            <MenuItem className={classes.appBarLogoutButton} onClick={() => logOut()}>
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
@@ -177,23 +182,23 @@ function Navigation(props: Props) {
               timeout="auto"
               unmountOnExit
             >
-              <Link to={ROUTES.profile.pathname}>
+              <Link to={`${ROUTES.profile.pathname}/${user.id}`}>
                 <Avatar
                   alt="Avatar"
-                  src={avatar ? avatar : defaultAvatar}
+                  src={user.avatar || defaultAvatar}
                   className={classes.drawerAvatar}
                 />
               </Link>
-              <Typography className={classes.drawerUsername}>{name ? name : 'Username'}</Typography>
+              <Typography className={classes.drawerUsername}>{user.name || 'Username'}</Typography>
               <Divider />
               <List>
-                <ListItem button component={Link} to={ROUTES.profile.pathname}>
+                <ListItem button component={Link} to={`${ROUTES.profile.pathname}/${user.id}`}>
                   <ListItemIcon>
                     <SettingsIcon />
                   </ListItemIcon>
                   <ListItemText>Profile Settings</ListItemText>
                 </ListItem>
-                <ListItem button className={classes.drawerLogoutButton}>
+                <ListItem button className={classes.drawerLogoutButton} onClick={() => logOut()}>
                   <ListItemIcon>
                     <ExitToAppIcon />
                   </ListItemIcon>
@@ -252,19 +257,12 @@ function Navigation(props: Props) {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  isAuth: state.user.isAuth,
-  name: state.user.name,
-  avatar: state.user.avatar,
+  user: state.user,
   sidebarVisible: state.app.sidebarVisible,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
-  // action: () => dispatch(action()),
+  handleLogOut: (history: History) => dispatch(StoreAction.user.handleLogOut(history)),
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(Navigation),
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navigation));

@@ -14,15 +14,17 @@ import { AppState, Action } from 'models/types/store';
 import { ProjectState } from 'models/types/project';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import Swal from 'sweetalert2';
-import { useSnackbar } from 'notistack';
 import { CheckCircle, Delete, Cancel, Settings, EmojiObjectsRounded } from '@material-ui/icons';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
-import { Link } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { ROUTES } from 'models/variables/routes';
 import clsx from 'clsx';
+import { StoreAction } from 'store/actions';
 
-interface IDispatchProps {}
+interface IDispatchProps {
+  handleLeaveProject: (id: string, name: string) => void;
+  handleDeleteProject: (id: string, name: string) => void;
+}
 
 interface IStoreProps {
   userId?: string;
@@ -190,7 +192,7 @@ const renderProjectState = (classes: ReturnType<typeof useStyles>, projectState:
   );
 };
 
-type Props = IStoreProps & IDispatchProps;
+type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
 function ProjectsTable(props: Props) {
   const classes = useStyles();
@@ -202,12 +204,11 @@ function ProjectsTable(props: Props) {
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(15);
   const [rowCount, setRowCount] = React.useState<number>(50);
   const [search, setSearch] = React.useState<string>('');
-  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     console.log(order, orderBy, page, rowsPerPage, search);
     setData(getRows(order, orderBy, page, rowsPerPage, search));
-  });
+  }, [order, orderBy, page, rowsPerPage, search]);
 
   let timer: any;
 
@@ -237,38 +238,12 @@ function ProjectsTable(props: Props) {
 
   const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
     event.stopPropagation();
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `Please confirm that you want to leave the project`,
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirm',
-    }).then(result => {
-      if (result.value) {
-        enqueueSnackbar(`Successfully left project ${row.projectName}`, {
-          key: 'leaveProject',
-          variant: 'success',
-        });
-      }
-    });
+    props.handleLeaveProject(row.id, row.projectName);
   };
 
   const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
     event.stopPropagation();
-    Swal.fire({
-      title: 'Are you sure?',
-      text: `Please confirm that you want to delete the project`,
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirm',
-    }).then(result => {
-      if (result.value) {
-        enqueueSnackbar(`Successfully removed project ${row.projectName}`, {
-          key: 'deleteProject',
-          variant: 'success',
-        });
-      }
-    });
+    props.handleDeleteProject(row.id, row.projectName);
   };
 
   return (
@@ -288,9 +263,7 @@ function ProjectsTable(props: Props) {
               return (
                 <TableRow
                   hover
-                  onClick={() => console.log(row.projectName)}
-                  role="checkbox"
-                  tabIndex={-1}
+                  onClick={() => props.history.push(`${ROUTES.dashboard.pathname}/${row.id}`)}
                   key={row.projectName}
                   className={classes.tableRow}
                 >
@@ -299,7 +272,7 @@ function ProjectsTable(props: Props) {
                   <TableCell>
                     <Chip
                       component={Link}
-                      to={ROUTES.profile.pathname}
+                      to={`${ROUTES.profile.pathname}/${row.projectLead.id}`}
                       avatar={
                         <Avatar
                           alt={row.projectLead.name}
@@ -366,4 +339,11 @@ const mapStateToProps = (state: AppState) => ({
   userId: state.user.id,
 });
 
-export default connect(mapStateToProps)(ProjectsTable);
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
+  handleLeaveProject: (id: string, name: string) =>
+    dispatch(StoreAction.project.handleLeaveProject(id, name)),
+  handleDeleteProject: (id: string, name: string) =>
+    dispatch(StoreAction.project.handleDeleteProject(id, name)),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectsTable));

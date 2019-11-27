@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import useStyles from '../loginPage.style';
 import { Form, Field } from 'react-final-form';
 import {
@@ -15,19 +15,18 @@ import { Email, Visibility, VisibilityOff } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
 import { ROUTES } from 'models/variables/routes';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { API } from 'store/api';
 import { ILoginForm } from 'models/types/forms';
 import { validate } from './loginForm.validation';
 import { withRouter } from 'react-router-dom';
-import { AppState, Action, UserState } from 'models/types/store';
+import { AppState, Action } from 'models/types/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StoreAction } from 'store/actions';
-import { useSnackbar } from 'notistack';
-// import { FORM_ERROR } from 'final-form';
+import { History } from 'history';
+import FormEror from 'components/formError/FormError';
 
 interface IDispatchProps {
-  signIn: (user: UserState) => void;
+  handleSignIn: (email: string, password: string, history: History) => any;
 }
 
 interface IStoreProps {
@@ -40,24 +39,10 @@ function LoginForm(props: Props) {
   const classes = useStyles();
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = async (values: ILoginForm) => {
     const { email, password } = values;
-    return API.user
-      .signIn(email, password)
-      .then(res => {
-        enqueueSnackbar('Logged in Successfully', { key: 'login', variant: 'success' });
-        const user: UserState = { token: res.headers.access_token, ...res.data };
-        Promise.resolve(props.signIn(user)).then(() => {
-          props.history.push(ROUTES.projects.pathname);
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        // return { email: 'Unknown username' };
-        // return { [FORM_ERROR]: 'Login Failed' };
-      });
+    return props.handleSignIn(email, password, props.history);
   };
 
   return (
@@ -67,7 +52,7 @@ function LoginForm(props: Props) {
       render={({ handleSubmit, submitting, submitError, dirtySinceLastSubmit }) => (
         <form className={classes.formInner} onSubmit={handleSubmit} noValidate>
           <Grid container alignItems="flex-start" spacing={1}>
-            {submitError && !dirtySinceLastSubmit && <div>{submitError}</div>}
+            {submitError && !dirtySinceLastSubmit && <FormEror error={submitError} />}
             <Grid item xs={12}>
               <Field name="email" type="email">
                 {({ input, meta }) => (
@@ -186,12 +171,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
-  signIn: (user: UserState) => dispatch(StoreAction.user.signIn(user)),
+  handleSignIn: (email: string, password: string, history: History) =>
+    dispatch(StoreAction.user.handleSignIn(email, password, history)),
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(LoginForm),
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginForm));

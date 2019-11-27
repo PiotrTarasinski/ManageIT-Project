@@ -16,6 +16,7 @@ import { ROUTES } from 'models/variables/routes';
 import { IRoute } from 'models/types/route';
 import { ThunkDispatch } from 'redux-thunk';
 import { StoreAction } from 'store/actions';
+import Notifier from 'components/notifier/Notifier';
 
 interface IDispatchProps {
   toggleSidebar: (sidebarVisible: boolean) => void;
@@ -67,12 +68,13 @@ class App extends React.Component<Props> {
         <CssBaseline />
         <MainContainer>
           <Navigation />
+          <Notifier />
           <Switch>
             {Object.keys(ROUTES).map(key => {
               return (
                 <Route
                   key={key}
-                  path={ROUTES[key].pathname}
+                  path={ROUTES[key].pathname + ROUTES[key].params.join()}
                   render={props => this.renderPage({ ...props }, ROUTES[key])}
                 />
               );
@@ -95,7 +97,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => (
     dispatch(StoreAction.application.toggleSidebar(sidebarVisible)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

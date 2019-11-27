@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
 import useStyles from './projectsPage.style';
 import ProjectsTable from './projectsTable/ProjectsTable';
