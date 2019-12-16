@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
 import useStyles from './registerPage.style';
 import { Paper, Container, Typography } from '@material-ui/core';

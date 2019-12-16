@@ -3,12 +3,17 @@ import { applicationActionTypes } from 'models/enums/storeActions';
 
 const initialState: ApplicationState = {
   sidebarVisible: false,
+  notifications: [],
 };
 
 export default (state = initialState, action: Action) => {
   switch (action.type) {
     case applicationActionTypes.TOGGLE_SIDEBAR:
       return { ...state, sidebarVisible: action.payload.sidebarVisible };
+    case applicationActionTypes.DISPLAY_SNACKBARS:
+      return { ...state, notifications: [...state.notifications, action.payload.snackbar] };
+    case applicationActionTypes.REMOVE_SNACKBARS:
+      return { ...state, notifications: [] };
 
     default:
       return { ...state };

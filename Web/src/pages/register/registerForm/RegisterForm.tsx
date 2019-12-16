@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import useStyles from '../registerPage.style';
 import { Form, Field } from 'react-final-form';
 import { Typography, InputAdornment, Grid, IconButton, Button, TextField } from '@material-ui/core';
@@ -6,15 +6,26 @@ import { Email, Visibility, VisibilityOff, Person } from '@material-ui/icons';
 import { grey } from '@material-ui/core/colors';
 import { ROUTES } from 'models/variables/routes';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { API } from 'store/api';
 import { IRegisterForm } from 'models/types/forms';
 import { validate } from './registerForm.validation';
-import Swal from 'sweetalert2';
 import { withRouter } from 'react-router-dom';
+import { ThunkDispatch } from 'redux-thunk';
+import { AppState, Action } from 'models/types/store';
+import { StoreAction } from 'store/actions';
+import { connect } from 'react-redux';
+import { History } from 'history';
 
-// import { FORM_ERROR } from 'final-form';
+interface IDispatchProps {
+  handleSignUp: (
+    name: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    history: History,
+  ) => any;
+}
 
-type Props = RouteComponentProps<any>;
+type Props = RouteComponentProps<any> & IDispatchProps;
 
 function RegisterForm(props: Props) {
   const classes = useStyles();
@@ -23,24 +34,7 @@ function RegisterForm(props: Props) {
 
   const onSubmit = async (values: IRegisterForm) => {
     const { name, email, password, confirmPassword } = values;
-    return API.user
-      .signUp(name, email, password, confirmPassword)
-      .then(() => {
-        Swal.fire({
-          title: 'Success',
-          text: 'Now you can login to your account',
-          type: 'success',
-          confirmButtonText: 'Login',
-          timer: 3000,
-        }).then(() => {
-          props.history.push(ROUTES.login.pathname);
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        // return { email: 'Unknown username' };
-        // return { [FORM_ERROR]: 'Login Failed' };
-      });
+    return props.handleSignUp(name, email, password, confirmPassword, props.history);
   };
 
   return (
@@ -50,7 +44,6 @@ function RegisterForm(props: Props) {
       render={({ handleSubmit, submitting, submitError, dirtySinceLastSubmit }) => (
         <form className={classes.formInner} onSubmit={handleSubmit} noValidate>
           <Grid container alignItems="flex-start" spacing={1}>
-            {/* {submitError && !dirtySinceLastSubmit && <div>{submitError}</div>} */}
             <Grid item xs={12}>
               <Field name="name" type="text">
                 {({ input, meta }) => (
@@ -210,4 +203,14 @@ function RegisterForm(props: Props) {
   );
 }
 
-export default withRouter(RegisterForm);
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
+  handleSignUp: (
+    name: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+    history: History,
+  ) => dispatch(StoreAction.user.handleSignUp(name, email, password, confirmPassword, history)),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(RegisterForm));

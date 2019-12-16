@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import useStyles from './pageContainer.style';
 import clsx from 'clsx';
 

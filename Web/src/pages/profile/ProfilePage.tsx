@@ -1,10 +1,12 @@
-import * as React from 'react';
+import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
 
-export class ProfilePage extends React.Component {
-  render() {
-    return <PageContainer>ProfilePage</PageContainer>;
-  }
+type Props = RouteComponentProps<any>;
+
+function ProfilePage(props: Props) {
+  console.log(props);
+  return <PageContainer>ProfilePage</PageContainer>;
 }
 
-export default ProfilePage;
+export default withRouter(ProfilePage);

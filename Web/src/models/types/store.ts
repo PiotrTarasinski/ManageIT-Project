@@ -1,3 +1,5 @@
+import { INotification } from './notification';
+
 export interface Action {
   type: number | string;
   payload?: string | object | Array<string | object> | boolean | any;
@@ -10,7 +12,6 @@ export interface AppState {
 
 export interface UserState {
   readonly isAuth: boolean;
-  readonly token?: string;
   readonly id?: string;
   readonly email?: string;
   readonly name?: string;
@@ -19,4 +20,5 @@ export interface UserState {
 
 export interface ApplicationState {
   readonly sidebarVisible: boolean;
+  readonly notifications: INotification[];
 }
