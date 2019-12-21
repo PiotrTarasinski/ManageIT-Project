@@ -18,7 +18,7 @@ class ProjectRoutes extends MainRoutes {
         method: 'POST',
         path: '/add_user_to_project',
         options: {
-          handler: (req, res) => new ProjectController(req, res).getUserProjects()
+          handler: (req, res) => new ProjectController(req, res).addUserToProject()
         }
       }
     ];

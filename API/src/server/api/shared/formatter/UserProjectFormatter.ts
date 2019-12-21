@@ -1,6 +1,5 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
 import { UserInstance } from '../../../database/models/User';
-import { UserResponseFormat } from './UserFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
 import ProjectsInFormatter, { UserProjectProjectInFormat } from './ProjectsInFormatter';
 import { ProjectAttributes } from '../../../database/models/Project';

@@ -1,3 +1,4 @@
+
 export const Validator = {
   errorMessage(key: string, message: string) {
     return { key, message };
@@ -82,7 +83,15 @@ export const Validator = {
       return this.errorMessage(key, `${key} must be the same as ${keyRef}.`);
     }
     return null;
+  },
+
+  uuid(toTest: string, key: string) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(toTest)) {
+      return this.errorMessage(key, `${key} must be UUID.`);
+    }
+    return null;
   }
+
 };
 
 export default Validator;

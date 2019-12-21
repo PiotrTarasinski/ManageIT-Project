@@ -63,8 +63,7 @@ export const UserFactory =
 
     User.associate = (models) => {
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
-      User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'user_id' });
-      // User.hasMany(models.UserProject, { as: 'user', foreignKey: 'userId' });
+      User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
     };
 
     return User;
