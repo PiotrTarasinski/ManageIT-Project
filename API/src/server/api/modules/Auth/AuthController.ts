@@ -10,6 +10,10 @@ class AuthController extends Controller {
   async login() {
     const payload = await this.req.payload;
 
+    if (!payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
     const validationResponse = validate.login(payload); // Custom validation
 
     if (validationResponse.errors) {
@@ -40,6 +44,10 @@ class AuthController extends Controller {
 
   async signUp() {
     const payload = await this.req.payload;
+
+    if (!payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
 
     const validationResponse = validate.signUp(payload);
 
