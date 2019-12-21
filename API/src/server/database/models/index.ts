@@ -9,7 +9,7 @@ import { UserProjectInstance, UserProjectAttributes, UserProjectFactory } from '
 export type DbModels = {
   User: Sequelize.Model<UserInstance, UserAttributes>;
   Project: Sequelize.Model<ProjectInstance, ProjectAttributes>;
-  // UserProject: Sequelize.Model<UserProjectInstance, UserProjectAttributes>;
+  UserProject: Sequelize.Model<UserProjectInstance, UserProjectAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -42,7 +42,7 @@ export const createModels = (): DbInterface => {
     Sequelize,
     User: UserFactory(sequelize, Sequelize),
     Project: ProjectFactory(sequelize, Sequelize),
-    // UserProject: UserProjectFactory(sequelize, Sequelize)
+    UserProject: UserProjectFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

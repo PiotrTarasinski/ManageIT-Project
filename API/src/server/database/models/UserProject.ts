@@ -1,15 +1,17 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { ProjectAttributes } from './Project';
 
 export interface UserProjectAttributes {
-  createdAt?: Date;
-  updatedAt?: Date;
   projectId: string;
   userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  isAdmin: boolean;
+  isSupervisor: boolean;
+  isModerator: boolean;
 }
 
-export interface UserProjectInstance extends Sequelize.Instance<UserProjectAttributes>, UserProjectAttributes {}
+export interface UserProjectInstance extends Sequelize.Instance<UserProjectAttributes>, UserProjectAttributes { }
 
 export const UserProjectFactory = (
   sequelize: Sequelize.Sequelize,
@@ -23,7 +25,7 @@ export const UserProjectFactory = (
         model: 'projects',
         key: 'id'
       },
-      field: 'project_id',
+      field: 'project_id'
     },
     userId: {
       type: DataTypes.UUID,
@@ -41,15 +43,22 @@ export const UserProjectFactory = (
     updatedAt: {
       type: DataTypes.DATE,
       field: 'updated_at'
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_admin'
+    },
+    isSupervisor: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_supervisor'
+    },
+    isModerator: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_moderator'
     }
   };
 
-  const UserProject = sequelize.define<UserProjectInstance, UserProjectAttributes>('user', attributes);
-
-  UserProject.associate = models => {
-    UserProject.hasMany(models.User, { foreignKey: 'user_id', constraints: false});
-    UserProject.hasMany(models.Project, { foreignKey: 'project_id', constraints: false});
-  };
+  const UserProject = sequelize.define<UserProjectInstance, UserProjectAttributes>('usersProjects', attributes);
 
   return UserProject;
 };

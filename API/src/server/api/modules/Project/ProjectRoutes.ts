@@ -9,7 +9,14 @@ class ProjectRoutes extends MainRoutes {
     return [
       {
         method: 'GET',
-        path: '/',
+        path: '/get_all_user_projects',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).getUserProjects()
+        }
+      },
+      {
+        method: 'POST',
+        path: '/add_user_to_project',
         options: {
           handler: (req, res) => new ProjectController(req, res).getUserProjects()
         }

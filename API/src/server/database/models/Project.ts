@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import db from '..';
 import { UserAttributes } from './User';
+import { UserProjectAttributes } from './UserProject';
 
 export interface ProjectAttributes {
   id?: string;
@@ -9,13 +10,14 @@ export interface ProjectAttributes {
   updatedAt?: Date;
   name: string;
   state: string;
-  leadId: string;
+  leadId?: string;
 
   /**
    * Associations
    */
   lead?: UserAttributes;
   users?: UserAttributes[];
+  usersProjects?: UserProjectAttributes;
 }
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {}
@@ -46,12 +48,7 @@ export const ProjectFactory = (
     },
     leadId: {
       type: DataTypes.UUID,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      allowNull: true,
       field: 'lead_id'
     }
   };
@@ -59,7 +56,7 @@ export const ProjectFactory = (
   const Project = sequelize.define<ProjectInstance, ProjectAttributes>('project', attributes);
 
   Project.associate = models => {
-    Project.belongsTo(models.User, { as: 'lead', foreignKey: 'leadId' });
+    Project.belongsTo(models.User, { as: 'lead', foreignKey: 'leadId', constraints: false });
     Project.belongsToMany(models.User, { through: 'usersProjects', as: 'users', foreignKey: 'project_id' });
   };
 

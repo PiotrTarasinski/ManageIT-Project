@@ -2,34 +2,24 @@ import ResponseFormatter from '../../shared/template/ResponseFormatter';
 import { UserInstance } from '../../../database/models/User';
 import { UserResponseFormat } from './UserFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
-import ProjectsInFormatter from './ProjectsInFormatter';
+import ProjectsInFormatter, { UserProjectProjectInFormat } from './ProjectsInFormatter';
 import { ProjectAttributes } from '../../../database/models/Project';
 
-export type UserProjectProjectInFormat = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  name: string;
-  state: string;
-  lead: UserResponseFormat;
+type UserProjectInstance = {
+  count: number;
+  rows: UserInstance[];
 };
 
 export type UserProjectResponseFormat = {
-  id: string;
-  email: string;
-  name: string;
-  avatar: string | null | undefined;
-  projectsIn: UserProjectProjectInFormat[];
+  count: number;
+  projects: UserProjectProjectInFormat[];
 };
 
-class UserProjectFormatter implements ResponseFormatter<UserInstance, UserProjectResponseFormat> {
-  async format(user: UserInstance) {
+class UserProjectFormatter implements ResponseFormatter<UserProjectInstance, UserProjectResponseFormat> {
+  async format(user: UserProjectInstance) {
     return await {
-      id: <string>user.id,
-      email: user.email,
-      name: user.name,
-      avatar: user.avatar,
-      projectsIn: await bulkFormat(new ProjectsInFormatter(), <ProjectAttributes[]>user.projectsIn)
+      count: user.count,
+      projects: await bulkFormat(new ProjectsInFormatter(), <ProjectAttributes[]>user.rows[0].projectsIn)
     };
   }
 }

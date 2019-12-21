@@ -12,7 +12,8 @@ interface ProjectResponse {
 
 class ProjectMethods {
   async getUserProjects(userId: string) {
-    return await db.User.findByPk(userId, {
+    const test = await db.User.findAndCountAll({
+      raw: true,
       include: [
         {
           model: db.Project,
@@ -24,7 +25,28 @@ class ProjectMethods {
             }
           ]
         }
-      ]
+      ],
+      where: {
+        id: userId
+      }
+    });
+    console.log(test);
+    return await db.User.findAndCountAll({
+      include: [
+        {
+          model: db.Project,
+          as: 'projectsIn',
+          include: [
+            {
+              model: db.User,
+              as: 'lead'
+            }
+          ]
+        }
+      ],
+      where: {
+        id: userId
+      }
     });
   }
 }

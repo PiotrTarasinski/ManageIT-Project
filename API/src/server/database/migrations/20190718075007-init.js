@@ -90,11 +90,25 @@ module.exports = {
       onUpdate: 'CASCADE',
       field: 'user_id'
     },
-    createdAt: { // No bo kurwa tabela łącząca i chuj
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_admin'
+    },
+    isSupervisor: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_supervisor'
+    },
+    isModerator: {
+      type: DataTypes.BOOLEAN,
+      field: 'is_moderator'
+    },
+    createdAt: {
       type: DataTypes.DATE,
+      field: 'created_at'
     },
     updatedAt: {
       type: DataTypes.DATE,
+      field: 'updated_at'
     },
   });
 },

@@ -10,14 +10,30 @@ export type UserProjectProjectInFormat = {
   name: string;
   state: string;
   lead: UserResponseFormat;
+  isAdmin?: boolean;
+  isSupervisor?: boolean;
+  isModerator?: boolean;
 };
 
 class ProjectsInFormatter implements ResponseFormatter<ProjectInstance, UserProjectProjectInFormat> {
   async format(project: ProjectInstance) {
+    if (project.usersProjects) {
+      return {
+        id: <string>project.id,
+        createdAt: <Date>project.createdAt,
+        updatedAt: <Date>project.updatedAt,
+        name: project.name,
+        state: project.state,
+        lead: await new UserFormatter().format(<UserInstance>project.lead),
+        isAdmin: project.usersProjects?.isAdmin,
+        isSupervisor: project.usersProjects.isSupervisor,
+        isModerator: project.usersProjects.isModerator
+      };
+    }
     return {
       id: <string>project.id,
-      createdAt:<Date>project.createdAt,
-      updatedAt:<Date>project.updatedAt,
+      createdAt: <Date>project.createdAt,
+      updatedAt: <Date>project.updatedAt,
       name: project.name,
       state: project.state,
       lead: await new UserFormatter().format(<UserInstance>project.lead)
