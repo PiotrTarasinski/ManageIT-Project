@@ -25,7 +25,7 @@ class ProjectsInFormatter implements ResponseFormatter<ProjectInstance, UserProj
         name: project.name,
         state: project.state,
         lead: await new UserFormatter().format(<UserInstance>project.lead),
-        isAdmin: project.usersProjects?.isAdmin,
+        isAdmin: project.usersProjects.isAdmin,
         isSupervisor: project.usersProjects.isSupervisor,
         isModerator: project.usersProjects.isModerator
       };
