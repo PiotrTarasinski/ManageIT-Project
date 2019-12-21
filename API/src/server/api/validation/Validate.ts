@@ -36,7 +36,6 @@ const Validate = {
       validators.isString(orderBy, 'orderBy'),
       validators.required(orderBy, 'orderBy'),
       validators.isNumber(page, 'page'),
-      validators.required(page, 'page'),
       validators.isNumber(rowsPerPage, 'rowsPerPage'),
       validators.required(rowsPerPage, 'rowsPerPage'),
       validators.isString(search, 'search')
