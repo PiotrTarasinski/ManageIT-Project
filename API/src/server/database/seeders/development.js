@@ -112,12 +112,113 @@ module.exports = [
     }
   },
   {
-    model: 'session_tokens',
+    model: 'projects',
     data: {
-      id: '02e73780-e7b7-470b-a539-4f785770ebf1',
-      created_at: new Date(2019, 10, 1),
-      updated_at: new Date(2019, 10, 1),
-      user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+      id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Projecto Numero Uno Ultimato',
+      state: 'Planning',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '08f416f5-bcd7-4e16-8168-09a1516ffa35',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Projecto Numero Dos',
+      state: 'Planning',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: 'c1b83d0e-180b-4e21-b545-d0f6ac6e2648',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Projecto Numero Tres',
+      state: 'Planning',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '03a39404-6015-4cf1-b5b8-c9cf138989ba',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Projecto Numero Quatro Ultimato',
+      state: 'Cancelled',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '04baeae5-37ad-4f89-aae4-1e7a48ba3504',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Projecto Testo Chango Ordero',
+      state: 'Planning',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: 'c9858f7d-3dfc-4ef1-a85f-42f18c1207fc',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Chango Ordero Dos',
+      state: 'Cancelled',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '1816c6a0-1f5a-46f8-adb6-076221975695',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Ordero Changero Ultimato',
+      state: 'Completed',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: 'a6a02365-7052-4236-8894-ac594da9c108',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: '123 Numero Testo',
+      state: 'Completed',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '38184a13-4273-499a-af73-f5a053cdb589',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: '456 Numero Testo',
+      state: 'In development',
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
+    }
+  },
+  {
+    model: 'projects',
+    data: {
+      id: '4783c6f9-1e63-4958-968e-7dd6a5b02915',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Leado Differento',
+      state: 'In development',
+      lead_id: 'e894430a-9aa9-4e80-8302-4ce16a2550ec'
     }
   }
 ];

@@ -14,18 +14,6 @@ class AuthMethods {
     });
   }
 
-  async findAndDeleteToken(id: string) {
-    db.SessionToken.findAll({
-      where: {
-        userId: id
-      }
-    }).then(tokens => {
-      tokens.forEach(token => {
-        token.destroy();
-      });
-    });
-  }
-
   async createUser(payload: { email: string; password: string; name: string }) {
     const user = await this.getUserByEmail(payload.email);
 

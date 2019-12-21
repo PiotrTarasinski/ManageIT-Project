@@ -15,6 +15,20 @@ interface Login {
 
 const Validate = {
 
+  addUserToProject(userId: string, projectId: string) {
+
+    const errorArray = [
+      validators.isString(userId, 'userId'),
+      validators.required(userId, 'userId'),
+      validators.uuid(userId, 'userId'),
+      validators.isString(projectId, 'projectId'),
+      validators.required(projectId, 'projectId'),
+      validators.uuid(projectId, 'projectId')
+    ];
+
+    return this.makeResponse(errorArray);
+  },
+
   passwordPolicy(password: string) {
 
     return [

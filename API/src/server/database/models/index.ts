@@ -1,13 +1,15 @@
 import Sequelize from 'sequelize';
 import { env } from '../../../config';
-import { SessionTokenAttributes, SessionTokenFactory, SessionTokenInstance } from './SessionToken';
 import { UserAttributes, UserFactory, UserInstance } from './User';
 import { logger } from '../../../utils';
+import { ProjectInstance, ProjectAttributes, ProjectFactory } from './Project';
+import { UserProjectInstance, UserProjectAttributes, UserProjectFactory } from './UserProject';
 
 
 export type DbModels = {
   User: Sequelize.Model<UserInstance, UserAttributes>;
-  SessionToken: Sequelize.Model<SessionTokenInstance, SessionTokenAttributes>;
+  Project: Sequelize.Model<ProjectInstance, ProjectAttributes>;
+  UserProject: Sequelize.Model<UserProjectInstance, UserProjectAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -39,7 +41,8 @@ export const createModels = (): DbInterface => {
     sequelize,
     Sequelize,
     User: UserFactory(sequelize, Sequelize),
-    SessionToken: SessionTokenFactory(sequelize, Sequelize)
+    Project: ProjectFactory(sequelize, Sequelize),
+    UserProject: UserProjectFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

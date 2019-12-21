@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SessionTokenAttributes, SessionTokenInstance } from './SessionToken';
+import { ProjectAttributes } from './Project';
+import { UserProjectInstance } from './UserProject';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -16,11 +17,11 @@ export interface UserAttributes {
   /**
    * Associations
    */
-  sessionTokens?: SessionTokenAttributes[];
+  leadIn?: ProjectAttributes[];
+  projectsIn?: ProjectAttributes[];
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
-  getSessionTokens: Sequelize.HasManyGetAssociationsMixin<SessionTokenInstance>;
 }
 
 export const UserFactory =
@@ -61,7 +62,8 @@ export const UserFactory =
       .define<UserInstance, UserAttributes>('user', attributes);
 
     User.associate = (models) => {
-      User.hasMany(models.SessionToken, { as: 'sessionTokens', foreignKey: 'userId' });
+      User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
+      User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
     };
 
     return User;

@@ -10,6 +10,10 @@ class AuthController extends Controller {
   async login() {
     const payload = await this.req.payload;
 
+    if (!payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
     const validationResponse = validate.login(payload); // Custom validation
 
     if (validationResponse.errors) {
@@ -19,20 +23,19 @@ class AuthController extends Controller {
     const user = await new AuthMethods().getUserByEmail(payload.email);
 
     if (!user) {
-      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credemtials.' })).code(401);
+      return this.res(CustomResponse(401, "User doesn't exist", { formError: 'Wrong user credentials.' })).code(401);
     }
 
     const hashedPassword: string = encryption.hash(payload.password);
 
     if (user.id && user.password === hashedPassword) {
-      await new AuthMethods().findAndDeleteToken(user.id);
 
       const token = await new Token().generateTokenForUserInstance(user);
 
       return this.res(CustomResponse(200, 'Successfully logged in.')).header('access_token', token);
     }
 
-    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credemtials.' })).code(401);
+    return this.res(CustomResponse(401, 'Wrong password', { formError: 'Wrong user credentials.' })).code(401);
   }
 
   async validateToken() {
@@ -41,6 +44,10 @@ class AuthController extends Controller {
 
   async signUp() {
     const payload = await this.req.payload;
+
+    if (!payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
 
     const validationResponse = validate.signUp(payload);
 

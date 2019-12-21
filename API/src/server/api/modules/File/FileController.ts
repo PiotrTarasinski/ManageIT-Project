@@ -7,6 +7,11 @@ class FileController extends Controller {
   protected avatarFolder = join(this.fileFolder, 'avatar');
 
   async setAvatar() {
+
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
     const { file } = this.req.payload;
     console.log(file);
     if (!file) {
