@@ -1,26 +1,42 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { UserInstance } from '../../../database/models/User';
+import { UserInstance, UserAttributes } from '../../../database/models/User';
 import UserFormatter, { UserResponseFormat } from './UserFormatter';
 import { ProjectInstance } from '../../../database/models/Project';
 
 export type UserProjectProjectInFormat = {
   id: string;
   createdAt: Date;
-  updatedAt: Date;
   name: string;
   state: string;
-  lead: UserResponseFormat;
+  lead?: UserLeadFormat;
+};
+
+type UserLeadFormat = {
+  id: string;
+  name: string;
+  avatar: string | null | undefined;
 };
 
 class ProjectsInFormatter implements ResponseFormatter<ProjectInstance, UserProjectProjectInFormat> {
   async format(project: ProjectInstance) {
+    if (project.lead) {
+      return {
+        id: <string>project.id,
+        createdAt: <Date>project.createdAt,
+        name: project.name,
+        state: project.state,
+        lead: {
+          id: <string>project.lead.id,
+          name: project.lead.name,
+          avatar: project.lead.avatar
+        }
+      };
+    }
     return {
       id: <string>project.id,
       createdAt: <Date>project.createdAt,
-      updatedAt: <Date>project.updatedAt,
       name: project.name,
-      state: project.state,
-      lead: await new UserFormatter().format(<UserInstance>project.lead)
+      state: project.state
     };
   }
 }

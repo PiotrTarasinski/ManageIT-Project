@@ -40,7 +40,7 @@ class ProjectMethods {
           [{ model: db.Project, as: 'projectsIn' }, { model: db.User, as: 'lead' }, 'name', order]
         ],
         limit: rowsPerPage,
-        offset: ((page - 1) * rowsPerPage)
+        offset: (page * rowsPerPage)
       });
     }
     return await db.User.findAndCountAll({
@@ -69,7 +69,7 @@ class ProjectMethods {
         [{ model: db.Project, as: 'projectsIn' }, orderBy, order]
       ],
       limit: rowsPerPage,
-      offset: ((page - 1) * rowsPerPage)
+      offset: (page * rowsPerPage)
     });
   }
 
