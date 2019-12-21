@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { join, extname } from 'path';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import Token from '../../../shared/token/Token';
+import { Op } from 'sequelize';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -11,8 +12,39 @@ interface ProjectResponse {
 }
 
 class ProjectMethods {
-  async getUserProjects(userId: string) {
+  async getUserProjects(userId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+    if (orderBy === 'lead') {
+      return await db.User.findAndCountAll({
+        subQuery: false,
+        include: [
+          {
+            model: db.Project,
+            as: 'projectsIn',
+            include: [
+              {
+                model: db.User,
+                as: 'lead'
+              }
+            ]
+          }
+        ],
+        where: {
+          id: userId,
+          [Op.or]: [
+            { '$projectsIn.name$': { [Op.like]: `%${search}%` } },
+            { '$projectsIn.lead.name$': { [Op.like]: `%${search}%` } },
+            { '$projectsIn.lead.email$': { [Op.like]: `%${search}%` } }
+          ]
+        },
+        order: [
+          [{ model: db.Project, as: 'projectsIn' }, { model: db.User, as: 'lead' }, 'name', order]
+        ],
+        limit: rowsPerPage,
+        offset: ((page - 1) * rowsPerPage)
+      });
+    }
     return await db.User.findAndCountAll({
+      subQuery: false,
       include: [
         {
           model: db.Project,
@@ -26,8 +58,18 @@ class ProjectMethods {
         }
       ],
       where: {
-        id: userId
-      }
+        id: userId,
+        [Op.or]: [
+          { '$projectsIn.name$': { [Op.like]: `%${search}%` } },
+          { '$projectsIn.lead.name$': { [Op.like]: `%${search}%` } },
+          { '$projectsIn.lead.email$': { [Op.like]: `%${search}%` } }
+        ]
+      },
+      order: [
+        [{ model: db.Project, as: 'projectsIn' }, orderBy, order]
+      ],
+      limit: rowsPerPage,
+      offset: ((page - 1) * rowsPerPage)
     });
   }
 

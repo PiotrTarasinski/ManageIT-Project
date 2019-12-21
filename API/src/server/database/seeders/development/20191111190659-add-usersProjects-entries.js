@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('usersProjects', [
       {
-        created_at: new Date(2019, 12, 1),
+        created_at: '2019-10-12',
         updated_at: new Date(2019, 12, 1),
         user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
         project_id: '38184a13-4273-499a-af73-f5a053cdb589',
@@ -14,7 +14,7 @@ module.exports = {
 
       },
       {
-        created_at: new Date(2019, 12, 1),
+        created_at: new Date(2017, 10, 1),
         updated_at: new Date(2019, 12, 1),
         user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
         project_id: '1816c6a0-1f5a-46f8-adb6-076221975695',
@@ -32,7 +32,7 @@ module.exports = {
         is_supervisor: false
       },
       {
-        created_at: new Date(2019, 12, 1),
+        created_at: new Date(2010, 9, 1),
         updated_at: new Date(2019, 12, 1),
         user_id: '114a2cdb-dd92-4093-af17-52e221683330',
         project_id: '38184a13-4273-499a-af73-f5a053cdb589',

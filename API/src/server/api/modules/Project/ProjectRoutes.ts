@@ -8,7 +8,7 @@ class ProjectRoutes extends MainRoutes {
   getRoutes(): RouteConfig[] {
     return [
       {
-        method: 'GET',
+        method: 'POST',
         path: '/get_all_user_projects',
         options: {
           handler: (req, res) => new ProjectController(req, res).getUserProjects()

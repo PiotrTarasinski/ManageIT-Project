@@ -29,6 +29,22 @@ const Validate = {
     return this.makeResponse(errorArray);
   },
 
+  getUserProjects(order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+    const errorsArray = [
+      validators.isString(order, 'order'),
+      validators.required(order, 'orderBy'),
+      validators.isString(orderBy, 'orderBy'),
+      validators.required(orderBy, 'orderBy'),
+      validators.isNumber(page, 'page'),
+      validators.required(page, 'page'),
+      validators.isNumber(rowsPerPage, 'rowsPerPage'),
+      validators.required(rowsPerPage, 'rowsPerPage'),
+      validators.isString(search, 'search')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
   passwordPolicy(password: string) {
 
     return [

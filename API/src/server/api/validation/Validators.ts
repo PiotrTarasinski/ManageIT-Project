@@ -18,7 +18,7 @@ export const Validator = {
     return null;
   },
 
-  isNumber(toTest: string, key: string): { key: string; message: string } | null {
+  isNumber(toTest: number, key: string): { key: string; message: string } | null {
     if (typeof toTest !== 'number') {
       return this.errorMessage(key, `${key} must be a number.`);
     }
@@ -43,7 +43,7 @@ export const Validator = {
     return null;
   },
 
-  required(toTest: string, key: string): { key: string; message: string } | null {
+  required(toTest: any, key: string): { key: string; message: string } | null {
     if (!toTest) {
       return this.errorMessage(key, `${key} is required.`);
     }
