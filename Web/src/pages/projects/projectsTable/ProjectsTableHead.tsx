@@ -12,14 +12,13 @@ interface ProjectsTableHeadProps {
   onRequestSort: (property: string) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
 }
 
 const headCells: headCell[] = [
-  { id: 'projectName', label: 'Project Name', icon: 'bookmark' },
-  { id: 'creationDate', label: 'Creation Date', icon: 'calendar_today' },
-  { id: 'projectLead', label: 'Project Lead', icon: 'person' },
-  { id: 'projectState', label: 'Project State', icon: 'timeline' },
+  { id: 'name', label: 'Project Name', icon: 'bookmark' },
+  { id: 'createdAt', label: 'Creation Date', icon: 'calendar_today' },
+  { id: 'lead', label: 'Project Lead', icon: 'person' },
+  { id: 'state', label: 'Project State', icon: 'timeline' },
   { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
 ];
 

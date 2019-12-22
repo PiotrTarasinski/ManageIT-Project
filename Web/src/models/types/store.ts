@@ -1,4 +1,5 @@
 import { INotification } from './notification';
+import { ProjectsListData } from './project';
 
 export interface Action {
   type: number | string;
@@ -8,6 +9,7 @@ export interface Action {
 export interface AppState {
   readonly app: ApplicationState;
   readonly user: UserState;
+  readonly project: ProjectState;
 }
 
 export interface UserState {
@@ -21,4 +23,9 @@ export interface UserState {
 export interface ApplicationState {
   readonly sidebarVisible: boolean;
   readonly notifications: INotification[];
+}
+
+export interface ProjectState {
+  readonly projectList: ProjectsListData[];
+  readonly projectListCount: number;
 }

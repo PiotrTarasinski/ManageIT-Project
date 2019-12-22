@@ -7,7 +7,9 @@ export const httpRequest = axios.create({
 
 httpRequest.interceptors.response.use(res => {
   const token = res.headers.access_token;
-  window.localStorage.setItem('acces_token', token);
-  httpRequest.defaults.headers['Authorization'] = token;
+  if (token) {
+    window.localStorage.setItem('acces_token', token);
+    httpRequest.defaults.headers['Authorization'] = token;
+  }
   return res;
 });

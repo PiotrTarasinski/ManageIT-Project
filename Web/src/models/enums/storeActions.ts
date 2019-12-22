@@ -13,4 +13,8 @@ enum applicationActionTypes {
   REMOVE_SNACKBARS = 'REMOVE_SNACKBARS',
 }
 
-export { defaultActionTypes, userActionTypes, applicationActionTypes };
+enum projectActionTypes {
+  SET_PROJECT_LIST = 'SET_PROJECT_LIST',
+}
+
+export { defaultActionTypes, userActionTypes, applicationActionTypes, projectActionTypes };
