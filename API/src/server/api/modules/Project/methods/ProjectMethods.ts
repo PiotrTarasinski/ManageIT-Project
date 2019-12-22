@@ -31,9 +31,9 @@ class ProjectMethods {
         where: {
           id: userId,
           [Op.or]: [
-            { '$projectsIn.name$': { [Op.like]: `%${search}%` } },
-            { '$projectsIn.lead.name$': { [Op.like]: `%${search}%` } },
-            { '$projectsIn.lead.email$': { [Op.like]: `%${search}%` } }
+            { '$projectsIn.name$': { [Op.iLike]: `%${search}%` } },
+            { '$projectsIn.lead.name$': { [Op.iLike]: `%${search}%` } },
+            { '$projectsIn.lead.email$': { [Op.iLike]: `%${search}%` } }
           ]
         },
         order: [
@@ -60,9 +60,9 @@ class ProjectMethods {
       where: {
         id: userId,
         [Op.or]: [
-          { '$projectsIn.name$': { [Op.like]: `%${search}%` } },
-          { '$projectsIn.lead.name$': { [Op.like]: `%${search}%` } },
-          { '$projectsIn.lead.email$': { [Op.like]: `%${search}%` } }
+          { '$projectsIn.name$': { [Op.iLike]: `%${search}%` } },
+          { '$projectsIn.lead.name$': { [Op.iLike]: `%${search}%` } },
+          { '$projectsIn.lead.email$': { [Op.iLike]: `%${search}%` } }
         ]
       },
       order: [
