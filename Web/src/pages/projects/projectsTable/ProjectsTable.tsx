@@ -120,60 +120,61 @@ function ProjectsTable(props: Props) {
             onRequestSort={handleRequestSort}
           />
           <TableBody>
-            {props.projectList.map(row => {
-              return (
-                <TableRow
-                  hover
-                  onClick={() => props.history.push(`${ROUTES.dashboard.pathname}/${row.id}`)}
-                  key={row.name}
-                  className={classes.tableRow}
-                >
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{new Date(row.createdAt).toDateString()}</TableCell>
-                  <TableCell>
-                    <Chip
-                      component={Link}
-                      to={`${ROUTES.profile.pathname}/${row.lead.id}`}
-                      avatar={
-                        <Avatar
-                          alt={row.lead.name}
-                          src={row.lead.avatar ? row.lead.avatar : defaultAvatar}
-                        />
-                      }
-                      label={row.lead.name}
-                      onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
-                    />
-                  </TableCell>
-                  <TableCell>{renderProjectState(classes, row.state)}</TableCell>
-                  <TableCell align="center">
-                    {row.lead.id === props.userId && (
-                      <Tooltip title="Delete project">
-                        <IconButton
-                          aria-label="delete project"
-                          onClick={(event: React.MouseEvent<HTMLElement>) =>
-                            handleDeleteProject(event, row)
-                          }
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    {row.lead.id !== props.userId && (
-                      <Tooltip title="Leave project">
-                        <IconButton
-                          aria-label="leave project"
-                          onClick={(event: React.MouseEvent<HTMLElement>) =>
-                            handleLeaveProject(event, row)
-                          }
-                        >
-                          <Cancel />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {props.projectList &&
+              props.projectList.map(row => {
+                return (
+                  <TableRow
+                    hover
+                    onClick={() => props.history.push(`${ROUTES.dashboard.pathname}/${row.id}`)}
+                    key={row.name}
+                    className={classes.tableRow}
+                  >
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{new Date(row.createdAt).toDateString()}</TableCell>
+                    <TableCell>
+                      <Chip
+                        component={Link}
+                        to={`${ROUTES.profile.pathname}/${row.lead.id}`}
+                        avatar={
+                          <Avatar
+                            alt={row.lead.name}
+                            src={row.lead.avatar ? row.lead.avatar : defaultAvatar}
+                          />
+                        }
+                        label={row.lead.name}
+                        onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
+                      />
+                    </TableCell>
+                    <TableCell>{renderProjectState(classes, row.state)}</TableCell>
+                    <TableCell align="center">
+                      {row.lead.id === props.userId && (
+                        <Tooltip title="Delete project">
+                          <IconButton
+                            aria-label="delete project"
+                            onClick={(event: React.MouseEvent<HTMLElement>) =>
+                              handleDeleteProject(event, row)
+                            }
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {row.lead.id !== props.userId && (
+                        <Tooltip title="Leave project">
+                          <IconButton
+                            aria-label="leave project"
+                            onClick={(event: React.MouseEvent<HTMLElement>) =>
+                              handleLeaveProject(event, row)
+                            }
+                          >
+                            <Cancel />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </div>
