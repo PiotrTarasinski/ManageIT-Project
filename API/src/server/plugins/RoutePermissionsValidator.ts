@@ -4,6 +4,14 @@ import * as _ from 'lodash';
 import ApiError from '../api/error/ApiError';
 import { RoutePermissions } from '../../typings/AppConfig/RoutePermissions';
 import { AccountRole } from '../database/models/User';
+import db from '../database';
+import Boom = require('boom');
+
+type Roles = {
+  isAdmin: boolean;
+  isSupervisor: boolean;
+  isModerator: boolean;
+};
 
 class RoutePermissionsValidator implements IPlugin {
 
@@ -17,9 +25,34 @@ class RoutePermissionsValidator implements IPlugin {
     return Promise.resolve();
   }
 
+  private requiredPermissions = {
+    view: {
+      isAdmin: true,
+      isSupervisor: true,
+      isModerator: true
+    }
+  };
+
   private async validatePermissions(request: Request, reply: ResponseToolkit, err?: Error) {
-    const { auth, route }: any = request;
+    const { auth, route, payload }: any = request;
     const { plugins } = route.settings;
+
+    if (plugins && plugins.routePermissions && auth.credentials) {
+      if (payload && payload.projectId && plugins.routePermissions.projects) {
+        const user = await db.UserProject.findOne({
+          where: {
+            userId: auth.credentials.user.id,
+            projectId: payload.projectId
+          }
+        });
+        if (user) {
+          const { isAdmin, isSupervisor, isModerator } = user;
+          this.evaluateProjectPermissions(plugins.routePermissions.projects, { isAdmin, isSupervisor, isModerator });
+          return reply.continue;
+        }
+        return Boom.unauthorized('Unathorized.');
+      }
+    }
 
     if (plugins && plugins.routePermissions && auth && auth.credentials) {
       const { role } = auth.credentials.user;
@@ -42,6 +75,13 @@ class RoutePermissionsValidator implements IPlugin {
     }
 
     return reply.continue;
+  }
+
+  private async evaluateProjectPermissions(routePermissions: any, roles: Roles) {
+    console.log(routePermissions);
+    Object.keys(routePermissions).map(async (perm) => {
+      console.log(perm);
+    });
   }
 
   private async evaluateRolePermissionValues(routePermissions: any, role: AccountRole, request: Request) {

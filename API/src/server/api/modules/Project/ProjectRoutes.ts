@@ -33,6 +33,11 @@ class ProjectRoutes extends MainRoutes {
         path: '/get_all_project_users',
         options: {
           handler: (req, res) => new ProjectController(req, res).getProjectUsers()
+          // plugins: {
+          //   routePermissions: {
+          //     projects: { view: true }
+          //   }
+          // }
         }
       }
     ];
