@@ -100,11 +100,28 @@ class ProjectMethods {
         projectId
       }
     })
-    .then(() => {
+    .then((count) => {
+      if (!count) {
+        return CustomResponse(400, 'User not in project.', { formError: 'Supplied user is not a part of this project.' });
+      }
       return CustomResponse(200, 'User deleted successfully');
     })
     .catch(() => {
       return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
+    });
+  }
+
+  async getProjectUsers(projectId: string) {
+    return await db.Project.findAndCountAll({
+      where: {
+        id: projectId
+      },
+      include: [
+        {
+          model: db.User,
+          as: 'users'
+        }
+      ]
     });
   }
 }

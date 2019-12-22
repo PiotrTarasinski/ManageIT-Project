@@ -29,6 +29,16 @@ const Validate = {
     return this.makeResponse(errorArray);
   },
 
+  getProjectUsers(projectId: string) {
+    const errorArray = [
+      validators.isString(projectId, 'projectId'),
+      validators.required(projectId, 'projectId'),
+      validators.uuid(projectId, 'projectId')
+    ];
+
+    return this.makeResponse(errorArray);
+  },
+
   getUserProjects(order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
     const errorsArray = [
       validators.isString(order, 'order'),
