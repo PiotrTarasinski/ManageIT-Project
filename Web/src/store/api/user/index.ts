@@ -3,8 +3,8 @@ import { httpRequest } from '../httpRequest';
 const user = {
   signIn: (email: string, password: string) => {
     return httpRequest.post('auth/login', {
-      email: email,
-      password: password,
+      email,
+      password,
     });
   },
   signUp: (name: string, email: string, password: string, confirmPassword: string) => {

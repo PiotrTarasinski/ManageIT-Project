@@ -9,8 +9,8 @@ module.exports = [
       updated_at: new Date(2019, 10, 1),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Szymko Tokarzeszczak',
-      email: 'szymko@szymko.com'
-    }
+      email: 'szymko@szymko.com',
+    },
   },
   {
     model: 'users',
@@ -20,8 +20,8 @@ module.exports = [
       updated_at: new Date(2019, 9, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Szymko Tokarzeszczak',
-      email: 'szymek00@szymko.com'
-    }
+      email: 'szymek00@szymko.com',
+    },
   },
   {
     model: 'users',
@@ -31,8 +31,8 @@ module.exports = [
       updated_at: new Date(2019, 9, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Piotur Taras',
-      email: 'pioter@werandowski.pl'
-    }
+      email: 'pioter@werandowski.pl',
+    },
   },
   {
     model: 'users',
@@ -42,8 +42,8 @@ module.exports = [
       updated_at: new Date(2019, 11, 1),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Szubin Tokarzewicz',
-      email: 'sztokrzewicz@gmail.com'
-    }
+      email: 'sztokrzewicz@gmail.com',
+    },
   },
   {
     model: 'users',
@@ -53,8 +53,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Weronka Kowalik',
-      email: 'mithrills@gmail.com'
-    }
+      email: 'mithrills@gmail.com',
+    },
   },
   {
     model: 'users',
@@ -64,8 +64,8 @@ module.exports = [
       updated_at: new Date(2019, 8, 13),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'XD',
-      email: 'duj@wchupie.com'
-    }
+      email: 'duj@wchupie.com',
+    },
   },
   {
     model: 'users',
@@ -75,8 +75,8 @@ module.exports = [
       updated_at: new Date(2019, 2, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Orzeł-1',
-      email: 'zaloga.dzielnego@orzela.com'
-    }
+      email: 'zaloga.dzielnego@orzela.com',
+    },
   },
   {
     model: 'users',
@@ -86,8 +86,8 @@ module.exports = [
       updated_at: new Date(2019, 1, 1),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Chuj Kurwa',
-      email: 'niechce@juz.tworzyc'
-    }
+      email: 'niechce@juz.tworzyc',
+    },
   },
   {
     model: 'users',
@@ -97,8 +97,8 @@ module.exports = [
       updated_at: new Date(2019, 1, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Tych Seedow',
-      email: 'po.co@nam.ich'
-    }
+      email: 'po.co@nam.ich',
+    },
   },
   {
     model: 'users',
@@ -108,8 +108,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 12),
       password: '356d0bb1819708b612f2e3d3b5936200fa3aa8f5bffab331412b0e05242c640d', // That's Test1@ for each
       name: 'Tyle Wogole',
-      email: 'pioter@pomusz'
-    }
+      email: 'pioter@pomusz',
+    },
   },
   {
     model: 'projects',
@@ -119,8 +119,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Testo Projecto Numero Uno Ultimato',
       state: 'Planning',
-      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
-    }
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+    },
   },
   {
     model: 'projects',
@@ -130,8 +130,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Testo Projecto Numero Dos',
       state: 'Planning',
-      lead_id: 'aa26cf54-3a77-44a6-82c5-8174248f450d'
-    }
+      lead_id: 'aa26cf54-3a77-44a6-82c5-8174248f450d',
+    },
   },
   {
     model: 'projects',
@@ -141,8 +141,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Testo Projecto Numero Tres',
       state: 'Planning',
-      lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e'
-    }
+      lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e',
+    },
   },
   {
     model: 'projects',
@@ -152,8 +152,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Testo Projecto Numero Quatro Ultimato',
       state: 'Cancelled',
-      lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e'
-    }
+      lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e',
+    },
   },
   {
     model: 'projects',
@@ -163,8 +163,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Projecto Testo Chango Ordero',
       state: 'Planning',
-      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
-    }
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+    },
   },
   {
     model: 'projects',
@@ -174,8 +174,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Chango Ordero Dos',
       state: 'Cancelled',
-      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
-    }
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+    },
   },
   {
     model: 'projects',
@@ -185,8 +185,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: 'Ordero Changero Ultimato',
       state: 'Completed',
-      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab'
-    }
+      lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+    },
   },
   {
     model: 'projects',
@@ -196,8 +196,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       name: '123 Numero Testo',
       state: 'Completed',
-      lead_id: 'aa26cf54-3a77-44a6-82c5-8174248f450d'
-    }
+      lead_id: 'aa26cf54-3a77-44a6-82c5-8174248f450d',
+    },
   },
   {
     model: 'projects',
@@ -206,9 +206,9 @@ module.exports = [
       created_at: new Date(2012, 12, 14),
       updated_at: new Date(2019, 12, 1),
       name: '456 Numero Testo',
-      state: 'In development',
-      lead_id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f'
-    }
+      state: 'In Development',
+      lead_id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f',
+    },
   },
   {
     model: 'projects',
@@ -217,8 +217,8 @@ module.exports = [
       created_at: new Date(2019, 12, 1),
       updated_at: new Date(2019, 12, 1),
       name: 'Leado Differento',
-      state: 'In development',
-      lead_id: 'e894430a-9aa9-4e80-8302-4ce16a2550ec'
-    }
-  }
+      state: 'In Development',
+      lead_id: 'e894430a-9aa9-4e80-8302-4ce16a2550ec',
+    },
+  },
 ];
