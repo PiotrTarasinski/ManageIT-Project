@@ -74,12 +74,6 @@ class ProjectMethods {
   }
 
   async addUserToProject(userId: string, projectId: string) {
-    const userConstraint = await db.UserProject.findOne({
-      where: {
-        projectId,
-        userId
-      }
-    });
 
     return await db.UserProject.create({
       projectId,
@@ -97,6 +91,21 @@ class ProjectMethods {
         }
         return CustomResponse(500, 'Couldn\'t create constraint', { formError: 'Internal server error.' });
       });
+  }
+
+  async deleteUserFromProject(userId: string, projectId: string) {
+    return await db.UserProject.destroy({
+      where: {
+        userId,
+        projectId
+      }
+    })
+    .then(() => {
+      return CustomResponse(200, 'User deleted successfully');
+    })
+    .catch(() => {
+      return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
+    });
   }
 }
 

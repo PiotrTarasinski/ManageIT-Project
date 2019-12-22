@@ -16,9 +16,16 @@ class ProjectRoutes extends MainRoutes {
       },
       {
         method: 'POST',
-        path: '/add_user_to_project',
+        path: '/user',
         options: {
           handler: (req, res) => new ProjectController(req, res).addUserToProject()
+        }
+      },
+      {
+        method: 'DELETE',
+        path: '/user',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).deleteUserFromProject()
         }
       }
     ];

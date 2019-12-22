@@ -8,12 +8,12 @@ import Validate from '../../validation/Validate';
 class ProjectController extends Controller {
   async getUserProjects() {
 
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' }));
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
     }
 
     const { order, orderBy, page, rowsPerPage, search } = this.req.payload;
@@ -41,6 +41,10 @@ class ProjectController extends Controller {
 
   async addUserToProject() {
 
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+    }
+
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
     }
@@ -53,13 +57,30 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' }));
-    }
-
     const response = await new ProjectMethods().addUserToProject(userId, projectId);
 
     return this.res(response).code(response.statusCode);
+  }
+
+  async deleteUserFromProject() {
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+    }
+
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
+    const { projectId, userId } = this.req.payload;
+
+    const validationResponse = Validate.addUserToProject(userId, projectId);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    return await new ProjectMethods().deleteUserFromProject(userId, projectId);
   }
 }
 
