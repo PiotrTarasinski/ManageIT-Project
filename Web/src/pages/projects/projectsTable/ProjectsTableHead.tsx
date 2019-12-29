@@ -5,12 +5,13 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { Icon } from '@material-ui/core';
 import useStyles from './projectsTable.style';
-import { Order, headCell } from 'models/types/table';
+import { headCell } from 'models/types/table';
+import { orderTypes } from 'models/enums/orderTypes';
 
 interface ProjectsTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (property: string) => void;
-  order: Order;
+  order: orderTypes;
   orderBy: string;
 }
 

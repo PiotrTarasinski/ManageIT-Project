@@ -1,5 +1,3 @@
-export type Order = 'asc' | 'desc';
-
 export interface headCell {
   id: string;
   label: string;

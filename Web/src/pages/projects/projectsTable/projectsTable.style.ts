@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme, fade } from '@material-ui/core/styles';
-import { grey, green, indigo, blue, orange } from '@material-ui/core/colors';
+import { grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,24 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     headCellIcon: {
       marginRight: theme.spacing(1),
-    },
-    projectStateChip: {
-      color: grey['50'],
-      '& svg': {
-        fill: grey['50'],
-      },
-    },
-    completedStateChip: {
-      backgroundColor: green['700'],
-    },
-    inDevelopmentStateChip: {
-      backgroundColor: blue['500'],
-    },
-    planningStateChip: {
-      backgroundColor: indigo['700'],
-    },
-    cancelledStateChip: {
-      backgroundColor: orange['900'],
     },
   }),
 );
