@@ -221,4 +221,22 @@ module.exports = [
       lead_id: 'e894430a-9aa9-4e80-8302-4ce16a2550ec',
     },
   },
+  {
+    model: 'sprints',
+    data: {
+      id: '4783c6f9-1e63-4958-968e-7dd6a5b02915',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Sprinto',
+    }
+  },
+  {
+    model: 'sprints',
+    data: {
+      id: '38184a13-4273-499a-af73-f5a053cdb589',
+      created_at: new Date(2019, 12, 1),
+      updated_at: new Date(2019, 12, 1),
+      name: 'Testo Sprinto',
+    }
+  }
 ];
