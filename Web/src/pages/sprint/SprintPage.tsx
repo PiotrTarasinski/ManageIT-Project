@@ -3,13 +3,25 @@ import PageContainer from 'components/containers/pageContainer/PageContainer';
 import useStyles from './sprintPage.style';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Typography } from '@material-ui/core';
-import { CheckCircle, QueryBuilder, ThumbsUpDown, Build } from '@material-ui/icons';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import {
+  CheckCircle,
+  QueryBuilder,
+  ThumbsUpDown,
+  Build,
+  MoreVert,
+  Edit,
+  Close,
+} from '@material-ui/icons';
 import { taskState, taskType, taskPriority } from 'models/enums/task';
 import SprintTask from 'components/sprintTask/SprintTask';
 import { daysBetween } from 'utils/daysBetween';
 import { ISprint } from 'models/types/sprint';
 
 function SprintPage() {
+  const [sprintOptionsDialOpen, setSprintOptionsDialOpen] = React.useState(false);
+
   const classes = useStyles();
 
   const onDragEnd = (result: any) => {
@@ -20,8 +32,9 @@ function SprintPage() {
   const sprint: ISprint = {
     id: '1',
     name: 'Sprint Name',
-    startDate: new Date(),
-    endDate: new Date('12-27-2019'),
+    startDate: new Date('12-14-2019'),
+    endDate: new Date('12-29-2019'),
+    description: 'This sprint should be done right F@#CK!NG NOW!',
     taskList: {
       toDoList: [
         {
@@ -251,6 +264,26 @@ function SprintPage() {
         <Typography className={classes.sprintName} component="h1">
           {sprint.name}
         </Typography>
+        <SpeedDial
+          ariaLabel="Sprint Options"
+          className={classes.sprintOptions}
+          icon={<MoreVert />}
+          onClose={() => setSprintOptionsDialOpen(false)}
+          onOpen={() => setSprintOptionsDialOpen(true)}
+          open={sprintOptionsDialOpen}
+          direction="down"
+        >
+          <SpeedDialAction
+            icon={<Edit />}
+            tooltipTitle={'Edit Sprint'}
+            // onClick={handleClose}
+          />
+          <SpeedDialAction
+            icon={<Close />}
+            tooltipTitle={'Close Sprint'}
+            // onClick={handleClose}
+          />
+        </SpeedDial>
         <div className={classes.sprintDateRangeContainer}>
           <QueryBuilder className={classes.sprintDateRangeIcon} />
           <Typography className={classes.sprintDateRange}>
@@ -258,9 +291,15 @@ function SprintPage() {
             - ${sprint.endDate.toLocaleDateString('en', { month: 'short', day: 'numeric' })}`}
           </Typography>
           <Typography className={classes.sprintTimeLeft}>
-            {`${daysBetween(sprint.startDate, sprint.endDate)} days left`}
+            {`${daysBetween(new Date(), sprint.endDate)} days ${
+              new Date() < sprint.endDate ? 'left' : 'delay'
+            }`}
           </Typography>
         </div>
+        <Typography className={classes.sprintDescriptionHeader}>Description:</Typography>
+        <Typography className={classes.sprintDescription}>
+          {sprint.description || 'No description was provided for this sprint'}
+        </Typography>
       </div>
       <div className={classes.taskListContainer}>
         <DragDropContext onDragEnd={onDragEnd}>

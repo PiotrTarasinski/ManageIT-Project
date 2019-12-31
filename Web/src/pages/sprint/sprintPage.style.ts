@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3, 0),
     },
     pageHeader: {
+      position: 'relative',
       width: '100%',
       padding: theme.spacing(0, 3),
       borderBottomWidth: 2,
@@ -20,6 +21,15 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 26,
       fontWeight: 'bold',
       color: grey[600],
+    },
+    sprintOptions: {
+      position: 'absolute',
+      top: 0,
+      right: theme.spacing(3),
+
+      '& > .MuiFab-root': {
+        backgroundColor: deepPurple[500],
+      },
     },
     sprintDateRangeContainer: {
       height: 32,
@@ -50,6 +60,16 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'rgba(0, 0, 0, 0.87)',
       backgroundColor: grey[400],
       padding: theme.spacing(0, 1),
+    },
+    sprintDescriptionHeader: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: grey[600],
+    },
+    sprintDescription: {
+      color: grey[600],
+      fontSize: 16,
+      marginBottom: theme.spacing(1),
     },
     taskListContainer: {
       display: 'flex',

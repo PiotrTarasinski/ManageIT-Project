@@ -5,6 +5,7 @@ export interface ISprint {
   name: string;
   startDate: Date;
   endDate: Date;
+  description: string;
   taskList: {
     toDoList: ITask[];
     inProgressList: ITask[];
