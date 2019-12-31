@@ -11,5 +11,10 @@ enum taskType {
   BUG = 'Bug',
   IDEA = 'Idea',
 }
+enum taskPriority {
+  HIGH = 'High',
+  NORMAL = 'Normal',
+  LOW = 'Low',
+}
 
-export { taskState, taskType };
+export { taskState, taskType, taskPriority };

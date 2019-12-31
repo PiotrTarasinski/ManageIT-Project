@@ -4,7 +4,7 @@ import useStyles from './sprintPage.style';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Typography } from '@material-ui/core';
 import { CheckCircle, QueryBuilder, ThumbsUpDown, Build } from '@material-ui/icons';
-import { taskState, taskType } from 'models/enums/task';
+import { taskState, taskType, taskPriority } from 'models/enums/task';
 import SprintTask from 'components/sprintTask/SprintTask';
 import { daysBetween } from 'utils/daysBetween';
 import { ISprint } from 'models/types/sprint';
@@ -22,193 +22,227 @@ function SprintPage() {
     name: 'Sprint Name',
     startDate: new Date(),
     endDate: new Date('12-27-2019'),
-    toDoList: [
-      {
-        id: '1',
-        title: 'Create Login Form HTML template',
-        state: taskState.TO_DO,
-        type: taskType.TASK,
-        index: 0,
-        points: 3,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '2',
-        title: 'Add token validation',
-        state: taskState.TO_DO,
-        type: taskType.IMPROVMENT,
-        index: 1,
-        points: 8,
-        labels: [
-          { id: '1', name: 'Back End', color: 'aqua' },
-          { id: '2', name: 'Authentication', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '3',
-        title: 'Add remember me button to login form',
-        state: taskState.TO_DO,
-        type: taskType.IDEA,
-        index: 2,
-        points: 1,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '4',
-        title: 'Register Form invalid email pass validation',
-        state: taskState.TO_DO,
-        type: taskType.BUG,
-        index: 3,
-        points: 5,
-        labels: [
-          { id: '1', name: 'Back End', color: 'aqua' },
-          { id: '2', name: 'Authentication', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-    ],
-    inProgressList: [
-      {
-        id: '5',
-        title: 'DatePicker wrong date format',
-        state: taskState.IN_PROGRESS,
-        type: taskType.BUG,
-        index: 0,
-        points: 3,
-        labels: [{ id: '1', name: 'Front End', color: 'aqua' }],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '6',
-        title: 'Add interceptor to detect token',
-        state: taskState.IN_PROGRESS,
-        type: taskType.IMPROVMENT,
-        index: 1,
-        points: 5,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Authentication', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '7',
-        title: 'Regiter Form validation',
-        state: taskState.IN_PROGRESS,
-        type: taskType.TASK,
-        index: 2,
-        points: 5,
-        labels: [
-          { id: '1', name: 'Back End', color: 'aqua' },
-          { id: '2', name: 'Authentication', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '8',
-        title: 'Config docker compose to start test environment',
-        state: taskState.IN_PROGRESS,
-        type: taskType.TASK,
-        index: 3,
-        points: 8,
-        labels: [
-          { id: '1', name: 'Dev Ops', color: 'aqua' },
-          { id: '2', name: 'Environment', color: 'grey' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '9',
-        title: 'Home page HTML template',
-        state: taskState.IN_PROGRESS,
-        type: taskType.TASK,
-        index: 4,
-        points: 5,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '10',
-        title: 'Sidebar not visible on firefox',
-        state: taskState.IN_PROGRESS,
-        type: taskType.BUG,
-        index: 5,
-        points: 8,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-    ],
-    toReviewList: [
-      {
-        id: '11',
-        title: 'Add tooltips in side menu',
-        state: taskState.TO_REVIEW_AND_TEST,
-        type: taskType.IDEA,
-        index: 0,
-        points: 3,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-    ],
-    doneList: [
-      {
-        id: '12',
-        title: 'Create Register Form HTML template',
-        state: taskState.DONE,
-        type: taskType.TASK,
-        index: 0,
-        points: 5,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Design', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-      {
-        id: '13',
-        title: 'Store token in COOKIES',
-        state: taskState.DONE,
-        type: taskType.IMPROVMENT,
-        index: 1,
-        points: 1,
-        labels: [
-          { id: '1', name: 'Front End', color: 'aqua' },
-          { id: '2', name: 'Authentication', color: 'red' },
-        ],
-        assing: [],
-        revievers: [],
-      },
-    ],
+    taskList: {
+      toDoList: [
+        {
+          id: '1',
+          title: 'Create Login Form HTML template',
+          state: taskState.TO_DO,
+          type: taskType.TASK,
+          index: 0,
+          points: 3,
+          priority: taskPriority.HIGH,
+          comments: [
+            { id: '1', author: { id: '1', name: 'Piotr Tarasiński' }, message: 'Great Work!' },
+          ],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [
+            { id: '1', name: 'Piotr Tarasiński' },
+            { id: '2', name: 'Szymon Tokarzewski' },
+            { id: '3', name: 'Szymon Tokarzewski' },
+          ],
+          revievers: [],
+        },
+        {
+          id: '2',
+          title: 'Add token validation',
+          state: taskState.TO_DO,
+          type: taskType.IMPROVMENT,
+          index: 1,
+          points: 8,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Back End', color: '#ff9800' },
+            { id: '2', name: 'Authentication', color: '#1565c0' },
+          ],
+          assign: [{ id: '1', name: 'Piotr Tarasiński' }],
+          revievers: [],
+        },
+        {
+          id: '3',
+          title: 'Add remember me button to login form',
+          state: taskState.TO_DO,
+          type: taskType.IDEA,
+          index: 2,
+          points: 1,
+          priority: taskPriority.LOW,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '4',
+          title: 'Register Form invalid email pass validation',
+          state: taskState.TO_DO,
+          type: taskType.BUG,
+          index: 3,
+          points: 5,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Back End', color: '#ff9800' },
+            { id: '2', name: 'Authentication', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+      ],
+      inProgressList: [
+        {
+          id: '5',
+          title: 'DatePicker wrong date format',
+          state: taskState.IN_PROGRESS,
+          type: taskType.BUG,
+          index: 0,
+          points: 3,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [{ id: '1', name: 'Front End', color: '#ff9800' }],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '6',
+          title: 'Add interceptor to detect token',
+          state: taskState.IN_PROGRESS,
+          type: taskType.IMPROVMENT,
+          index: 1,
+          points: 5,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Authentication', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '7',
+          title: 'Regiter Form validation',
+          state: taskState.IN_PROGRESS,
+          type: taskType.TASK,
+          index: 2,
+          points: 5,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Back End', color: '#ff9800' },
+            { id: '2', name: 'Authentication', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '8',
+          title: 'Config docker compose to start test environment',
+          state: taskState.IN_PROGRESS,
+          type: taskType.TASK,
+          index: 3,
+          points: 8,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Dev Ops', color: '#ff9800' },
+            { id: '2', name: 'Environment', color: 'grey' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '9',
+          title: 'Home page HTML template',
+          state: taskState.IN_PROGRESS,
+          type: taskType.TASK,
+          index: 4,
+          points: 5,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '10',
+          title: 'Sidebar not visible on firefox',
+          state: taskState.IN_PROGRESS,
+          type: taskType.BUG,
+          index: 5,
+          points: 8,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+      ],
+      toReviewList: [
+        {
+          id: '11',
+          title: 'Add tooltips in side menu',
+          state: taskState.TO_REVIEW_AND_TEST,
+          type: taskType.IDEA,
+          index: 0,
+          points: 3,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+      ],
+      doneList: [
+        {
+          id: '12',
+          title: 'Create Register Form HTML template',
+          state: taskState.DONE,
+          type: taskType.TASK,
+          index: 0,
+          points: 5,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Design', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+        {
+          id: '13',
+          title: 'Store token in COOKIES',
+          state: taskState.DONE,
+          type: taskType.IMPROVMENT,
+          index: 1,
+          points: 1,
+          priority: taskPriority.NORMAL,
+          comments: [],
+          labels: [
+            { id: '1', name: 'Front End', color: '#ff9800' },
+            { id: '2', name: 'Authentication', color: '#1565c0' },
+          ],
+          assign: [],
+          revievers: [],
+        },
+      ],
+    },
   };
 
   return (
@@ -236,7 +270,7 @@ function SprintPage() {
               <div>
                 <Typography className={classes.taskListTitle}>{taskState.TO_DO}</Typography>
                 <Typography>
-                  {`${sprint.toDoList.length} Tasks | ${sprint.toDoList
+                  {`${sprint.taskList.toDoList.length} Tasks | ${sprint.taskList.toDoList
                     .map(o => o.points)
                     .reduce((a, b) => a + b, 0)} Points`}
                 </Typography>
@@ -245,7 +279,7 @@ function SprintPage() {
             <Droppable droppableId={taskState.TO_DO}>
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className={classes.droppable}>
-                  {sprint.toDoList.map((item, index) => (
+                  {sprint.taskList.toDoList.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {(provided, snapshot) => (
                         <div
@@ -269,7 +303,9 @@ function SprintPage() {
               <div>
                 <Typography className={classes.taskListTitle}>{taskState.IN_PROGRESS}</Typography>
                 <Typography>
-                  {`${sprint.inProgressList.length} Tasks | ${sprint.inProgressList
+                  {`${
+                    sprint.taskList.inProgressList.length
+                  } Tasks | ${sprint.taskList.inProgressList
                     .map(o => o.points)
                     .reduce((a, b) => a + b, 0)} Points`}
                 </Typography>
@@ -278,7 +314,7 @@ function SprintPage() {
             <Droppable droppableId={taskState.IN_PROGRESS}>
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className={classes.droppable}>
-                  {sprint.inProgressList.map((item, index) => (
+                  {sprint.taskList.inProgressList.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {(provided, snapshot) => (
                         <div
@@ -304,7 +340,9 @@ function SprintPage() {
                   {taskState.TO_REVIEW_AND_TEST}
                 </Typography>
                 <Typography>
-                  {`${sprint.toReviewList.length} Tasks | ${sprint.toReviewList
+                  {`${
+                    sprint.taskList.toReviewList.length
+                  } Tasks | ${sprint.taskList.toReviewList
                     .map(o => o.points)
                     .reduce((a, b) => a + b, 0)} Points`}
                 </Typography>
@@ -313,7 +351,7 @@ function SprintPage() {
             <Droppable droppableId={taskState.TO_REVIEW_AND_TEST}>
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className={classes.droppable}>
-                  {sprint.toReviewList.map((item, index) => (
+                  {sprint.taskList.toReviewList.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {(provided, snapshot) => (
                         <div
@@ -337,7 +375,7 @@ function SprintPage() {
               <div>
                 <Typography className={classes.taskListTitle}>{taskState.DONE}</Typography>
                 <Typography>
-                  {`${sprint.doneList.length} Tasks | ${sprint.doneList
+                  {`${sprint.taskList.doneList.length} Tasks | ${sprint.taskList.doneList
                     .map(o => o.points)
                     .reduce((a, b) => a + b, 0)} Points`}
                 </Typography>
@@ -346,7 +384,7 @@ function SprintPage() {
             <Droppable droppableId={taskState.DONE}>
               {(provided, snapshot) => (
                 <div ref={provided.innerRef} className={classes.droppable}>
-                  {sprint.doneList.map((item, index) => (
+                  {sprint.taskList.doneList.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {(provided, snapshot) => (
                         <div

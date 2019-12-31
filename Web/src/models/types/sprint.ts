@@ -5,8 +5,10 @@ export interface ISprint {
   name: string;
   startDate: Date;
   endDate: Date;
-  toDoList: ITask[];
-  inProgressList: ITask[];
-  toReviewList: ITask[];
-  doneList: ITask[];
+  taskList: {
+    toDoList: ITask[];
+    inProgressList: ITask[];
+    toReviewList: ITask[];
+    doneList: ITask[];
+  };
 }

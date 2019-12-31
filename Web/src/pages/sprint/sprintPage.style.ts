@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1, 3),
     },
     taskList: {
+      position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       flexBasis: '25%',
@@ -95,7 +96,12 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold',
     },
     droppable: {
-      flexGrow: 1,
+      position: 'absolute',
+      top: 67,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflowY: 'scroll',
     },
   }),
 );
