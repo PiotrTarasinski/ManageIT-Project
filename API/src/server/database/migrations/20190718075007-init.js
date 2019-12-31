@@ -225,12 +225,10 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
+        type: DataTypes.DATE
       },
       updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
+        type: DataTypes.DATE
       }
     });
 
@@ -258,12 +256,10 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
+        type: DataTypes.DATE
       },
       updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
+        type: DataTypes.DATE
       }
     });
 
@@ -291,12 +287,10 @@ module.exports = {
         onUpdate: 'CASCADE'
       },
       createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
+        type: DataTypes.DATE
       },
       updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
+        type: DataTypes.DATE
       }
     });
   },

@@ -44,6 +44,16 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  getSprintEntries(id: string) {
+    const errorArray = [
+      validators.isString(id, 'userId'),
+      validators.required(id, 'userId'),
+      validators.uuid(id, 'userId')
+    ];
+
+    return this.makeResponse(errorArray);
+  },
+
   passwordPolicy(password: string) {
 
     return [
