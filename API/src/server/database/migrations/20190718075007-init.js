@@ -185,10 +185,10 @@ module.exports = {
         type: DataTypes.ENUM(['TASK', 'IMPROVEMENT', 'BUG', 'IDEA'])
       },
       index: {
-        type: DataTypes.STRING
+        type: DataTypes.NUMERIC
       },
       points: {
-        type: DataTypes.STRING
+        type: DataTypes.NUMERIC
       },
       priority: {
         type: DataTypes.ENUM(['HIGH', 'NORMAL', 'LOW'])

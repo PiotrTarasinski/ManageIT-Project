@@ -12,8 +12,8 @@ export type SprintEntriesResponseFormat = {
   id: string;
   state: string;
   type: string;
-  index: number;
-  points: number;
+  index: string;
+  points: string;
   priority: string;
   title: string;
   description: string;

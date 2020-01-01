@@ -13,6 +13,13 @@ class SprintRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new SprintController(req, res).getSprintEntries()
         }
+      },
+      {
+        method: 'POST',
+        path: '/change_type',
+        options: {
+          handler: (req, res) => new SprintController(req, res).changeEntryType()
+        }
       }
     ];
   }
