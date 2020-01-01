@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes } from './User';
 import { UserProjectAttributes } from './UserProject';
+import { SprintAttributes } from './Sprint';
 
 export interface ProjectAttributes {
   id?: string;
@@ -10,6 +11,7 @@ export interface ProjectAttributes {
   name: string;
   state: string;
   leadId?: string;
+  activeSprintId: string;
 
   /**
    * Associations
@@ -17,6 +19,7 @@ export interface ProjectAttributes {
   lead?: UserAttributes;
   users?: UserAttributes[];
   usersProjects?: UserProjectAttributes;
+  activeSprint?: SprintAttributes;
 }
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes { }
@@ -45,6 +48,17 @@ export const ProjectFactory = (
     state: {
       type: DataTypes.ENUM(['Completed', 'In Development', 'Planning', 'Cancelled'])
     },
+    activeSprintId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'sprints',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      allowNull: true,
+      field: 'active_sprint_id'
+    },
     leadId: {
       type: DataTypes.UUID,
       allowNull: true,
@@ -61,6 +75,7 @@ export const ProjectFactory = (
       as: 'users',
       foreignKey: 'projectId'
     });
+    Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
   };
 
   return Project;

@@ -34,6 +34,34 @@ module.exports = {
       },
     });
 
+    await queryInterface.createTable('sprints', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      name: {
+        type: DataTypes.STRING
+      },
+      description: {
+        type: DataTypes.STRING
+      },
+      start: {
+        type: DataTypes.DATE
+      },
+      end: {
+        type: DataTypes.DATE
+      }
+    });
+
     await queryInterface.createTable('projects', {
       id: {
         type: DataTypes.UUID,
@@ -64,6 +92,17 @@ module.exports = {
         onUpdate: 'CASCADE',
         field: 'lead_id',
       },
+      activeSprintId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'sprints',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        allowNull: true,
+        field: 'active_sprint_id'
+      }
     });
 
     await queryInterface.createTable('usersProjects', {
@@ -111,24 +150,7 @@ module.exports = {
       },
     });
 
-    await queryInterface.createTable('sprints', {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
-      },
-      name: {
-        type: DataTypes.STRING
-      }
-    });
+    
 
     await queryInterface.createTable('sprintEntries', {
       id: {

@@ -202,17 +202,6 @@ module.exports = [
   {
     model: 'projects',
     data: {
-      id: '38184a13-4273-499a-af73-f5a053cdb589',
-      created_at: new Date(2012, 12, 14),
-      updated_at: new Date(2019, 12, 1),
-      name: '456 Numero Testo',
-      state: 'In Development',
-      lead_id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f',
-    },
-  },
-  {
-    model: 'projects',
-    data: {
       id: '4783c6f9-1e63-4958-968e-7dd6a5b02915',
       created_at: new Date(2019, 12, 1),
       updated_at: new Date(2019, 12, 1),
@@ -227,7 +216,10 @@ module.exports = [
       id: '4783c6f9-1e63-4958-968e-7dd6a5b02915',
       created_at: new Date(2019, 12, 1),
       updated_at: new Date(2019, 12, 1),
-      name: 'Testo Sprinto',
+      name: 'Testo Sprinto 2',
+      description: 'Zajebisty opis sprintu również, pozdrawiam.',
+      start: new Date(2020, 1, 12),
+      end: new Date(2020, 1, 15)
     }
   },
   {
@@ -237,6 +229,9 @@ module.exports = [
       created_at: new Date(2019, 12, 1),
       updated_at: new Date(2019, 12, 1),
       name: 'Testo Sprinto',
+      description: 'Zajebisty opis sprintu, pozdrawiam.',
+      start: new Date(2019, 10, 12),
+      end: new Date(2019, 10, 15)
     }
   }
 ];

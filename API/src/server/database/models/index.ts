@@ -47,9 +47,9 @@ export const createModels = (): DbInterface => {
     sequelize,
     Sequelize,
     User: UserFactory(sequelize, Sequelize),
+    Sprint: SprintFactory(sequelize, Sequelize),
     Project: ProjectFactory(sequelize, Sequelize),
     UserProject: UserProjectFactory(sequelize, Sequelize),
-    Sprint: SprintFactory(sequelize, Sequelize),
     SprintEntry: SprintEntryFactory(sequelize, Sequelize),
     Label: LabelFactory(sequelize, Sequelize)
   };

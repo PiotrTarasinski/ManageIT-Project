@@ -8,23 +8,29 @@ interface SprintResponse {
 
 class SprintMethods {
   async getSprintEntries(id: string) {
-    return await db.Sprint.findByPk(id, {
+    return await db.Project.findByPk(id, {
       include: [
         {
-          model: db.SprintEntry,
-          as: 'sprintEntries',
+          model: db.Sprint,
+          as: 'activeSprint',
           include: [
             {
-              model: db.User,
-              as: 'assign'
-            },
-            {
-              model: db.User,
-              as: 'reviewers'
-            },
-            {
-              model: db.Label,
-              as: 'labels'
+              model: db.SprintEntry,
+              as: 'sprintEntries',
+              include: [
+                {
+                  model: db.User,
+                  as: 'assign'
+                },
+                {
+                  model: db.User,
+                  as: 'reviewers'
+                },
+                {
+                  model: db.Label,
+                  as: 'labels'
+                }
+              ]
             }
           ]
         }
