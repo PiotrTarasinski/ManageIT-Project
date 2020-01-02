@@ -39,15 +39,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo } = this.req.payload;
+    const { sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo } = this.req.payload;
 
-    const validationResponse = Validate.sprintChangeEntryType(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
+    const validationResponse = Validate.sprintChangeEntryType(sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().changeEntryState(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
+    const response = await new SprintMethods().changeEntryState(sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo);
 
     return this.res(response).code(response.statusCode);
   }
