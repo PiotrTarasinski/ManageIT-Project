@@ -178,6 +178,9 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
+      identifier: {
+        type: DataTypes.STRING
+      },
       state: {
         type: DataTypes.ENUM(['TO_DO', 'IN_PROGRESS', 'TO_REVIEW_AND_TEST', 'DONE'])
       },

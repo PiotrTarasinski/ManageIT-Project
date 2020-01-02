@@ -26,7 +26,7 @@ class SprintController extends Controller {
       if (response.activeSprint) {
         return this.res(await new SprintFormatter().format(response));
       }
-      return this.res(CustomResponse(400, 'No active sprint.', { formError: 'There is no active sprint.' })).code(400);
+      return this.res(CustomResponse(404, 'No active sprint.', { formError: 'There is no active sprint.' })).code(404);
     }
 
     return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
@@ -73,17 +73,24 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { points, priority, state, type, description, sprintId, sprintName } = this.req.payload;
+    const { points, priority, state, type, title, description, sprintId, sprintName } = this.req.payload;
 
-    const response = await new SprintMethods().createEntry(points, priority, state, type, description, sprintId, sprintName);
+    const response = await new SprintMethods().createEntry(points, priority, state, type, title, description, sprintId, sprintName);
 
     if (response) {
       return this.res(CustomResponse(200, 'Sprint entry created successfully.'));
     }
 
     return this.res(CustomResponse(500, 'Couldn\'t create sprint entry', { formError: 'Database error.' })).code(500);
+  }
 
+  async addEntryUser() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
 
+    const { id, assignId } = this.req.payload;
+    return null;
   }
 }
 

@@ -8,13 +8,14 @@ export interface SprintEntryAttributes {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  identifier: string;
   index: string;
   points: string;
   priority: string;
   state: string;
   type: string;
   title: string;
-  description: string;
+  description?: string;
   sprintId: string;
     /**
      * Associations
@@ -57,6 +58,9 @@ export const SprintEntryFactory = (
     updatedAt: {
       type: DataTypes.DATE,
       field: 'updated_at'
+    },
+    identifier: {
+      type: DataTypes.STRING
     },
     state: {
       type: DataTypes.ENUM(['TO_DO', 'IN_PROGRESS', 'TO_REVIEW_AND_TEST', 'DONE'])

@@ -114,7 +114,7 @@ class SprintMethods {
   }
 
   // tslint:disable-next-line:max-line-length
-  async createEntry(points: string, priority: string, state: string, type: string, description: string, sprintId: string, sprintName: string) {
+  async createEntry(points: string, priority: string, state: string, type: string, title: string, description: string, sprintId: string, sprintName: string) {
     let index = 0;
     let count = 0;
     const entries  = await db.SprintEntry.findAll({
@@ -124,6 +124,7 @@ class SprintMethods {
     });
     entries.forEach(async instance => {
       if (instance.state === state) {
+        console.log(instance.index);
         index++;
       }
       count++;
@@ -133,12 +134,13 @@ class SprintMethods {
       priority,
       state,
       type,
-      title: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      identifier: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      title,
       description,
       sprintId,
       index: index.toString()
     })
-    .then((entry) => {
+    .then(() => {
       return true;
     })
     .catch(() => {
@@ -146,7 +148,7 @@ class SprintMethods {
     });
   }
 
-  async addAssignToEntry(id: string, assignId: string) {
+  async addAssignToEntry(id: string, assignId: string, type: string) {
     const entry = await db.SprintEntry.findByPk(id);
 
     if (!entry) {
