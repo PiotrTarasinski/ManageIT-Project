@@ -7,6 +7,7 @@ import { UserProjectInstance, UserProjectAttributes, UserProjectFactory } from '
 import { SprintInstance, SprintAttributes, SprintFactory } from './Sprint';
 import { SprintEntryInstance, SprintEntryAttributes, SprintEntryFactory } from './SprintEntry';
 import { LabelInstance, LabelAttributes, LabelFactory } from './Label';
+import { SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes, SprintEntryUserAssignFactory } from './SprintEntryUserAssign';
 
 
 export type DbModels = {
@@ -16,6 +17,7 @@ export type DbModels = {
   Sprint: Sequelize.Model<SprintInstance, SprintAttributes>;
   SprintEntry: Sequelize.Model<SprintEntryInstance, SprintEntryAttributes>;
   Label: Sequelize.Model<LabelInstance, LabelAttributes>;
+  SprintEntryUserAssign: Sequelize.Model<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -51,7 +53,8 @@ export const createModels = (): DbInterface => {
     Project: ProjectFactory(sequelize, Sequelize),
     UserProject: UserProjectFactory(sequelize, Sequelize),
     SprintEntry: SprintEntryFactory(sequelize, Sequelize),
-    Label: LabelFactory(sequelize, Sequelize)
+    Label: LabelFactory(sequelize, Sequelize),
+    SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

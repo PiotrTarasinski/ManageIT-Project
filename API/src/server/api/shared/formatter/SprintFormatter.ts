@@ -9,9 +9,9 @@ export type SprintResponseFormat = {
   id: string;
   name: string;
   description: string;
-  start: Date;
-  end: Date;
-  entries?: SprintEntriesResponseFormat[]
+  startDate: Date;
+  endDate: Date;
+  taskList?: SprintEntriesResponseFormat[]
 };
 
 class SprintFormatter implements ResponseFormatter<ProjectInstance, SprintResponseFormat> {
@@ -21,9 +21,9 @@ class SprintFormatter implements ResponseFormatter<ProjectInstance, SprintRespon
       id: <string>sprint.id,
       name: sprint.name,
       description: sprint.description,
-      start: new Date(sprint.start),
-      end: new Date(sprint.end),
-      entries: await bulkFormat(new SprintEntriesFormatter(), <SprintEntryInstance[]>sprint.sprintEntries)
+      startDate: new Date(sprint.start),
+      endDate: new Date(sprint.end),
+      taskList: await bulkFormat(new SprintEntriesFormatter(), <SprintEntryInstance[]>sprint.sprintEntries)
     };
   }
 }
