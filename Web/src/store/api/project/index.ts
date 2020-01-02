@@ -17,6 +17,11 @@ const project = {
       search,
     });
   },
+  getSprint: (id: string) => {
+    return httpRequest.post('sprint', {
+      id,
+    });
+  },
 };
 
 export { project };
