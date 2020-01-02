@@ -34,18 +34,18 @@ class SprintMethods {
     });
   }
 
-  async changeEntryType(sprintId: string, entryId: string, indexFrom: string, indexTo: string, typeFrom: string, typeTo: string) {
+  async changeEntryType(sprintId: string, entryId: string, indexFrom: string, indexTo: string, stateFrom: string, stateTo: string) {
     const entryToChange = await db.SprintEntry.findByPk(entryId);
     if (entryToChange) {
-      if (entryToChange.type === typeFrom && entryToChange.index === indexFrom) {
+      if (entryToChange.state === stateFrom && entryToChange.index === indexFrom) {
 
-        if (typeFrom === typeTo) {
+        if (stateFrom === stateTo) {
           const entries = await db.SprintEntry.findAll({
             where: {
               sprintId,
               [Op.or]: [
-                  { type: typeFrom },
-                  { type: typeTo }
+                  { state: stateFrom },
+                  { state: stateTo }
               ]
             }
           });
@@ -54,7 +54,7 @@ class SprintMethods {
               await instance.update({ index: indexTo });
             } else if (instance.index <= indexTo && instance.index > indexFrom) {
               await instance.decrement('index', { by: 1 });
-            } else if (instance.index >= indexTo && indexFrom > indexTo) {
+            } else if (instance.index >= indexTo && indexFrom > indexTo && instance.index < indexFrom) {
               await instance.increment('index', { by: 1 });
             }
           });
@@ -66,16 +66,16 @@ class SprintMethods {
           where: {
             sprintId,
             [Op.or]: [
-                { type: typeFrom },
-                { type: typeTo }
+                { state: stateFrom },
+                { state: stateTo }
             ]}
         });
         entries.forEach(async instance => {
           if (instance.id === entryId) {
-            instance.update({ index: indexTo, type: typeTo });
-          } else if (instance.type === typeFrom && instance.index > indexFrom) {
+            instance.update({ index: indexTo, state: stateTo });
+          } else if (instance.state === stateFrom && instance.index > indexFrom) {
             await instance.decrement('index', { by: 1 });
-          } else if (instance.type === typeTo && instance.index >= indexTo) {
+          } else if (instance.state === stateTo && instance.index >= indexTo) {
             await instance.increment('index', { by: 1 });
           }
         });

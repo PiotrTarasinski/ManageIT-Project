@@ -73,7 +73,7 @@ module.exports = {
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
-        index: 0,
+        index: 6,
         state: 'IN_PROGRESS',
         type: 'IDEA',
         title: 'Test',
