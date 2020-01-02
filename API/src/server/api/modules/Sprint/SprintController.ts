@@ -41,6 +41,12 @@ class SprintController extends Controller {
 
     const { sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo } = this.req.payload;
 
+    const validationResponse = Validate.sprintChangeEntryType(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
     const response = await new SprintMethods().changeEntryType(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
 
     if (response) {

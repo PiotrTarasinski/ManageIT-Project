@@ -44,6 +44,27 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  sprintChangeEntryType(sprintId: string, entryId: string, indexFrom: string, indexTo: string, typeFrom: string, typeTo: string) {
+    const errorArray = [
+      validators.isString(sprintId, 'sprintId'),
+      validators.required(sprintId, 'sprintId'),
+      validators.uuid(sprintId, 'sprintId'),
+      validators.isString(entryId, 'entryId'),
+      validators.required(entryId, 'entryId'),
+      validators.uuid(entryId, 'entryId'),
+      validators.required(indexFrom, 'indexFrom'),
+      validators.isString(indexFrom, 'indexFrom'),
+      validators.required(indexTo, 'indexTo'),
+      validators.isString(indexTo, 'indexTo'),
+      validators.required(typeFrom, 'typeFrom'),
+      validators.isString(typeFrom, 'typeFrom'),
+      validators.required(typeTo, 'typeTo'),
+      validators.isString(typeTo, 'typeTo')
+    ];
+
+    return this.makeResponse(errorArray);
+  },
+
   getSprintEntries(id: string) {
     const errorArray = [
       validators.isString(id, 'userId'),
