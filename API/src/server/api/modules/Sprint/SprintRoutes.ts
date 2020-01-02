@@ -27,6 +27,13 @@ class SprintRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new SprintController(req, res).deleteEntry()
         }
+      },
+      {
+        method: 'POST',
+        path: '/entry',
+        options: {
+          handler: (req, res) => new SprintController(req, res).createEntry()
+        }
       }
     ];
   }

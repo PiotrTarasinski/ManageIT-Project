@@ -255,7 +255,7 @@ module.exports = {
     });
 
     await queryInterface.createTable('sprintEntryUserAssign', {
-      sprint_entry_id: {
+      sprintEntryId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
@@ -264,9 +264,10 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'sprint_entry_id'
       },
-      user_id: {
+      userId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
@@ -275,13 +276,16 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'user_id'
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'updated_at'
       }
     });
 

@@ -91,10 +91,11 @@ class SprintMethods {
   async deleteEntry(id: string) {
     const entryToDelete = await db.SprintEntry.findByPk(id);
     if (entryToDelete) {
-      const { index, state } = entryToDelete;
+      const { index, state, sprintId } = entryToDelete;
       const entries = await db.SprintEntry.findAll({
         where: {
           state,
+          sprintId,
           index: { [Op.gt]: index }
         }
       });
@@ -110,6 +111,61 @@ class SprintMethods {
       });
     }
     return false;
+  }
+
+  // tslint:disable-next-line:max-line-length
+  async createEntry(points: string, priority: string, state: string, type: string, description: string, sprintId: string, sprintName: string) {
+    let index = 0;
+    let count = 0;
+    const entries  = await db.SprintEntry.findAll({
+      where: {
+        sprintId
+      }
+    });
+    entries.forEach(async instance => {
+      if (instance.state === state) {
+        index++;
+      }
+      count++;
+    });
+    return await db.SprintEntry.create({
+      points,
+      priority,
+      state,
+      type,
+      title: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      description,
+      sprintId,
+      index: index.toString()
+    })
+    .then((entry) => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+  }
+
+  async addAssignToEntry(id: string, assignId: string) {
+    const entry = await db.SprintEntry.findByPk(id);
+
+    if (!entry) {
+      return false;
+    }
+
+    const assign = await db.User.findByPk(assignId);
+
+    if (!assign) {
+      return false;
+    }
+
+    return await entry.addUser(assign)
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
   }
 }
 

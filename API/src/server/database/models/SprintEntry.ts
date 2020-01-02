@@ -1,9 +1,8 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import db from '..';
-import { UserAttributes } from './User';
-import { UserProjectAttributes } from './UserProject';
+import { UserAttributes, UserInstance } from './User';
 import { LabelAttributes } from './Label';
+import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
 
 export interface SprintEntryAttributes {
   id?: string;
@@ -25,7 +24,9 @@ export interface SprintEntryAttributes {
   labels?: LabelAttributes[];
 }
 
-export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes { }
+export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes {
+  addUser: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], SprintEntryUserAssignAttributes>;
+}
 
 export const SprintEntryFactory = (
     sequelize: Sequelize.Sequelize,

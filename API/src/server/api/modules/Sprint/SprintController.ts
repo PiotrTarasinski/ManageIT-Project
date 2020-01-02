@@ -67,6 +67,24 @@ class SprintController extends Controller {
 
     return this.res(CustomResponse(500, 'Couldn\'t delete sprint entry', { formError: 'Database error.' })).code(500);
   }
+
+  async createEntry() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { points, priority, state, type, description, sprintId, sprintName } = this.req.payload;
+
+    const response = await new SprintMethods().createEntry(points, priority, state, type, description, sprintId, sprintName);
+
+    if (response) {
+      return this.res(CustomResponse(200, 'Sprint entry created successfully.'));
+    }
+
+    return this.res(CustomResponse(500, 'Couldn\'t create sprint entry', { formError: 'Database error.' })).code(500);
+
+
+  }
 }
 
 export default SprintController;
