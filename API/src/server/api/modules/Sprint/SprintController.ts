@@ -34,7 +34,7 @@ class SprintController extends Controller {
 
   }
 
-  async changeEntryType() {
+  async changeEntryState() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -47,13 +47,9 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().changeEntryType(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
+    const response = await new SprintMethods().changeEntryState(sprintId, entryId, indexFrom, indexTo, typeFrom, typeTo);
 
-    if (response) {
-      return this.res(response);
-    }
-
-    return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
+    return this.res(response).code(response.statusCode);
   }
 }
 

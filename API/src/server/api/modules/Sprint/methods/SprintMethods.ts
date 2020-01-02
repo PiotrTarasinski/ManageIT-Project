@@ -34,12 +34,15 @@ class SprintMethods {
     });
   }
 
-  async changeEntryType(sprintId: string, entryId: string, indexFrom: string, indexTo: string, stateFrom: string, stateTo: string) {
+  // tslint:disable-next-line:max-line-length
+  async changeEntryState(sprintId: string, entryId: string, indexFrom: string, indexTo: string, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
     const entryToChange = await db.SprintEntry.findByPk(entryId);
     if (entryToChange) {
       if (entryToChange.state === stateFrom && entryToChange.index === indexFrom) {
-
         if (stateFrom === stateTo) {
+          if (indexFrom === indexTo) {
+            return CustomResponse(200, 'Nothing to change.');
+          }
           const entries = await db.SprintEntry.findAll({
             where: {
               sprintId,
@@ -59,7 +62,7 @@ class SprintMethods {
             }
           });
 
-          return entries;
+          return CustomResponse(200, 'Successfully changed index.');
         }
 
         const entries = await db.SprintEntry.findAll({
@@ -79,10 +82,10 @@ class SprintMethods {
             await instance.increment('index', { by: 1 });
           }
         });
-        return entries;
+        return CustomResponse(200, 'Successfully changed state.');
       }
     }
-    return false;
+    return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index or state is invalid.' });
   }
 }
 

@@ -16,9 +16,9 @@ class SprintRoutes extends MainRoutes {
       },
       {
         method: 'POST',
-        path: '/change_type',
+        path: '/change_state',
         options: {
-          handler: (req, res) => new SprintController(req, res).changeEntryType()
+          handler: (req, res) => new SprintController(req, res).changeEntryState()
         }
       }
     ];
