@@ -87,6 +87,30 @@ class SprintMethods {
     }
     return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index or state is invalid.' });
   }
+
+  async deleteEntry(id: string) {
+    const entryToDelete = await db.SprintEntry.findByPk(id);
+    if (entryToDelete) {
+      const { index, state } = entryToDelete;
+      const entries = await db.SprintEntry.findAll({
+        where: {
+          state,
+          index: { [Op.gt]: index }
+        }
+      });
+      entries.forEach(async instance => {
+        instance.decrement('index', { by: 1 });
+      });
+      return entryToDelete.destroy()
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });
+    }
+    return false;
+  }
 }
 
 export default SprintMethods;

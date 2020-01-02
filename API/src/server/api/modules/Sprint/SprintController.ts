@@ -51,6 +51,22 @@ class SprintController extends Controller {
 
     return this.res(response).code(response.statusCode);
   }
+
+  async deleteEntry() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { id } = this.req.payload;
+
+    const response = await new SprintMethods().deleteEntry(id);
+
+    if (response) {
+      return this.res(CustomResponse(200, 'Successfully deleted sprint entry.'));
+    }
+
+    return this.res(CustomResponse(500, 'Couldn\'t delete sprint entry', { formError: 'Database error.' })).code(500);
+  }
 }
 
 export default SprintController;

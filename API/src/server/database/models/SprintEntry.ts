@@ -64,10 +64,10 @@ export const SprintEntryFactory = (
       type: DataTypes.ENUM(['IDEA', 'TASK', 'BUG', 'IMPROVEMENT'])
     },
     index: {
-      type: DataTypes.NUMERIC
+      type: DataTypes.INTEGER
     },
     points: {
-      type: DataTypes.NUMERIC
+      type: DataTypes.INTEGER
     },
     priority: {
       type: DataTypes.ENUM(['HIGH', 'NORMAL', 'LOW'])
