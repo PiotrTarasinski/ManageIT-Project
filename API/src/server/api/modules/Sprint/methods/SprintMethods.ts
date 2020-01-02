@@ -114,7 +114,7 @@ class SprintMethods {
   }
 
   // tslint:disable-next-line:max-line-length
-  async createEntry(points: string, priority: string, state: string, type: string, description: string, sprintId: string, sprintName: string) {
+  async createEntry(points: string, priority: string, state: string, type: string, title: string, description: string, sprintId: string, sprintName: string) {
     let index = 0;
     let count = 0;
     const entries  = await db.SprintEntry.findAll({
@@ -124,6 +124,7 @@ class SprintMethods {
     });
     entries.forEach(async instance => {
       if (instance.state === state) {
+        console.log(instance.index);
         index++;
       }
       count++;
@@ -133,12 +134,13 @@ class SprintMethods {
       priority,
       state,
       type,
-      title: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      identifier: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      title,
       description,
       sprintId,
       index: index.toString()
     })
-    .then((entry) => {
+    .then(() => {
       return true;
     })
     .catch(() => {
@@ -146,26 +148,38 @@ class SprintMethods {
     });
   }
 
-  async addAssignToEntry(id: string, assignId: string) {
+  async addUserToEntry(id: string, assignId: string, type: string): Promise<CustomResponseType> {
     const entry = await db.SprintEntry.findByPk(id);
 
     if (!entry) {
-      return false;
+      return CustomResponse(404, 'No entry with such id.', { formError: 'Entry not found.' });
     }
 
     const assign = await db.User.findByPk(assignId);
 
     if (!assign) {
-      return false;
+      return CustomResponse(404, 'No user with such id.', { formError: 'User not found.' });
     }
 
-    return await entry.addUser(assign)
+    if (type === 'ASSIGN') {
+      return await entry.addAssign(assign)
+      .then(() => {
+        return CustomResponse(200, 'Successfully added an assignee.');
+      })
+      .catch(() => {
+        return CustomResponse(500, 'Couldn\'t add an assignee.', { formError: 'Database error.' });
+      });
+    }
+    if (type === 'REVIEW') {
+      return await entry.addReviewer(assign)
     .then(() => {
-      return true;
+      return CustomResponse(200, 'Successfully added a reviewer.');
     })
     .catch(() => {
-      return false;
+      return CustomResponse(500, 'Couldn\'t add a reviewer.', { formError: 'Database error.' });
     });
+    }
+    return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 }
 

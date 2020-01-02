@@ -8,6 +8,7 @@ import { SprintInstance, SprintAttributes, SprintFactory } from './Sprint';
 import { SprintEntryInstance, SprintEntryAttributes, SprintEntryFactory } from './SprintEntry';
 import { LabelInstance, LabelAttributes, LabelFactory } from './Label';
 import { SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes, SprintEntryUserAssignFactory } from './SprintEntryUserAssign';
+import { SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes, SprintEntryUserReviewerFactory } from './SprintEntryUserReviewer';
 
 
 export type DbModels = {
@@ -18,6 +19,7 @@ export type DbModels = {
   SprintEntry: Sequelize.Model<SprintEntryInstance, SprintEntryAttributes>;
   Label: Sequelize.Model<LabelInstance, LabelAttributes>;
   SprintEntryUserAssign: Sequelize.Model<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes>;
+  SprintEntryUserReviewer: Sequelize.Model<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -54,7 +56,8 @@ export const createModels = (): DbInterface => {
     UserProject: UserProjectFactory(sequelize, Sequelize),
     SprintEntry: SprintEntryFactory(sequelize, Sequelize),
     Label: LabelFactory(sequelize, Sequelize),
-    SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize)
+    SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize),
+    SprintEntryUserReviewer: SprintEntryUserReviewerFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

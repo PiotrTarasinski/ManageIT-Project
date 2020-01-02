@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('sprintEntryLabel', [
+    return queryInterface.bulkInsert('sprintEntryLabels', [
       {
         sprint_entry_id: '410d159a-c736-4a41-abc8-22cf049885bb',
         label_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',

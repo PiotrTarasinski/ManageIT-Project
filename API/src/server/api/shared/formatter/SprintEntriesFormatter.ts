@@ -10,13 +10,14 @@ import { LabelInstance } from '../../../database/models/Label';
 
 export type SprintEntriesResponseFormat = {
   id: string;
+  identifier: string;
   state: string;
   type: string;
   index: string;
   points: string;
   priority: string;
   title: string;
-  description: string;
+  description?: string;
   assign: UserResponseFormat[];
   reviewers: UserResponseFormat[];
   labels: LabelResponseFormat[];
@@ -27,6 +28,7 @@ class SprintEntriesFormatter implements ResponseFormatter<SprintEntryInstance, S
     return {
       id: <string>sprintEntry.id,
       state: sprintEntry.state,
+      identifier: sprintEntry.identifier,
       type: sprintEntry.type,
       index: sprintEntry.index,
       points: sprintEntry.points,
