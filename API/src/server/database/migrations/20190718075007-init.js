@@ -226,7 +226,7 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryLabel', {
+    await queryInterface.createTable('sprintEntryLabels', {
       sprint_entry_id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -257,7 +257,7 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryUserAssign', {
+    await queryInterface.createTable('sprintEntryUserAssigns', {
       sprintEntryId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -292,8 +292,8 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryUserReviewer', {
-      sprint_entry_id: {
+    await queryInterface.createTable('sprintEntryUserReviewers', {
+      sprintEntryId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
@@ -302,9 +302,10 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'sprint_entry_id'
       },
-      user_id: {
+      userId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
@@ -313,13 +314,16 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'user_id'
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'updated_at'
       }
     });
   },

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('sprintEntryUserAssign', [
+    return queryInterface.bulkInsert('sprintEntryUserAssigns', [
       {
         sprint_entry_id: '410d159a-c736-4a41-abc8-22cf049885bb',
         user_id: 'fd179a7c-3059-4286-9e8e-52a133460709',

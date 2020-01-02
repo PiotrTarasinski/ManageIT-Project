@@ -89,8 +89,11 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, assignId } = this.req.payload;
-    return null;
+    const { id, assignId, type } = this.req.payload;
+
+    const response = await new SprintMethods().addUserToEntry(id, assignId, type);
+
+    return this.res(response).code(response.statusCode);
   }
 }
 
