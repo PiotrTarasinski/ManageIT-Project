@@ -35,10 +35,11 @@ class SprintMethods {
   }
 
   // tslint:disable-next-line:max-line-length
-  async changeEntryState(sprintId: string, entryId: string, indexFrom: number, indexTo: number, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
+  async changeEntryState(sprintId: string, entryId: string, indexFrom: number | string, indexTo: number | string, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
     const entryToChange = await db.SprintEntry.findByPk(entryId);
     if (entryToChange) {
-      if (entryToChange.state === stateFrom && entryToChange.index === indexFrom) {
+      // tslint:disable-next-line:triple-equals
+      if (entryToChange.state === stateFrom && entryToChange.index == indexFrom) {
         if (stateFrom === stateTo) {
           if (indexFrom === indexTo) {
             return CustomResponse(200, 'Nothing to change.');
