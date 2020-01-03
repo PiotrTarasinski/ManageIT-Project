@@ -5,6 +5,7 @@ module.exports = {
     return queryInterface.bulkInsert('sprintEntries', [
       {
         id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -18,6 +19,7 @@ module.exports = {
       },
       {
         id: '6ff68e93-feea-4deb-8a85-7e8964dea981',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -31,6 +33,7 @@ module.exports = {
       },
       {
         id: '0c67d41b-628a-4844-9382-40789c0152d7',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -44,6 +47,7 @@ module.exports = {
       },
       {
         id: 'e3d3959b-5c27-4968-bc35-cfae45f32b2d',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -57,6 +61,7 @@ module.exports = {
       },
       {
         id: '33ecdd10-9906-4e89-8da2-397c9a3a0be4',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -70,6 +75,7 @@ module.exports = {
       },
       {
         id: '30462277-2a80-4bcc-b291-80a8fac5548b',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -83,7 +89,7 @@ module.exports = {
       },
       {
         id: '410d159a-c736-4a41-abc8-22cf049885bb',
-        sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 2,
@@ -96,6 +102,7 @@ module.exports = {
       },
       {
         id: '6e4e354c-bed4-4d7d-ae14-cd25defd434c',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
@@ -109,7 +116,7 @@ module.exports = {
       },
       {
         id: 'ac79344f-9a4c-4b04-849e-31c9dfd3c5d4',
-        sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 0,
@@ -123,6 +130,7 @@ module.exports = {
       {
         id: 'ccdb3656-1c1b-4dc4-a456-92692f67e2ea',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 1,
@@ -136,6 +144,7 @@ module.exports = {
       {
         id: 'b7f75f87-5223-4080-81a0-b14a18163d57',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 0,
@@ -148,7 +157,7 @@ module.exports = {
       },
       {
         id: '51b517ab-812f-4809-bcc3-006860768098',
-        sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 1,
@@ -162,6 +171,7 @@ module.exports = {
       {
         id: '7b551970-a795-45fc-be29-3fa91601a213',
         sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
         index: 2,

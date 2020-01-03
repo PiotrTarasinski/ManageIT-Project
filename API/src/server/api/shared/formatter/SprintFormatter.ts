@@ -14,9 +14,8 @@ export type SprintResponseFormat = {
   taskList?: SprintEntriesResponseFormat[]
 };
 
-class SprintFormatter implements ResponseFormatter<ProjectInstance, SprintResponseFormat> {
-  async format(project: ProjectInstance) {
-    const sprint = <SprintInstance>project.activeSprint;
+class SprintFormatter implements ResponseFormatter<SprintInstance, SprintResponseFormat> {
+  async format(sprint: SprintInstance) {
     return {
       id: <string>sprint.id,
       name: sprint.name,

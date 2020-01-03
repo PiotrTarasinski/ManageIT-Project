@@ -17,7 +17,6 @@ export const SprintEntryUserReviewerFactory = (
   const attributes: SequelizeAttributes<SprintEntryUserReviewerAttributes> = {
     sprintEntryId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       references: {
         model: 'sprintEntries',
@@ -29,7 +28,6 @@ export const SprintEntryUserReviewerFactory = (
     },
     userId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       references: {
         model: 'users',

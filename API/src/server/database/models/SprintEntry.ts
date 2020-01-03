@@ -4,26 +4,31 @@ import { UserAttributes, UserInstance } from './User';
 import { LabelAttributes } from './Label';
 import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
 import { SprintEntryUserReviewerAttributes } from './SprintEntryUserReviewer';
+import { SprintAttributes } from './Sprint';
+import { ProjectAttributes } from './Project';
 
 export interface SprintEntryAttributes {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   identifier: string;
-  index: number;
+  index?: number;
   points: number;
   priority: string;
-  state: string;
+  state?: string;
   type: string;
   title: string;
   description?: string;
-  sprintId: string;
+  sprintId?: string;
+  projectId: string;
     /**
      * Associations
      */
   assign?: UserAttributes[];
   reviewers?: UserAttributes[];
   labels?: LabelAttributes[];
+  sprint?: SprintAttributes;
+  project?: ProjectAttributes;
 }
 
 export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes {
@@ -43,12 +48,22 @@ export const SprintEntryFactory = (
     },
     sprintId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       references: {
         model: 'sprints',
         key: 'id'
       },
       field: 'sprint_id',
+      allowNull: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    },
+    projectId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'projects',
+        key: 'id'
+      },
+      field: 'project_id',
       allowNull: false,
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
@@ -65,13 +80,15 @@ export const SprintEntryFactory = (
       type: DataTypes.STRING
     },
     state: {
-      type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done'])
+      type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done']),
+      allowNull: true
     },
     type: {
       type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
     },
     index: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     points: {
       type: DataTypes.INTEGER
@@ -91,6 +108,7 @@ export const SprintEntryFactory = (
 
   SprintEntry.associate = models => {
     SprintEntry.belongsTo(models.Sprint, { as: 'sprint', foreignKey: 'sprintId' });
+    SprintEntry.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
     SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserAssign', as: 'assign', foreignKey: 'sprint_entry_id' });
     SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserReviewer', as: 'reviewers', foreignKey: 'sprint_entry_id' });
     SprintEntry.belongsToMany(models.Label, { through: 'sprintEntryLabel', as: 'labels', foreignKey: 'sprint_entry_id' });

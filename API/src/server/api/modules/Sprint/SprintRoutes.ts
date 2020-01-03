@@ -9,9 +9,16 @@ class SprintRoutes extends MainRoutes {
     return [
       {
         method: 'POST',
-        path: '',
+        path: '/get_entries',
         options: {
           handler: (req, res) => new SprintController(req, res).getSprintEntries()
+        }
+      },
+      {
+        method: 'POST',
+        path: '',
+        options: {
+          handler: (req, res) => new SprintController(req, res).getProjectEntries()
         }
       },
       {
@@ -47,6 +54,20 @@ class SprintRoutes extends MainRoutes {
         path: '/entry',
         options: {
           handler: (req, res) => new SprintController(req, res).updateEntry()
+        }
+      },
+      {
+        method: 'POST',
+        path: '/add_entry',
+        options: {
+          handler: (req, res) => new SprintController(req, res).addEntryToSprint()
+        }
+      },
+      {
+        method: 'DELETE',
+        path: '/remove_entry',
+        options: {
+          handler: (req, res) => new SprintController(req, res).removeEntryFromSprint()
         }
       }
     ];

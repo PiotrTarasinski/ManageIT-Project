@@ -11,9 +11,9 @@ import { LabelInstance } from '../../../database/models/Label';
 export type SprintEntriesResponseFormat = {
   id: string;
   identifier: string;
-  state: string;
+  state?: string;
   type: string;
-  index: number;
+  index?: number;
   points: number;
   priority: string;
   title: string;
