@@ -59,6 +59,12 @@ class SprintController extends Controller {
 
     const { id } = this.req.payload;
 
+    const validationResponse = Validate.sprintDeleteEntry(id);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
     const response = await new SprintMethods().deleteEntry(id);
 
     if (response) {
@@ -75,6 +81,12 @@ class SprintController extends Controller {
 
     const { points, priority, state, type, title, description, sprintId, sprintName } = this.req.payload;
 
+    const validationResponse = Validate.sprintCreateEntry(points, priority, state, type, title, description, sprintId, sprintName);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
     const response = await new SprintMethods().createEntry(points, priority, state, type, title, description, sprintId, sprintName);
 
     if (response) {
@@ -89,9 +101,33 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, assignId, type } = this.req.payload;
+    const { id, userId, type } = this.req.payload;
 
-    const response = await new SprintMethods().addUserToEntry(id, assignId, type);
+    const validationResponse = Validate.sprintAddEntryUser(id, userId, type);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().addUserToEntry(id, userId, type);
+
+    return this.res(response).code(response.statusCode);
+  }
+
+  async updateEntry() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { id, points, priority, type, title, description } = this.req.payload;
+
+    const validationResponse = Validate.sprintUpdateEntry(id, points, priority, type, title, description);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().updateEntry(id, points, priority, type, title, description);
 
     return this.res(response).code(response.statusCode);
   }

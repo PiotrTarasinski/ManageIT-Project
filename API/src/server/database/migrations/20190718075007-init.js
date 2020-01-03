@@ -182,10 +182,10 @@ module.exports = {
         type: DataTypes.STRING
       },
       state: {
-        type: DataTypes.ENUM(['TO_DO', 'IN_PROGRESS', 'TO_REVIEW_AND_TEST', 'DONE'])
+        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done'])
       },
       type: {
-        type: DataTypes.ENUM(['TASK', 'IMPROVEMENT', 'BUG', 'IDEA'])
+        type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
       },
       index: {
         type: DataTypes.INTEGER
@@ -194,7 +194,7 @@ module.exports = {
         type: DataTypes.INTEGER
       },
       priority: {
-        type: DataTypes.ENUM(['HIGH', 'NORMAL', 'LOW'])
+        type: DataTypes.ENUM(['High', 'Normal', 'Low'])
       },
       title: {
         type: DataTypes.STRING
@@ -226,7 +226,7 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryLabels', {
+    await queryInterface.createTable('sprintEntryLabel', {
       sprint_entry_id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,

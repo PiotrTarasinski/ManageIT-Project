@@ -35,7 +35,7 @@ class SprintMethods {
   }
 
   // tslint:disable-next-line:max-line-length
-  async changeEntryState(sprintId: string, entryId: string, indexFrom: string, indexTo: string, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
+  async changeEntryState(sprintId: string, entryId: string, indexFrom: number, indexTo: number, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
     const entryToChange = await db.SprintEntry.findByPk(entryId);
     if (entryToChange) {
       if (entryToChange.state === stateFrom && entryToChange.index === indexFrom) {
@@ -124,13 +124,12 @@ class SprintMethods {
     });
     entries.forEach(async instance => {
       if (instance.state === state) {
-        console.log(instance.index);
         index++;
       }
       count++;
     });
     return await db.SprintEntry.create({
-      points,
+      points: Number.parseInt(points, 10),
       priority,
       state,
       type,
@@ -138,7 +137,7 @@ class SprintMethods {
       title,
       description,
       sprintId,
-      index: index.toString()
+      index
     })
     .then(() => {
       return true;
@@ -148,20 +147,20 @@ class SprintMethods {
     });
   }
 
-  async addUserToEntry(id: string, assignId: string, type: string): Promise<CustomResponseType> {
+  async addUserToEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
     const entry = await db.SprintEntry.findByPk(id);
 
     if (!entry) {
       return CustomResponse(404, 'No entry with such id.', { formError: 'Entry not found.' });
     }
 
-    const assign = await db.User.findByPk(assignId);
+    const assign = await db.User.findByPk(userId);
 
     if (!assign) {
       return CustomResponse(404, 'No user with such id.', { formError: 'User not found.' });
     }
 
-    if (type === 'ASSIGN') {
+    if (type === 'Assign') {
       return await entry.addAssign(assign)
       .then(() => {
         return CustomResponse(200, 'Successfully added an assignee.');
@@ -170,7 +169,7 @@ class SprintMethods {
         return CustomResponse(500, 'Couldn\'t add an assignee.', { formError: 'Database error.' });
       });
     }
-    if (type === 'REVIEW') {
+    if (type === 'Review') {
       return await entry.addReviewer(assign)
     .then(() => {
       return CustomResponse(200, 'Successfully added a reviewer.');
@@ -180,6 +179,29 @@ class SprintMethods {
     });
     }
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
+  }
+
+  // tslint:disable-next-line:max-line-length
+  async updateEntry(id: string, points: string, priority: string, type: string, title: string, description: string): Promise<CustomResponseType> {
+    const entry = await db.SprintEntry.findByPk(id);
+
+    if (!entry) {
+      return CustomResponse(404, 'No such entry.', { formError: 'Entry not found.' });
+    }
+
+    return await entry.update({
+      points,
+      priority,
+      type,
+      title,
+      description
+    })
+    .then(() => {
+      return CustomResponse(200, 'Successfully updated an entry.');
+    })
+    .catch(() => {
+      return CustomResponse(500, 'Couldn\'t update an entry.', { formError: 'Database error.' });
+    });
   }
 }
 
