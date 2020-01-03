@@ -17,4 +17,14 @@ enum projectActionTypes {
   SET_PROJECT_LIST = 'SET_PROJECT_LIST',
 }
 
-export { defaultActionTypes, userActionTypes, applicationActionTypes, projectActionTypes };
+enum sprintActionTypes {
+  SET_SPRINT = 'SET_SPRINT',
+}
+
+export {
+  defaultActionTypes,
+  userActionTypes,
+  applicationActionTypes,
+  projectActionTypes,
+  sprintActionTypes,
+};

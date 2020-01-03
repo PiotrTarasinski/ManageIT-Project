@@ -7,7 +7,7 @@ enum taskState {
 
 enum taskType {
   TASK = 'Task',
-  IMPROVMENT = 'Improvment',
+  IMPROVEMENT = 'Improvement',
   BUG = 'Bug',
   IDEA = 'Idea',
 }

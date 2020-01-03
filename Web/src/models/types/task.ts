@@ -3,6 +3,7 @@ import { IPerson } from './person';
 
 export interface ITask {
   id: string;
+  identifier: string;
   title: string;
   description?: string;
   comments: IComment[];
