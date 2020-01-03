@@ -15,9 +15,24 @@ interface Login {
 
 const Validate = {
 
+  enum: {
+    state: [
+      'To do', 'In progress', 'To reviev / test', 'Done'
+    ],
+    type: [
+      'Idea', 'Task', 'Improvement', 'Bug'
+    ],
+    priority: [
+      'High', 'Normal', 'Low'
+    ],
+    userType: [
+      'Assign', 'Review'
+    ]
+  },
+
   addUserToProject(userId: string, projectId: string) {
 
-    const errorArray = [
+    const errorsArray = [
       validators.isString(userId, 'userId'),
       validators.required(userId, 'userId'),
       validators.uuid(userId, 'userId'),
@@ -26,7 +41,7 @@ const Validate = {
       validators.uuid(projectId, 'projectId')
     ];
 
-    return this.makeResponse(errorArray);
+    return this.makeResponse(errorsArray);
   },
 
   getUserProjects(order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
@@ -44,18 +59,88 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  sprintDeleteEntry(id: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.required(id, 'id'),
+      validators.uuid(id, 'id')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
+  // tslint:disable-next-line:max-line-length
+  sprintCreateEntry(points: string, priority: string, state: string, type: string, title: string, description: string, sprintId: string, sprintName: string) {
+    const errorsArray = [
+      validators.isNumber(points, 'points'),
+      validators.isString(priority, 'priority'),
+      validators.includes(priority, 'priority', this.enum.priority),
+      validators.isString(state, 'state'),
+      validators.includes(state, 'state', this.enum.state),
+      validators.isString(type, 'type'),
+      validators.includes(type, 'type', this.enum.type),
+      validators.isString(title, 'title'),
+      validators.isString(sprintId, 'sprintId'),
+      validators.required(sprintId, 'sprintId'),
+      validators.uuid(sprintId, 'sprintId'),
+      validators.isString(sprintName, 'sprintName')
+    ];
+    if (description) {
+      errorsArray.concat(
+        [
+          validators.isString(description, 'description')
+        ]
+      );
+    }
+    return this.makeResponse(errorsArray);
+  },
+
+  sprintUpdateEntry(id: string, points: string, priority: string, type: string, title: string, description: string) {
+    const errorsArray = [
+      validators.isNumber(points, 'points'),
+      validators.isString(priority, 'priority'),
+      validators.includes(priority, 'priority', this.enum.priority),
+      validators.isString(type, 'type'),
+      validators.includes(type, 'type', this.enum.type),
+      validators.isString(title, 'title'),
+      validators.isString(id, 'sprintId'),
+      validators.required(id, 'sprintId'),
+      validators.uuid(id, 'sprintId')
+    ];
+    if (description) {
+      errorsArray.concat(
+        [
+          validators.isString(description, 'description')
+        ]
+      );
+    }
+
+    return this.makeResponse(errorsArray);
+  },
+
+  sprintAddEntryUser(id: string, userId: string, type: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.uuid(id, 'id'),
+      validators.isString(userId, 'userId'),
+      validators.uuid(userId, 'userId'),
+      validators.includes(type, 'type', this.enum.userType),
+      validators.isString(type, 'type')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
   sprintChangeEntryType(sprintId: string, entryId: string, indexFrom: string, indexTo: string, typeFrom: string, typeTo: string) {
     const errorArray = [
       validators.isString(sprintId, 'sprintId'),
       validators.required(sprintId, 'sprintId'),
       validators.uuid(sprintId, 'sprintId'),
       validators.isString(entryId, 'entryId'),
-      validators.required(entryId, 'entryId'),
       validators.uuid(entryId, 'entryId'),
-      validators.required(indexFrom, 'indexFrom'),
-      validators.isString(indexFrom, 'indexFrom'),
+      validators.isNumber(indexFrom, 'indexFrom'),
       validators.required(indexTo, 'indexTo'),
-      validators.isString(indexTo, 'indexTo'),
+      validators.isNumber(indexTo, 'indexTo'),
       validators.required(typeFrom, 'typeFrom'),
       validators.isString(typeFrom, 'typeFrom'),
       validators.required(typeTo, 'typeTo'),

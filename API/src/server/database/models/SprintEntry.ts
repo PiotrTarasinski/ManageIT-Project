@@ -10,8 +10,8 @@ export interface SprintEntryAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   identifier: string;
-  index: string;
-  points: string;
+  index: number;
+  points: number;
   priority: string;
   state: string;
   type: string;
@@ -65,10 +65,10 @@ export const SprintEntryFactory = (
       type: DataTypes.STRING
     },
     state: {
-      type: DataTypes.ENUM(['TO_DO', 'IN_PROGRESS', 'TO_REVIEW_AND_TEST', 'DONE'])
+      type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done'])
     },
     type: {
-      type: DataTypes.ENUM(['IDEA', 'TASK', 'BUG', 'IMPROVEMENT'])
+      type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
     },
     index: {
       type: DataTypes.INTEGER
@@ -77,7 +77,7 @@ export const SprintEntryFactory = (
       type: DataTypes.INTEGER
     },
     priority: {
-      type: DataTypes.ENUM(['HIGH', 'NORMAL', 'LOW'])
+      type: DataTypes.ENUM(['High', 'Normal', 'Low'])
     },
     title: {
       type: DataTypes.STRING
