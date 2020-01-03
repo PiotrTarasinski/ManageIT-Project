@@ -18,9 +18,19 @@ export const Validator = {
     return null;
   },
 
-  isNumber(toTest: number, key: string): { key: string; message: string } | null {
+  isNumber(toTest: number | string, key: string): { key: string; message: string } | null {
     if (typeof toTest !== 'number') {
+      if (/^[0-9]+$/.test(toTest)) {
+        return null;
+      }
       return this.errorMessage(key, `${key} must be a number.`);
+    }
+    return null;
+  },
+
+  includes(toTest: string, key: string, array: string[]): { key: string; message: string } | null {
+    if (!array.includes(toTest)) {
+      return this.errorMessage(key, `${key} must be in enum.`);
     }
     return null;
   },

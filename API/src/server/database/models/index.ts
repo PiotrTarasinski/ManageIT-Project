@@ -4,12 +4,22 @@ import { UserAttributes, UserFactory, UserInstance } from './User';
 import { logger } from '../../../utils';
 import { ProjectInstance, ProjectAttributes, ProjectFactory } from './Project';
 import { UserProjectInstance, UserProjectAttributes, UserProjectFactory } from './UserProject';
+import { SprintInstance, SprintAttributes, SprintFactory } from './Sprint';
+import { SprintEntryInstance, SprintEntryAttributes, SprintEntryFactory } from './SprintEntry';
+import { LabelInstance, LabelAttributes, LabelFactory } from './Label';
+import { SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes, SprintEntryUserAssignFactory } from './SprintEntryUserAssign';
+import { SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes, SprintEntryUserReviewerFactory } from './SprintEntryUserReviewer';
 
 
 export type DbModels = {
   User: Sequelize.Model<UserInstance, UserAttributes>;
   Project: Sequelize.Model<ProjectInstance, ProjectAttributes>;
   UserProject: Sequelize.Model<UserProjectInstance, UserProjectAttributes>;
+  Sprint: Sequelize.Model<SprintInstance, SprintAttributes>;
+  SprintEntry: Sequelize.Model<SprintEntryInstance, SprintEntryAttributes>;
+  Label: Sequelize.Model<LabelInstance, LabelAttributes>;
+  SprintEntryUserAssign: Sequelize.Model<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes>;
+  SprintEntryUserReviewer: Sequelize.Model<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -41,8 +51,13 @@ export const createModels = (): DbInterface => {
     sequelize,
     Sequelize,
     User: UserFactory(sequelize, Sequelize),
+    Sprint: SprintFactory(sequelize, Sequelize),
     Project: ProjectFactory(sequelize, Sequelize),
-    UserProject: UserProjectFactory(sequelize, Sequelize)
+    UserProject: UserProjectFactory(sequelize, Sequelize),
+    SprintEntry: SprintEntryFactory(sequelize, Sequelize),
+    Label: LabelFactory(sequelize, Sequelize),
+    SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize),
+    SprintEntryUserReviewer: SprintEntryUserReviewerFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {
