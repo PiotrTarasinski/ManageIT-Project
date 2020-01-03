@@ -227,6 +227,30 @@ class SprintMethods {
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 
+  async removeUserFromEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
+    const entry = await db.SprintEntry.findByPk(id);
+
+    if (entry) {
+      const user = await db.User.findByPk(userId);
+
+      if (user) {
+        if (type === 'Assign') {
+          return await entry.removeAssign(user)
+          .then(() => CustomResponse(200, 'Successfully removed assignee.'))
+          .catch(() => CustomResponse(500, 'Coouldn\'t delete assignee.', { formError: 'Database error.' }));
+        }
+        if (type === 'Review') {
+          return await entry.removeReviewer(user)
+          .then(() => CustomResponse(200, 'Successfully removed reviewer.'))
+          .catch(() => CustomResponse(500, 'Coouldn\'t delete reviewer.', { formError: 'Database error.' }));
+        }
+        return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
+      }
+      return CustomResponse(400, 'User doesn\'t exist.', { formError: 'Invalid payload input.' });
+    }
+    return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+  }
+
   // Update existing entry
   async updateEntry(
     id: string,

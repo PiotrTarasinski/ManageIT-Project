@@ -50,6 +50,13 @@ class SprintRoutes extends MainRoutes {
         }
       },
       {
+        method: 'DELETE',
+        path: '/add_user',
+        options: {
+          handler: (req, res) => new SprintController(req, res).removeEntryUser()
+        }
+      },
+      {
         method: 'PUT',
         path: '/entry',
         options: {

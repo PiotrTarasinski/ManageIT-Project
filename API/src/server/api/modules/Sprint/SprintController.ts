@@ -136,6 +136,24 @@ class SprintController extends Controller {
     return this.res(response).code(response.statusCode);
   }
 
+  async removeEntryUser() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { id, userId, type } = this.req.payload;
+
+    const validationResponse = Validate.sprintAddEntryUser(id, userId, type);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().removeUserFromEntry(id, userId, type);
+
+    return this.res(response).code(response.statusCode);
+  }
+
   async updateEntry() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
