@@ -95,6 +95,19 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  sprintAddEntry(id: string, sprintId: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.required(id, 'id'),
+      validators.uuid(id, 'id'),
+      validators.isString(sprintId, 'sprintId'),
+      validators.required(sprintId, 'sprintId'),
+      validators.uuid(sprintId, 'sprintId')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
   sprintUpdateEntry(id: string, points: string, priority: string, type: string, title: string, description: string) {
     const errorsArray = [
       validators.isNumber(points, 'points'),

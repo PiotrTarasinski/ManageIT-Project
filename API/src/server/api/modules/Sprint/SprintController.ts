@@ -179,6 +179,12 @@ class SprintController extends Controller {
 
     const { id, sprintId } = this.req.payload;
 
+    const validationResponse = Validate.sprintAddEntry(id, sprintId);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
     const response = await new SprintMethods().addEntryToSprint(id, sprintId);
 
     return this.res(response).code(response.statusCode);
@@ -190,6 +196,12 @@ class SprintController extends Controller {
     }
 
     const { id } = this.req.payload;
+
+    const validationResponse = Validate.getSprintEntries(id, 'id');
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
 
     const response = await new SprintMethods().removeEntryFromSprint(id);
 
