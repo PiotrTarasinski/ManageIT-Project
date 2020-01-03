@@ -30,6 +30,9 @@ class SprintMethods {
             }
           ]
         }
+      ],
+      order: [
+        [{ model: db.Sprint, as: 'activeSprint' }, { model: db.SprintEntry, as: 'sprintEntries' }, 'index', 'ASC']
       ]
     });
   }
