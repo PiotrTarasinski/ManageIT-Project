@@ -152,7 +152,6 @@ const Validate = {
       validators.isString(entryId, 'entryId'),
       validators.uuid(entryId, 'entryId'),
       validators.isNumber(indexFrom, 'indexFrom'),
-      validators.required(indexTo, 'indexTo'),
       validators.isNumber(indexTo, 'indexTo'),
       validators.required(typeFrom, 'typeFrom'),
       validators.isString(typeFrom, 'typeFrom'),
