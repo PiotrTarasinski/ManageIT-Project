@@ -70,7 +70,7 @@ const Validate = {
   },
 
   // tslint:disable-next-line:max-line-length
-  sprintCreateEntry(points: string, priority: string, state: string, type: string, title: string, description: string, sprintId: string, sprintName: string) {
+  sprintCreateEntry(points: string, priority: string, state: string, type: string, title: string, description: string, projectId: string, projectName: string) {
     const errorsArray = [
       validators.isNumber(points, 'points'),
       validators.isString(priority, 'priority'),
@@ -80,10 +80,10 @@ const Validate = {
       validators.isString(type, 'type'),
       validators.includes(type, 'type', this.enum.type),
       validators.isString(title, 'title'),
-      validators.isString(sprintId, 'sprintId'),
-      validators.required(sprintId, 'sprintId'),
-      validators.uuid(sprintId, 'sprintId'),
-      validators.isString(sprintName, 'sprintName')
+      validators.isString(projectId, 'projectId'),
+      validators.required(projectId, 'projectId'),
+      validators.uuid(projectId, 'projectId'),
+      validators.isString(projectName, 'projectName')
     ];
     if (description) {
       errorsArray.concat(
@@ -92,6 +92,19 @@ const Validate = {
         ]
       );
     }
+    return this.makeResponse(errorsArray);
+  },
+
+  sprintAddEntry(id: string, sprintId: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.required(id, 'id'),
+      validators.uuid(id, 'id'),
+      validators.isString(sprintId, 'sprintId'),
+      validators.required(sprintId, 'sprintId'),
+      validators.uuid(sprintId, 'sprintId')
+    ];
+
     return this.makeResponse(errorsArray);
   },
 
@@ -150,11 +163,11 @@ const Validate = {
     return this.makeResponse(errorArray);
   },
 
-  getSprintEntries(id: string) {
+  getSprintEntries(id: string, key: string) {
     const errorArray = [
-      validators.isString(id, 'userId'),
-      validators.required(id, 'userId'),
-      validators.uuid(id, 'userId')
+      validators.isString(id, key),
+      validators.required(id, key),
+      validators.uuid(id, key)
     ];
 
     return this.makeResponse(errorArray);

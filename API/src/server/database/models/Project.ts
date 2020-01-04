@@ -3,6 +3,7 @@ import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes } from './User';
 import { UserProjectAttributes } from './UserProject';
 import { SprintAttributes } from './Sprint';
+import { SprintEntryInstance, SprintEntryAttributes } from './SprintEntry';
 
 export interface ProjectAttributes {
   id?: string;
@@ -20,9 +21,12 @@ export interface ProjectAttributes {
   users?: UserAttributes[];
   usersProjects?: UserProjectAttributes;
   activeSprint?: SprintAttributes;
+  entries?: SprintEntryAttributes[];
 }
 
-export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes { }
+export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
+  getEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
+}
 
 export const ProjectFactory = (
   sequelize: Sequelize.Sequelize,
@@ -76,6 +80,7 @@ export const ProjectFactory = (
       foreignKey: 'projectId'
     });
     Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
+    Project.hasMany(models.SprintEntry, { as: 'entries', foreignKey: 'projectId' });
   };
 
   return Project;

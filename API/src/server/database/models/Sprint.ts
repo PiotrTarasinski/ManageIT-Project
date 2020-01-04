@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes } from './User';
 import { UserProjectAttributes } from './UserProject';
-import { SprintEntryAttributes } from './SprintEntry';
+import { SprintEntryAttributes, SprintEntryInstance } from './SprintEntry';
 import { ProjectAttributes } from './Project';
 
 export interface SprintAttributes {
@@ -20,7 +20,10 @@ export interface SprintAttributes {
   project?: ProjectAttributes;
 }
 
-export interface SprintInstance extends Sequelize.Instance<SprintAttributes>, SprintAttributes {}
+export interface SprintInstance extends Sequelize.Instance<SprintAttributes>, SprintAttributes {
+  getSprintEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
+  addSprintEntry: Sequelize.HasManyAddAssociationMixin<SprintEntryInstance, SprintEntryAttributes['id']>;
+}
 
 export const SprintFactory = (
   sequelize: Sequelize.Sequelize,

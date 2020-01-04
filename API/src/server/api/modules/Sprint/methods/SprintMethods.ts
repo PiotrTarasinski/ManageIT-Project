@@ -3,44 +3,75 @@ import db from '../../../../database';
 import { Op } from 'sequelize';
 
 class SprintMethods {
+
+  // Get entries assigned to sprint with given id
   async getSprintEntries(id: string) {
-    return await db.Project.findByPk(id, {
+    return await db.Sprint.findByPk(id, {
       include: [
         {
-          model: db.Sprint,
-          as: 'activeSprint',
+          model: db.SprintEntry,
+          as: 'sprintEntries',
           include: [
             {
-              model: db.SprintEntry,
-              as: 'sprintEntries',
-              include: [
-                {
-                  model: db.User,
-                  as: 'assign'
-                },
-                {
-                  model: db.User,
-                  as: 'reviewers'
-                },
-                {
-                  model: db.Label,
-                  as: 'labels'
-                }
-              ]
+              model: db.User,
+              as: 'assign'
+            },
+            {
+              model: db.User,
+              as: 'reviewers'
+            },
+            {
+              model: db.Label,
+              as: 'labels'
             }
           ]
         }
       ],
       order: [
-        [{ model: db.Sprint, as: 'activeSprint' }, { model: db.SprintEntry, as: 'sprintEntries' }, 'index', 'ASC']
+        [{ model: db.SprintEntry, as: 'sprintEntries' }, 'index', 'ASC']
       ]
     });
   }
 
-  // tslint:disable-next-line:max-line-length
-  async changeEntryState(sprintId: string, entryId: string, indexFrom: number | string, indexTo: number | string, stateFrom: string, stateTo: string): Promise<CustomResponseType> {
+  // Get entries assigned to project wioth given id
+  async getProjectEntries(id: string) {
+    return await db.Project.findByPk(id, {
+      include: [
+        {
+          model: db.SprintEntry,
+          as: 'entries',
+          include: [
+            {
+              model: db.User,
+              as: 'assign'
+            },
+            {
+              model: db.User,
+              as: 'reviewers'
+            },
+            {
+              model: db.Label,
+              as: 'labels'
+            }
+          ]
+        }
+      ],
+      order: [
+        [{ model: db.SprintEntry, as: 'entries' }, 'priority', 'ASC']
+      ]
+    });
+  }
+
+  // Changes entry state and decrements or increments other entries indexes
+  async changeEntryState(
+    sprintId: string,
+    entryId: string,
+    indexFrom: number | string,
+    indexTo: number | string,
+    stateFrom: string,
+    stateTo: string): Promise<CustomResponseType> {
     const entryToChange = await db.SprintEntry.findByPk(entryId);
-    if (entryToChange) {
+    if (entryToChange && entryToChange.sprintId) {
       // tslint:disable-next-line:triple-equals
       if (entryToChange.state === stateFrom && entryToChange.index == indexFrom) {
         if (stateFrom === stateTo) {
@@ -51,18 +82,22 @@ class SprintMethods {
             where: {
               sprintId,
               [Op.or]: [
-                  { state: stateFrom },
-                  { state: stateTo }
+                { state: stateFrom },
+                { state: stateTo }
               ]
             }
           });
           entries.forEach(async instance => {
-            if (instance.index === indexFrom) {
-              await instance.update({ index: indexTo });
-            } else if (instance.index <= indexTo && instance.index > indexFrom) {
-              await instance.decrement('index', { by: 1 });
-            } else if (instance.index >= indexTo && indexFrom > indexTo && instance.index < indexFrom) {
-              await instance.increment('index', { by: 1 });
+            if (instance.index || instance.index === 0) {
+              console.log(instance.index, indexFrom);
+              // tslint:disable-next-line:triple-equals
+              if (instance.index == indexFrom) {
+                await instance.update({ index: indexTo });
+              } else if (instance.index <= indexTo && instance.index > indexFrom) {
+                await instance.decrement('index', { by: 1 });
+              } else if (instance.index > indexTo && indexFrom > indexTo && instance.index < indexFrom) {
+                await instance.increment('index', { by: 1 });
+              }
             }
           });
 
@@ -73,84 +108,91 @@ class SprintMethods {
           where: {
             sprintId,
             [Op.or]: [
-                { state: stateFrom },
-                { state: stateTo }
-            ]}
+              { state: stateFrom },
+              { state: stateTo }
+            ]
+          }
         });
         entries.forEach(async instance => {
-          if (instance.id === entryId) {
-            instance.update({ index: indexTo, state: stateTo });
-          } else if (instance.state === stateFrom && instance.index > indexFrom) {
-            await instance.decrement('index', { by: 1 });
-          } else if (instance.state === stateTo && instance.index >= indexTo) {
-            await instance.increment('index', { by: 1 });
+          if (instance.index || instance.index === 0) {
+            if (instance.id === entryId) {
+              instance.update({ index: indexTo, state: stateTo });
+            } else if (instance.state === stateFrom && instance.index > indexFrom) {
+              await instance.decrement('index', { by: 1 });
+            } else if (instance.state === stateTo && instance.index >= indexTo) {
+              await instance.increment('index', { by: 1 });
+            }
           }
         });
         return CustomResponse(200, 'Successfully changed state.');
       }
     }
-    return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index or state is invalid.' });
+    return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index, state is invalid or entry not in sprint.' });
   }
 
+  // Deletes entry with given id
   async deleteEntry(id: string) {
     const entryToDelete = await db.SprintEntry.findByPk(id);
     if (entryToDelete) {
       const { index, state, sprintId } = entryToDelete;
-      const entries = await db.SprintEntry.findAll({
-        where: {
-          state,
-          sprintId,
-          index: { [Op.gt]: index }
-        }
-      });
-      entries.forEach(async instance => {
-        instance.decrement('index', { by: 1 });
-      });
+      if (sprintId) {
+        const entries = await db.SprintEntry.findAll({
+          where: {
+            state,
+            sprintId,
+            index: { [Op.gt]: index }
+          }
+        });
+        entries.forEach(async instance => {
+          instance.decrement('index', { by: 1 });
+        });
+      }
       return entryToDelete.destroy()
-      .then(() => {
-        return true;
-      })
-      .catch((err) => {
-        return false;
-      });
+        .then(() => {
+          return true;
+        })
+        .catch((err) => {
+          return false;
+        });
     }
     return false;
   }
 
-  // tslint:disable-next-line:max-line-length
-  async createEntry(points: string, priority: string, state: string, type: string, title: string, description: string, sprintId: string, sprintName: string) {
-    let index = 0;
-    let count = 0;
-    const entries  = await db.SprintEntry.findAll({
+  // Create entry for given project
+  async createEntry(
+    points: string,
+    priority: string,
+    state: string,
+    type: string,
+    title: string,
+    description: string,
+    projectId: string,
+    projectName: string) {
+    const count = await db.SprintEntry.count({
       where: {
-        sprintId
+        projectId
       }
-    });
-    entries.forEach(async instance => {
-      if (instance.state === state) {
-        index++;
-      }
-      count++;
     });
     return await db.SprintEntry.create({
       points: Number.parseInt(points, 10),
       priority,
       state,
       type,
-      identifier: `${sprintName.substr(0, 3).toUpperCase()}-${count}`,
+      identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
       title,
       description,
-      sprintId,
-      index
+      projectId
     })
-    .then(() => {
-      return true;
-    })
-    .catch(() => {
-      return false;
-    });
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });
   }
 
+
+  // Add assignee or reviewer to entry
   async addUserToEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
     const entry = await db.SprintEntry.findByPk(id);
 
@@ -166,27 +208,57 @@ class SprintMethods {
 
     if (type === 'Assign') {
       return await entry.addAssign(assign)
-      .then(() => {
-        return CustomResponse(200, 'Successfully added an assignee.');
-      })
-      .catch(() => {
-        return CustomResponse(500, 'Couldn\'t add an assignee.', { formError: 'Database error.' });
-      });
+        .then(() => {
+          return CustomResponse(200, 'Successfully added an assignee.');
+        })
+        .catch(() => {
+          return CustomResponse(500, 'Couldn\'t add an assignee.', { formError: 'Database error.' });
+        });
     }
     if (type === 'Review') {
       return await entry.addReviewer(assign)
-    .then(() => {
-      return CustomResponse(200, 'Successfully added a reviewer.');
-    })
-    .catch(() => {
-      return CustomResponse(500, 'Couldn\'t add a reviewer.', { formError: 'Database error.' });
-    });
+        .then(() => {
+          return CustomResponse(200, 'Successfully added a reviewer.');
+        })
+        .catch(() => {
+          return CustomResponse(500, 'Couldn\'t add a reviewer.', { formError: 'Database error.' });
+        });
     }
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 
-  // tslint:disable-next-line:max-line-length
-  async updateEntry(id: string, points: string, priority: string, type: string, title: string, description: string): Promise<CustomResponseType> {
+  async removeUserFromEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
+    const entry = await db.SprintEntry.findByPk(id);
+
+    if (entry) {
+      const user = await db.User.findByPk(userId);
+
+      if (user) {
+        if (type === 'Assign') {
+          return await entry.removeAssign(user)
+          .then(() => CustomResponse(200, 'Successfully removed assignee.'))
+          .catch(() => CustomResponse(500, 'Coouldn\'t delete assignee.', { formError: 'Database error.' }));
+        }
+        if (type === 'Review') {
+          return await entry.removeReviewer(user)
+          .then(() => CustomResponse(200, 'Successfully removed reviewer.'))
+          .catch(() => CustomResponse(500, 'Coouldn\'t delete reviewer.', { formError: 'Database error.' }));
+        }
+        return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
+      }
+      return CustomResponse(400, 'User doesn\'t exist.', { formError: 'Invalid payload input.' });
+    }
+    return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+  }
+
+  // Update existing entry
+  async updateEntry(
+    id: string,
+    points: string,
+    priority: string,
+    type: string,
+    title: string,
+    description: string): Promise<CustomResponseType> {
     const entry = await db.SprintEntry.findByPk(id);
 
     if (!entry) {
@@ -200,12 +272,43 @@ class SprintMethods {
       title,
       description
     })
-    .then(() => {
-      return CustomResponse(200, 'Successfully updated an entry.');
-    })
-    .catch(() => {
-      return CustomResponse(500, 'Couldn\'t update an entry.', { formError: 'Database error.' });
-    });
+      .then(() => {
+        return CustomResponse(200, 'Successfully updated an entry.');
+      })
+      .catch(() => {
+        return CustomResponse(500, 'Couldn\'t update an entry.', { formError: 'Database error.' });
+      });
+  }
+
+  async addEntryToSprint(id: string, sprintId: string) {
+    const sprint = await db.Sprint.findByPk(sprintId);
+
+    if (sprint) {
+      const entry = await db.SprintEntry.findByPk(id);
+      if (entry) {
+        return await sprint.addSprintEntry(entry)
+        .then(() => CustomResponse(200, 'Successfully added entry to sprint.'))
+        .catch(() => CustomResponse(500, 'Database error.', { formError: 'Database error.' }));
+      }
+      return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+    }
+
+    return CustomResponse(400, 'Sprint doesn\'t exist.', { formError: 'Invalid payload input.' });
+  }
+
+  async removeEntryFromSprint(id: string): Promise<CustomResponseType> {
+    const entry = await db.SprintEntry.findByPk(id);
+
+    if (entry) {
+      if (!entry.sprintId) {
+        return CustomResponse(400, 'Entry is not in sprint.', { formError: 'Invalid payload input.' });
+      }
+      return await entry.update({ sprintId: null })
+      .then(() => CustomResponse(200, 'Successfully removed entry from sprint.'))
+      .catch(() => CustomResponse(500, 'Couldn\'t remove entry from sprint.', { formError: 'Database error.' }));
+    }
+
+    return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
   }
 }
 

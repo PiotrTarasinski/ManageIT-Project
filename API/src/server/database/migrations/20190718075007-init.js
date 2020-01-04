@@ -160,12 +160,22 @@ module.exports = {
       },
       sprintId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         references: {
           model: 'sprints',
           key: 'id'
         },
         field: 'sprint_id',
+        allowNull: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      projectId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'project_id',
         allowNull: false,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
@@ -182,13 +192,15 @@ module.exports = {
         type: DataTypes.STRING
       },
       state: {
-        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done'])
+        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done']),
+        allowNull: true
       },
       type: {
         type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
       },
       index: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: true
       },
       points: {
         type: DataTypes.INTEGER
@@ -229,7 +241,6 @@ module.exports = {
     await queryInterface.createTable('sprintEntryLabel', {
       sprint_entry_id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'sprintEntries',
@@ -240,7 +251,6 @@ module.exports = {
       },
       label_id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'labels',
@@ -260,7 +270,6 @@ module.exports = {
     await queryInterface.createTable('sprintEntryUserAssigns', {
       sprintEntryId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'sprintEntries',
@@ -272,7 +281,6 @@ module.exports = {
       },
       userId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'users',
@@ -295,7 +303,6 @@ module.exports = {
     await queryInterface.createTable('sprintEntryUserReviewers', {
       sprintEntryId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'sprintEntries',
@@ -307,7 +314,6 @@ module.exports = {
       },
       userId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         references: {
           model: 'users',
