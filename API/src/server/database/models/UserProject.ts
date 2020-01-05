@@ -2,13 +2,13 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
 export interface UserProjectAttributes {
-  projectId: string;
-  userId: string;
+  projectId?: string;
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  isAdmin: boolean;
-  isSupervisor: boolean;
-  isModerator: boolean;
+  isAdmin?: boolean;
+  isSupervisor?: boolean;
+  isModerator?: boolean;
 }
 
 export interface UserProjectInstance extends Sequelize.Instance<UserProjectAttributes>, UserProjectAttributes { }
@@ -46,14 +46,17 @@ export const UserProjectFactory = (
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
       field: 'is_admin'
     },
     isSupervisor: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
       field: 'is_supervisor'
     },
     isModerator: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
       field: 'is_moderator'
     }
   };

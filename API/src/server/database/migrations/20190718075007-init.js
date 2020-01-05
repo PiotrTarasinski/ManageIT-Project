@@ -31,7 +31,7 @@ module.exports = {
       },
       avatar: {
         type: DataTypes.STRING,
-      },
+      }
     });
 
     await queryInterface.createTable('sprints', {
@@ -105,6 +105,15 @@ module.exports = {
       }
     });
 
+    await queryInterface.addColumn('users', 'active_project_id', {
+      type: Sequelize.UUID,
+      references: {
+        model: 'projects',
+        key: 'id'
+      },
+      allowNull: true
+    });
+
     await queryInterface.createTable('usersProjects', {
       projectId: {
         type: DataTypes.UUID,
@@ -130,14 +139,17 @@ module.exports = {
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_admin',
       },
       isSupervisor: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_supervisor',
       },
       isModerator: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_moderator',
       },
       createdAt: {

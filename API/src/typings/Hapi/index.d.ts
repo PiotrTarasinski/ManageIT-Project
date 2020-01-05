@@ -4,12 +4,11 @@ import {
   RoutePermissions
 } from '../AppConfig/RoutePermissions';
 import { UserInstance } from '../../server/database/models/User';
-import { SessionTokenInstance } from '../../server/database/models/SessionToken';
 
 export type ApiRequestAuth = Hapi.RequestAuth & {
   credentials: AuthCredentials & {
     user: UserInstance,
-    token: SessionTokenInstance
+    token: string
   };
 };
 
@@ -20,7 +19,7 @@ export type ApiRequest = Hapi.Request & {
 export interface AppPluginsConfiguration extends PluginSpecificConfiguration {
   index?: boolean;
   routePermissions?: {
-    notes?: RoutePermissions['notes'];
+    projects?: RoutePermissions['notes'];
   };
 }
 

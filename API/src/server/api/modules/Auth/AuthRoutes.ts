@@ -34,6 +34,13 @@ class AuthRoutes extends MainRoutes {
           validate: {}
         }
       },
+      {
+        method: 'POST',
+        path: '/set_active_project',
+        options: {
+          handler: (req, res) => new AuthController(req, res).setActiveProject()
+        }
+      },
 
       {
         method: 'POST',

@@ -1,7 +1,13 @@
 import { Op } from 'sequelize';
 import db from '../../../../database';
 import { encryption } from '../../../../../utils';
-import CustomResponse from '../../../error/CustomError';
+import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
+import Token from '../../../shared/token/Token';
+
+type AuthResponseFormat = {
+  response: CustomResponseType;
+  token?: string;
+};
 
 class AuthMethods {
   async getUserByEmail(email: string) {
@@ -28,6 +34,21 @@ class AuthMethods {
     });
 
     return CustomResponse(200, 'User registered successfully.');
+  }
+
+  async setActiveProject(userId:string, id: string): Promise<AuthResponseFormat> {
+    const user = await db.User.findByPk(userId);
+    if (user) {
+      const project = await db.Project.findByPk(id);
+      if (project) {
+        return await user.setActiveProject(project)
+        .then(async () => {
+          return { response: CustomResponse(200, 'Active sprint set successfully.'), token: await new Token().generateTokenForUserInstance(user) };
+        });
+      }
+      return { response: CustomResponse(404, 'No such project.', { formError: 'Project not found.' }) };
+    }
+    return { response: CustomResponse(404, 'No such user.', { formError: 'User not found.' }) };
   }
 
 }

@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { ProjectAttributes } from './Project';
-import { UserProjectInstance } from './UserProject';
+import { ProjectAttributes, ProjectInstance } from './Project';
 import { SprintEntryAttributes } from './SprintEntry';
 
 export type AccountRole = 'admin' | 'user';
@@ -14,6 +13,7 @@ export interface UserAttributes {
   password: string;
   email: string;
   avatar?: string | null;
+  activeProjectId?: string;
 
   /**
    * Associations
@@ -25,6 +25,7 @@ export interface UserAttributes {
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
+  setActiveProject: Sequelize.BelongsToSetAssociationMixin<ProjectInstance, ProjectInstance['id']>;
 }
 
 export const UserFactory =
@@ -58,6 +59,14 @@ export const UserFactory =
       },
       avatar: {
         type: DataTypes.STRING
+      },
+      activeProjectId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'active_project_id'
       }
     };
 
@@ -65,6 +74,7 @@ export const UserFactory =
       .define<UserInstance, UserAttributes>('user', attributes);
 
     User.associate = (models) => {
+      User.belongsTo(models.Project, { as: 'activeProject', foreignKey: 'activeProjectId' });
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
       User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
