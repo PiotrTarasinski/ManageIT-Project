@@ -16,13 +16,6 @@ class SprintRoutes extends MainRoutes {
       },
       {
         method: 'POST',
-        path: '',
-        options: {
-          handler: (req, res) => new SprintController(req, res).getProjectEntries()
-        }
-      },
-      {
-        method: 'POST',
         path: '/change_state',
         options: {
           handler: (req, res) => new SprintController(req, res).changeEntryState()
@@ -30,16 +23,9 @@ class SprintRoutes extends MainRoutes {
       },
       {
         method: 'DELETE',
-        path: '/entry',
+        path: '/delete_entry',
         options: {
           handler: (req, res) => new SprintController(req, res).deleteEntry()
-        }
-      },
-      {
-        method: 'POST',
-        path: '/entry',
-        options: {
-          handler: (req, res) => new SprintController(req, res).createEntry()
         }
       },
       {
@@ -51,14 +37,14 @@ class SprintRoutes extends MainRoutes {
       },
       {
         method: 'DELETE',
-        path: '/add_user',
+        path: '/remove_user',
         options: {
           handler: (req, res) => new SprintController(req, res).removeEntryUser()
         }
       },
       {
         method: 'PUT',
-        path: '/entry',
+        path: '/update_entry',
         options: {
           handler: (req, res) => new SprintController(req, res).updateEntry()
         }

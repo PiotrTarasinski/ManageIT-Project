@@ -27,7 +27,53 @@ const Validate = {
     ],
     userType: [
       'Assign', 'Review'
+    ],
+    projectState: [
+      'Completed', 'In Development', 'Planning', 'Cancelled'
     ]
+  },
+
+  projectCreateProject(name: string, state: string) {
+    const errorsArray = [
+      validators.isString(name, 'name'),
+      validators.required(name, 'name'),
+      validators.isString(state, 'state'),
+      validators.required(state, 'state'),
+      validators.includes(state, 'state', this.enum.projectState)
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
+  projectUpdateProject(id: string, name: string, state: string, leadId: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.required(id, 'id'),
+      validators.uuid(id, 'id')
+    ];
+
+    if (name) {
+      errorsArray.push(
+        validators.isString(name, 'name'),
+        validators.required(name, 'name')
+      );
+    }
+    if (state) {
+      errorsArray.push(
+        validators.isString(state, 'state'),
+        validators.required(state, 'state'),
+        validators.includes(state, 'state', this.enum.projectState)
+      );
+    }
+    if (leadId) {
+      errorsArray.push(
+        validators.isString(leadId, 'leadId'),
+        validators.required(leadId, 'leadId'),
+        validators.uuid(leadId, 'leadId')
+      );
+    }
+
+    return this.makeResponse(errorsArray);
   },
 
   addUserToProject(userId: string, projectId: string) {
@@ -42,6 +88,16 @@ const Validate = {
     ];
 
     return this.makeResponse(errorsArray);
+  },
+
+  getProjectUsers(projectId: string) {
+    const errorArray = [
+      validators.isString(projectId, 'projectId'),
+      validators.required(projectId, 'projectId'),
+      validators.uuid(projectId, 'projectId')
+    ];
+
+    return this.makeResponse(errorArray);
   },
 
   getUserProjects(order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
@@ -213,9 +269,9 @@ const Validate = {
     const array = [
       validators.ref(confirmPassword, 'confirmPassword', payload.password, 'password')
     ]
-    .concat(this.passwordPolicy(password))
-    .concat(this.namePolicy(name))
-    .concat(this.emailPolicy(email));
+      .concat(this.passwordPolicy(password))
+      .concat(this.namePolicy(name))
+      .concat(this.emailPolicy(email));
 
     return this.makeResponse(array);
 
@@ -226,13 +282,13 @@ const Validate = {
     const { email, password } = payload;
 
     const array = this.passwordPolicy(password)
-    .concat(this.emailPolicy(email));
+      .concat(this.emailPolicy(email));
 
     return this.makeResponse(array);
 
   },
 
-  makeResponse(array: ({key: string, message: string} | null)[]) {
+  makeResponse(array: ({ key: string, message: string } | null)[]) {
     const errObject: { [key: string]: string } = {};
     array.forEach(element => {
       if (element) {

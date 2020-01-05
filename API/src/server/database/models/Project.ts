@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { UserAttributes } from './User';
-import { UserProjectAttributes } from './UserProject';
+import { UserAttributes, UserInstance } from './User';
+import { UserProjectAttributes, UserProjectInstance } from './UserProject';
 import { SprintAttributes } from './Sprint';
 import { SprintEntryInstance, SprintEntryAttributes } from './SprintEntry';
 
@@ -12,7 +12,7 @@ export interface ProjectAttributes {
   name: string;
   state: string;
   leadId?: string;
-  activeSprintId: string;
+  activeSprintId?: string;
 
   /**
    * Associations
@@ -26,6 +26,7 @@ export interface ProjectAttributes {
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
   getEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
+  addUser: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], UserProjectAttributes>;
 }
 
 export const ProjectFactory = (
@@ -73,6 +74,7 @@ export const ProjectFactory = (
   const Project = sequelize.define<ProjectInstance, ProjectAttributes>('project', attributes);
 
   Project.associate = models => {
+    Project.hasOne(models.User, { as: 'activeUser', foreignKey: 'activeProjectId' });
     Project.belongsTo(models.User, { as: 'lead', foreignKey: 'leadId', constraints: false });
     Project.belongsToMany(models.User, {
       through: 'usersProjects',

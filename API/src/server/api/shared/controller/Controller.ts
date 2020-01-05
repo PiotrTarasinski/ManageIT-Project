@@ -19,6 +19,7 @@ export type SearchParams = {
 class Controller {
 
   public user: UserInstance;
+  public token: string;
   public req: Hapi.Request & { payload: any };
 
   protected res: (value?: Hapi.ResponseValue) => Hapi.ResponseObject;
@@ -30,7 +31,7 @@ class Controller {
     this.res = (value?: any) => res.response(value);
 
     this.user = _.get(req, 'auth.credentials.user', {});
-    // this.token = _.get(req, 'auth.credentials.token', {});
+    this.token = _.get(req, 'headers.authorization', {});
 
     this.fileFolder = join(__dirname, '../../../../public');
 

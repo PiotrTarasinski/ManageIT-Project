@@ -33,34 +33,7 @@ class SprintMethods {
     });
   }
 
-  // Get entries assigned to project wioth given id
-  async getProjectEntries(id: string) {
-    return await db.Project.findByPk(id, {
-      include: [
-        {
-          model: db.SprintEntry,
-          as: 'entries',
-          include: [
-            {
-              model: db.User,
-              as: 'assign'
-            },
-            {
-              model: db.User,
-              as: 'reviewers'
-            },
-            {
-              model: db.Label,
-              as: 'labels'
-            }
-          ]
-        }
-      ],
-      order: [
-        [{ model: db.SprintEntry, as: 'entries' }, 'priority', 'ASC']
-      ]
-    });
-  }
+
 
   // Changes entry state and decrements or increments other entries indexes
   async changeEntryState(
@@ -158,38 +131,7 @@ class SprintMethods {
     return false;
   }
 
-  // Create entry for given project
-  async createEntry(
-    points: string,
-    priority: string,
-    state: string,
-    type: string,
-    title: string,
-    description: string,
-    projectId: string,
-    projectName: string) {
-    const count = await db.SprintEntry.count({
-      where: {
-        projectId
-      }
-    });
-    return await db.SprintEntry.create({
-      points: Number.parseInt(points, 10),
-      priority,
-      state,
-      type,
-      identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
-      title,
-      description,
-      projectId
-    })
-      .then(() => {
-        return true;
-      })
-      .catch((err) => {
-        return false;
-      });
-  }
+
 
 
   // Add assignee or reviewer to entry
