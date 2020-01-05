@@ -1,8 +1,9 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import db from '..';
 import { UserAttributes } from './User';
 import { UserProjectAttributes } from './UserProject';
+import { SprintAttributes } from './Sprint';
+import { SprintEntryInstance, SprintEntryAttributes } from './SprintEntry';
 
 export interface ProjectAttributes {
   id?: string;
@@ -11,6 +12,7 @@ export interface ProjectAttributes {
   name: string;
   state: string;
   leadId?: string;
+  activeSprintId: string;
 
   /**
    * Associations
@@ -18,9 +20,13 @@ export interface ProjectAttributes {
   lead?: UserAttributes;
   users?: UserAttributes[];
   usersProjects?: UserProjectAttributes;
+  activeSprint?: SprintAttributes;
+  entries?: SprintEntryAttributes[];
 }
 
-export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes { }
+export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
+  getEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
+}
 
 export const ProjectFactory = (
   sequelize: Sequelize.Sequelize,
@@ -46,6 +52,17 @@ export const ProjectFactory = (
     state: {
       type: DataTypes.ENUM(['Completed', 'In Development', 'Planning', 'Cancelled'])
     },
+    activeSprintId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'sprints',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      allowNull: true,
+      field: 'active_sprint_id'
+    },
     leadId: {
       type: DataTypes.UUID,
       allowNull: true,
@@ -62,6 +79,8 @@ export const ProjectFactory = (
       as: 'users',
       foreignKey: 'projectId'
     });
+    Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
+    Project.hasMany(models.SprintEntry, { as: 'entries', foreignKey: 'projectId' });
   };
 
   return Project;

@@ -9,12 +9,12 @@ import ProjectUsersFormatter from '../../shared/formatter/ProjectUsersFormatter'
 class ProjectController extends Controller {
   async getUserProjects() {
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
     }
 
     const { order, orderBy, page, rowsPerPage, search } = this.req.payload;
@@ -28,7 +28,7 @@ class ProjectController extends Controller {
     const userProjects = await new ProjectMethods().getUserProjects(this.user.id, order, orderBy, page, rowsPerPage, search);
 
     if (!userProjects) {
-      return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
+      return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' })).code(500);
     }
 
     if (userProjects.rows.length === 0) {
@@ -45,7 +45,7 @@ class ProjectController extends Controller {
     }
 
     if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
     const { userId, projectId } = this.req.payload;
@@ -64,7 +64,7 @@ class ProjectController extends Controller {
   async deleteUserFromProject() {
 
     if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
     }
 
     if (!this.req.payload) {
