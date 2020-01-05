@@ -101,15 +101,15 @@ class ProjectMethods {
         projectId
       }
     })
-    .then((count) => {
-      if (!count) {
-        return CustomResponse(400, 'User not in project.', { formError: 'Supplied user is not a part of this project.' });
-      }
-      return CustomResponse(200, 'User deleted successfully');
-    })
-    .catch(() => {
-      return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
-    });
+      .then((count) => {
+        if (!count) {
+          return CustomResponse(400, 'User not in project.', { formError: 'Supplied user is not a part of this project.' });
+        }
+        return CustomResponse(200, 'User deleted successfully');
+      })
+      .catch(() => {
+        return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
+      });
   }
 
   async getProjectUsers(projectId: string) {
@@ -132,18 +132,18 @@ class ProjectMethods {
       state,
       leadId
     })
-    .then(async project => {
-      await project.addUser(leadId, { through: { isAdmin: true } });
-      return project;
-    });
+      .then(async project => {
+        await project.addUser(leadId, { through: { isAdmin: true } });
+        return project;
+      });
   }
 
   async deleteProject(id: string) {
     const project = await db.Project.findByPk(id);
     if (project) {
       return project.destroy()
-      .then(() => CustomResponse(200, 'Project deleted successfully'))
-      .catch(() => CustomResponse(500, 'Couldn\'t delete project.', { formError: 'Database error.' }));
+        .then(() => CustomResponse(200, 'Project deleted successfully'))
+        .catch(() => CustomResponse(500, 'Couldn\'t delete project.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
   }
@@ -162,10 +162,72 @@ class ProjectMethods {
         project.leadId = leadId;
       }
       return await project.save()
-      .then(() => CustomResponse(200, 'Project updated successfully'))
-      .catch(() => CustomResponse(500, 'Couldn\'t update project.', { formError: 'Database error.' }));
+        .then(() => CustomResponse(200, 'Project updated successfully'))
+        .catch(() => CustomResponse(500, 'Couldn\'t update project.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
+  }
+
+  // Get entries assigned to project wioth given id
+  async getProjectEntries(id: string) {
+    return await db.Project.findByPk(id, {
+      include: [
+        {
+          model: db.SprintEntry,
+          as: 'entries',
+          include: [
+            {
+              model: db.User,
+              as: 'assign'
+            },
+            {
+              model: db.User,
+              as: 'reviewers'
+            },
+            {
+              model: db.Label,
+              as: 'labels'
+            }
+          ]
+        }
+      ],
+      order: [
+        [{ model: db.SprintEntry, as: 'entries' }, 'priority', 'ASC']
+      ]
+    });
+  }
+
+  // Create entry for given project
+  async createEntry(
+    points: string,
+    priority: string,
+    state: string,
+    type: string,
+    title: string,
+    description: string,
+    projectId: string,
+    projectName: string) {
+    const count = await db.SprintEntry.count({
+      where: {
+        projectId
+      }
+    });
+    return await db.SprintEntry.create({
+      points: Number.parseInt(points, 10),
+      priority,
+      state,
+      type,
+      identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
+      title,
+      description,
+      projectId
+    })
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });
   }
 }
 

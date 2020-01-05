@@ -47,7 +47,11 @@ class RoutePermissionsValidator implements IPlugin {
         });
         if (user) {
           const { isAdmin, isSupervisor, isModerator } = user;
-          this.evaluateProjectPermissions(plugins.routePermissions.projects, { isAdmin, isSupervisor, isModerator });
+          this.evaluateProjectPermissions(plugins.routePermissions.projects, {
+            isAdmin: <boolean>isAdmin,
+            isSupervisor: <boolean>isSupervisor,
+            isModerator: <boolean>isModerator
+          });
           return reply.continue;
         }
         return Boom.unauthorized('Unathorized.');

@@ -4,14 +4,13 @@ import { encryption } from '../../../../utils';
 import validate from '../../validation/Validate';
 import CustomResponse from '../../error/CustomError';
 import Token from '../../shared/token/Token';
-import AuthFormatter from '../../shared/formatter/UserFormatter';
 
 class AuthController extends Controller {
   async login() {
     const payload = await this.req.payload;
 
     if (!payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
     const validationResponse = validate.login(payload); // Custom validation
@@ -39,14 +38,14 @@ class AuthController extends Controller {
   }
 
   async validateToken() {
-    return this.res(CustomResponse(200, 'Token OK.')).code(200);
+    return this.res(CustomResponse(200, 'Token OK.'));
   }
 
   async signUp() {
     const payload = await this.req.payload;
 
     if (!payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
     const validationResponse = validate.signUp(payload);
@@ -58,6 +57,26 @@ class AuthController extends Controller {
     const response = await new AuthMethods().createUser(payload);
 
     return this.res(response).code(response.statusCode);
+  }
+
+  async setActiveProject() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
+    }
+
+    const { id } = this.req.payload;
+
+    const authResponse = await new AuthMethods().setActiveProject(this.user.id, id);
+
+    if (authResponse.token) {
+      return this.res(authResponse.response).code(authResponse.response.statusCode).header('access_token', authResponse.token);
+    }
+
+    return this.res(authResponse.response).code(authResponse.response.statusCode);
   }
 }
 

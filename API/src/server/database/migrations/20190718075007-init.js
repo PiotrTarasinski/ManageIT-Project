@@ -31,7 +31,7 @@ module.exports = {
       },
       avatar: {
         type: DataTypes.STRING,
-      },
+      }
     });
 
     await queryInterface.createTable('sprints', {
@@ -103,6 +103,15 @@ module.exports = {
         allowNull: true,
         field: 'active_sprint_id'
       }
+    });
+
+    await queryInterface.addColumn('users', 'active_project_id', {
+      type: Sequelize.UUID,
+      references: {
+        model: 'projects',
+        key: 'id'
+      },
+      allowNull: true
     });
 
     await queryInterface.createTable('usersProjects', {

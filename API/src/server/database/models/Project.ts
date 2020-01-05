@@ -74,6 +74,7 @@ export const ProjectFactory = (
   const Project = sequelize.define<ProjectInstance, ProjectAttributes>('project', attributes);
 
   Project.associate = models => {
+    Project.hasOne(models.User, { as: 'activeUser', foreignKey: 'activeProjectId' });
     Project.belongsTo(models.User, { as: 'lead', foreignKey: 'leadId', constraints: false });
     Project.belongsToMany(models.User, {
       through: 'usersProjects',
