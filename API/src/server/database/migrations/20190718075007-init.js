@@ -130,14 +130,17 @@ module.exports = {
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_admin',
       },
       isSupervisor: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_supervisor',
       },
       isModerator: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
         field: 'is_moderator',
       },
       createdAt: {

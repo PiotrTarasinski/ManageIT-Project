@@ -5,6 +5,7 @@ import { join, extname } from 'path';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import Token from '../../../shared/token/Token';
 import { Op } from 'sequelize';
+import { triggerAsyncId } from 'async_hooks';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -123,6 +124,48 @@ class ProjectMethods {
         }
       ]
     });
+  }
+
+  async createProject(name: string, state: string, leadId: string) {
+    return await db.Project.create({
+      name,
+      state,
+      leadId
+    })
+    .then(async project => {
+      await project.addUser(leadId, { through: { isAdmin: true } });
+      return project;
+    });
+  }
+
+  async deleteProject(id: string) {
+    const project = await db.Project.findByPk(id);
+    if (project) {
+      return project.destroy()
+      .then(() => CustomResponse(200, 'Project deleted successfully'))
+      .catch(() => CustomResponse(500, 'Couldn\'t delete project.', { formError: 'Database error.' }));
+    }
+    return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
+  }
+
+  async updateProject(id: string, name: string, state: string, leadId: string) {
+    const project = await db.Project.findByPk(id);
+
+    if (project) {
+      if (name) {
+        project.name = name;
+      }
+      if (state) {
+        project.state = state;
+      }
+      if (leadId) {
+        project.leadId = leadId;
+      }
+      return await project.save()
+      .then(() => CustomResponse(200, 'Project updated successfully'))
+      .catch(() => CustomResponse(500, 'Couldn\'t update project.', { formError: 'Database error.' }));
+    }
+    return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
   }
 }
 

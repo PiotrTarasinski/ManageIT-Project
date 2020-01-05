@@ -30,6 +30,27 @@ class ProjectRoutes extends MainRoutes {
       },
       {
         method: 'POST',
+        path: '/create_project',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).createProject()
+        }
+      },
+      {
+        method: 'DELETE',
+        path: '/delete_project',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).deleteProject()
+        }
+      },
+      {
+        method: 'PUT',
+        path: '/update_project',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).updateProject()
+        }
+      },
+      {
+        method: 'POST',
         path: '/get_all_project_users',
         options: {
           handler: (req, res) => new ProjectController(req, res).getProjectUsers()

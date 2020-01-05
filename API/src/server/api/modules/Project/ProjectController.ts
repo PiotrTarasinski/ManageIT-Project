@@ -114,6 +114,68 @@ class ProjectController extends Controller {
 
     return this.res(await new ProjectUsersFormatter().format(projectUsers));
   }
+
+  async createProject() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
+    }
+
+    const { name, state } = this.req.payload;
+
+    const validationResponse = Validate.projectCreateProject(name, state);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().createProject(name, state, this.user.id);
+
+    if (response) {
+      return this.res(response);
+    }
+
+    return this.res(CustomResponse(500, 'Database error.', { formError: 'Database error.' })).code(500);
+  }
+
+  async deleteProject() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { id } = this.req.payload;
+
+    const validationResponse = Validate.getProjectUsers(id);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().deleteProject(id);
+
+    return this.res(response).code(response.statusCode);
+  }
+
+  async updateProject() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { id, name, state, leadId } = this.req.payload;
+
+    const validationResponse = Validate.projectUpdateProject(id, name, state, leadId);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().updateProject(id, name, state, leadId);
+
+    return this.res(response).code(response.statusCode);
+  }
 }
 
 export default ProjectController;
