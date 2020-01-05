@@ -23,6 +23,17 @@ class SprintMethods {
             {
               model: db.Label,
               as: 'labels'
+            },
+            {
+              model: db.Comment,
+              as: 'comments',
+              separate: true,
+              include: [
+                {
+                  model: db.User,
+                  as: 'user'
+                }
+              ]
             }
           ]
         }
@@ -252,6 +263,59 @@ class SprintMethods {
 
     return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
   }
+
+  async addComment(id: string, userId: string, content: string) {
+    const comment = await db.Comment.create({
+      content,
+      userId,
+      sprintEntryId: id
+    });
+    if (comment) {
+      return await db.Comment.findByPk(comment.id, {
+        include: [
+          {
+            model: db.User,
+            as: 'user'
+          }
+        ]
+      });
+    }
+    return null;
+  }
+
+  async deleteComment(id: string) {
+    const comment = await db.Comment.findByPk(id);
+
+    console.log(comment);
+
+    if (comment) {
+      return await comment.destroy()
+      .then(() => CustomResponse(200, 'Successfully deleted comment.'))
+      .catch(() => CustomResponse(500, 'Couldn\'t delete comment', { formError: 'Database error.' }));
+    }
+
+    return CustomResponse(404, 'No such comment.', { formError: 'Comment not found.' });
+  }
+
+  async updateComment(id: string, content: string) {
+    const comment = await db.Comment.findByPk(id, {
+      include: [
+        {
+          model: db.User,
+          as: 'user'
+        }
+      ]
+    });
+
+    if (comment) {
+      return await comment.update({
+        content
+      });
+    }
+
+    return null;
+  }
+
 }
 
 export default SprintMethods;

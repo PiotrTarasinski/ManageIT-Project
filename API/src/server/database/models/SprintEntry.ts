@@ -6,6 +6,7 @@ import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
 import { SprintEntryUserReviewerAttributes } from './SprintEntryUserReviewer';
 import { SprintAttributes } from './Sprint';
 import { ProjectAttributes } from './Project';
+import { CommentAttributes } from './Comment';
 
 export interface SprintEntryAttributes {
   id?: string;
@@ -29,6 +30,7 @@ export interface SprintEntryAttributes {
   labels?: LabelAttributes[];
   sprint?: SprintAttributes;
   project?: ProjectAttributes;
+  comments?: CommentAttributes[];
 }
 
 export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes {
@@ -110,6 +112,7 @@ export const SprintEntryFactory = (
 
   SprintEntry.associate = models => {
     SprintEntry.belongsTo(models.Sprint, { as: 'sprint', foreignKey: 'sprintId' });
+    SprintEntry.hasMany(models.Comment, { as: 'comments', foreignKey: 'sprintEntryId' });
     SprintEntry.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
     SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserAssign', as: 'assign', foreignKey: 'sprint_entry_id' });
     SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserReviewer', as: 'reviewers', foreignKey: 'sprint_entry_id' });

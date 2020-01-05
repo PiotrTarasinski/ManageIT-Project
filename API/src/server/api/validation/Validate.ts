@@ -125,6 +125,17 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  sprintAddComment(id: string, content: string) {
+    const errorsArray = [
+      validators.isString(id, 'id'),
+      validators.required(id, 'id'),
+      validators.uuid(id, 'id'),
+      validators.isString(content, 'content')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
   // tslint:disable-next-line:max-line-length
   sprintCreateEntry(points: string, priority: string, state: string, type: string, title: string, description: string, projectId: string, projectName: string) {
     const errorsArray = [

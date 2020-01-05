@@ -1,0 +1,31 @@
+import ResponseFormatter from '../../shared/template/ResponseFormatter';
+import { ProjectInstance } from '../../../database/models/Project';
+import { SprintInstance } from '../../../database/models/Sprint';
+import { SprintEntryAttributes, SprintEntryInstance } from '../../../database/models/SprintEntry';
+import bulkFormat from '../../../../utils/bulkFormat';
+import SprintEntriesFormatter, { SprintEntriesResponseFormat } from './SprintEntriesFormatter';
+import { CommentInstance } from '../../../database/models/Comment';
+import UserFormatter, { UserResponseFormat } from './UserFormatter';
+import { UserInstance, UserAttributes } from '../../../database/models/User';
+
+export type CommentResponseFormat = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: UserResponseFormat;
+};
+
+class CommentFormatter implements ResponseFormatter<CommentInstance, CommentResponseFormat> {
+  async format(comment: CommentInstance) {
+    return {
+      id: <string>comment.id,
+      content: comment.content,
+      createdAt: <Date>comment.createdAt,
+      updatedAt: <Date>comment.updatedAt,
+      user: await new UserFormatter().format(<UserInstance>comment.user)
+    };
+  }
+}
+
+export default CommentFormatter;

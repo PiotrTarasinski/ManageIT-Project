@@ -228,6 +228,45 @@ module.exports = {
       }
     });
 
+    await queryInterface.createTable('comments', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        field: 'user_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      sprintEntryId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'sprintEntries',
+          key: 'id'
+        },
+        field: 'sprint_entry_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      content: {
+        type: DataTypes.STRING
+      }
+    });
+
     await queryInterface.createTable('labels', {
       id: {
         type: DataTypes.UUID,

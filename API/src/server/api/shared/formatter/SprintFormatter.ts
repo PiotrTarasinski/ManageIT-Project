@@ -4,6 +4,7 @@ import { SprintInstance } from '../../../database/models/Sprint';
 import { SprintEntryAttributes, SprintEntryInstance } from '../../../database/models/SprintEntry';
 import bulkFormat from '../../../../utils/bulkFormat';
 import SprintEntriesFormatter, { SprintEntriesResponseFormat } from './SprintEntriesFormatter';
+import CommentFormatter, { CommentResponseFormat } from './CommentsFormatter';
 
 export type SprintResponseFormat = {
   id: string;
