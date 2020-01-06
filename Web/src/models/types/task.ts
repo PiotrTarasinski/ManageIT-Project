@@ -28,3 +28,10 @@ export interface IComment {
   author: IPerson;
   message: string;
 }
+
+export interface ITaskList {
+  toDoList: ITask[];
+  inProgressList: ITask[];
+  toReviewList: ITask[];
+  doneList: ITask[];
+}

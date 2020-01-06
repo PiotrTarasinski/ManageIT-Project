@@ -23,10 +23,19 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StoreAction } from 'store/actions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { ITask } from 'models/types/task';
+import { ITask, ITaskList } from 'models/types/task';
 
 interface IDispatchProps {
   getSprint: (id: string) => any;
+  moveTask: (
+    taskList: ITaskList,
+    sprintId: string,
+    entryId: string,
+    indexFrom: number,
+    indexTo: number,
+    stateFrom: taskState,
+    stateTo: taskState,
+  ) => any;
 }
 
 interface IStoreProps {
@@ -42,17 +51,30 @@ function SprintPage(props: Props) {
   const { sprint } = props;
 
   useEffect(() => {
-    props.getSprint(props.match.params.id);
+    // props.getSprint(props.match.params.id);
+    props.getSprint('38184a13-4273-499a-af73-f5a053cdb589');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onDragEnd = (result: any) => {
-    const { source, destination } = result;
-    console.log(result);
+    const { source, destination, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    props.moveTask(
+      sprint.taskList,
+      sprint.id,
+      draggableId,
+      source.index,
+      destination.index,
+      source.droppableId,
+      destination.droppableId,
+    );
   };
 
-  const renderTaskList = (state: taskState) => {
-    const taskList = sprint.taskList.filter((task: ITask) => task.state === state);
+  const renderTaskList = (taskList: ITask[], state: taskState) => {
     let icon = <CheckCircle className={classes.taskListIcon} />;
 
     if (state === taskState.TO_DO) icon = <QueryBuilder className={classes.taskListIcon} />;
@@ -74,11 +96,11 @@ function SprintPage(props: Props) {
           </div>
         </div>
         <Droppable droppableId={state}>
-          {(provided, snapshot) => (
+          {provided => (
             <div ref={provided.innerRef} className={classes.droppable}>
-              {taskList.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
+              {taskList.map(item => (
+                <Draggable key={item.id} draggableId={item.id} index={item.index}>
+                  {provided => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
@@ -142,10 +164,10 @@ function SprintPage(props: Props) {
       </div>
       <div className={classes.taskListContainer}>
         <DragDropContext onDragEnd={onDragEnd}>
-          {renderTaskList(taskState.TO_DO)}
-          {renderTaskList(taskState.IN_PROGRESS)}
-          {renderTaskList(taskState.TO_REVIEW_AND_TEST)}
-          {renderTaskList(taskState.DONE)}
+          {renderTaskList(sprint.taskList.toDoList, taskState.TO_DO)}
+          {renderTaskList(sprint.taskList.inProgressList, taskState.IN_PROGRESS)}
+          {renderTaskList(sprint.taskList.toReviewList, taskState.TO_REVIEW_AND_TEST)}
+          {renderTaskList(sprint.taskList.doneList, taskState.DONE)}
         </DragDropContext>
       </div>
     </PageContainer>
@@ -158,6 +180,26 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
   getSprint: (id: string) => dispatch(StoreAction.sprint.getSprint(id)),
+  moveTask: (
+    taskList: ITaskList,
+    sprintId: string,
+    entryId: string,
+    indexFrom: number,
+    indexTo: number,
+    stateFrom: taskState,
+    stateTo: taskState,
+  ) =>
+    dispatch(
+      StoreAction.sprint.moveTask(
+        taskList,
+        sprintId,
+        entryId,
+        indexFrom,
+        indexTo,
+        stateFrom,
+        stateTo,
+      ),
+    ),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SprintPage));

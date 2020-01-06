@@ -19,6 +19,7 @@ enum projectActionTypes {
 
 enum sprintActionTypes {
   SET_SPRINT = 'SET_SPRINT',
+  UPDATE_TASK_LIST = 'UPDATE_TASK_LIST',
 }
 
 export {

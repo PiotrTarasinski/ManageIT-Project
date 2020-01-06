@@ -1,6 +1,6 @@
 import { INotification } from './notification';
 import { ProjectsListData } from './project';
-import { ITask } from './task';
+import { ITaskList } from './task';
 
 export interface Action {
   type: number | string;
@@ -20,6 +20,7 @@ export interface UserState {
   readonly email?: string;
   readonly name?: string;
   readonly avatar?: string;
+  readonly activeProjectId?: string;
 }
 
 export interface ApplicationState {
@@ -38,5 +39,5 @@ export interface SprintState {
   readonly startDate: Date;
   readonly endDate: Date;
   readonly description: string;
-  readonly taskList: ITask[];
+  readonly taskList: ITaskList;
 }

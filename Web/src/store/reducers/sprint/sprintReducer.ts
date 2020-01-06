@@ -7,13 +7,20 @@ const initialState: SprintState = {
   startDate: new Date(),
   endDate: new Date(),
   description: '',
-  taskList: [],
+  taskList: {
+    toDoList: [],
+    inProgressList: [],
+    toReviewList: [],
+    doneList: [],
+  },
 };
 
 export default (state = initialState, action: Action) => {
   switch (action.type) {
     case sprintActionTypes.SET_SPRINT:
-      return { ...state, ...action.payload };
+      return action.payload;
+    case sprintActionTypes.UPDATE_TASK_LIST:
+      return { ...state, taskList: action.payload };
 
     default:
       return { ...state };

@@ -51,7 +51,10 @@ const SprintTask = (props: IProps) => {
           <div>
             <div className={classes.taskType}>{renderTaskTypeIcon()}</div>
           </div>
-          <Typography className={classes.taskNumber}>{task.identifier}</Typography>
+          <Typography className={classes.taskNumber}>
+            {task.identifier}
+            {task.index}
+          </Typography>
           <Tooltip title="Assign to">
             <div
               className={classes.assignContainer}
@@ -100,11 +103,11 @@ const SprintTask = (props: IProps) => {
           </Tooltip> */}
         </div>
       </div>
-      <SprintAssignTaskModal
+      {/* <SprintAssignTaskModal
         assignModalOpen={assignModalOpen}
         setAssignModalOpen={setAssignModalOpen}
         task={task}
-      />
+      /> */}
     </React.Fragment>
   );
 };
