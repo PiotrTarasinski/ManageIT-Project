@@ -14,7 +14,7 @@ import {
   Edit,
   Close,
 } from '@material-ui/icons';
-import { taskState } from 'models/enums/task';
+import { taskState, taskType, taskPriority } from 'models/enums/task';
 import SprintTask from 'components/sprintTask/SprintTask';
 import { daysBetween } from 'utils/daysBetween';
 import { RouteComponentProps } from 'react-router-dom';
@@ -24,6 +24,7 @@ import { StoreAction } from 'store/actions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ITask, ITaskList } from 'models/types/task';
+import SprintAssignTaskModal from 'modals/sprintAssignTaskModal/SprintAssignTaskModal';
 
 interface IDispatchProps {
   getSprint: (id: string) => any;
@@ -46,6 +47,8 @@ type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
 function SprintPage(props: Props) {
   const [sprintOptionsDialOpen, setSprintOptionsDialOpen] = React.useState(false);
+  const [assignModalOpen, setAssignModalOpen] = React.useState(false);
+  const [selectedTask, setSelectedTask] = React.useState();
 
   const classes = useStyles();
   const { sprint } = props;
@@ -72,6 +75,11 @@ function SprintPage(props: Props) {
       source.droppableId,
       destination.droppableId,
     );
+  };
+
+  const openAssignModal = (task: ITask) => {
+    setSelectedTask(task);
+    setAssignModalOpen(true);
   };
 
   const renderTaskList = (taskList: ITask[], state: taskState) => {
@@ -106,7 +114,7 @@ function SprintPage(props: Props) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <SprintTask key={item.id} task={item} />
+                      <SprintTask key={item.id} task={item} openAssignModal={openAssignModal} />
                     </div>
                   )}
                 </Draggable>
@@ -170,6 +178,11 @@ function SprintPage(props: Props) {
           {renderTaskList(sprint.taskList.doneList, taskState.DONE)}
         </DragDropContext>
       </div>
+      <SprintAssignTaskModal
+        assignModalOpen={assignModalOpen}
+        setAssignModalOpen={setAssignModalOpen}
+        task={selectedTask}
+      />
     </PageContainer>
   );
 }

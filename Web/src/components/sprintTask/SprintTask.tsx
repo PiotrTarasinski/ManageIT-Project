@@ -8,15 +8,14 @@ import { indigo, orange, red, blue, green } from '@material-ui/core/colors';
 import { IPerson } from 'models/types/person';
 import clsx from 'clsx';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
-import SprintAssignTaskModal from 'modals/sprintAssignTaskModal/SprintAssignTaskModal';
 
 interface IProps {
   task: ITask;
+  openAssignModal: (task: ITask) => any;
 }
 
 const SprintTask = (props: IProps) => {
   const { task } = props;
-  const [assignModalOpen, setAssignModalOpen] = React.useState(false);
 
   const getStyle = () => {
     const styleProps: any = {};
@@ -39,76 +38,69 @@ const SprintTask = (props: IProps) => {
     if (task.type === taskType.IDEA) return <EmojiObjects className={classes.typeIcon} />;
   };
 
-  const openAssignModal = (event: React.MouseEvent<HTMLElement>, task: ITask) => {
+  const handleOpenAssignModal = (event: React.MouseEvent<HTMLElement>, task: ITask) => {
     event.stopPropagation();
-    setAssignModalOpen(true);
+    props.openAssignModal(task);
   };
 
   return (
-    <React.Fragment>
-      <div className={classes.taskContainer} onClick={() => alert('Open task details')}>
-        <div className={classes.taskHeader}>
-          <div>
-            <div className={classes.taskType}>{renderTaskTypeIcon()}</div>
+    <div className={classes.taskContainer} onClick={() => alert('Open task details')}>
+      <div className={classes.taskHeader}>
+        <div>
+          <div className={classes.taskType}>{renderTaskTypeIcon()}</div>
+        </div>
+        <Typography className={classes.taskNumber}>
+          {task.identifier}
+          {task.index}
+        </Typography>
+        <Tooltip title="Assign to">
+          <div
+            className={classes.assignContainer}
+            onClick={(event: React.MouseEvent<HTMLElement>) => handleOpenAssignModal(event, task)}
+          >
+            {task.assign.length === 0 ? (
+              <IconButton size="small">
+                <PersonAdd />
+              </IconButton>
+            ) : (
+              task.assign.map((user: IPerson, index: number) => {
+                return (
+                  <Avatar
+                    key={user.id}
+                    alt={user.name}
+                    className={clsx(classes.assignAvatar, { zIndex: index })}
+                    src={user.avatar || defaultAvatar}
+                  />
+                );
+              })
+            )}
           </div>
-          <Typography className={classes.taskNumber}>
-            {task.identifier}
-            {task.index}
-          </Typography>
-          <Tooltip title="Assign to">
-            <div
-              className={classes.assignContainer}
-              onClick={(event: React.MouseEvent<HTMLElement>) => openAssignModal(event, task)}
-            >
-              {task.assign.length === 0 ? (
-                <IconButton size="small">
-                  <PersonAdd />
-                </IconButton>
-              ) : (
-                task.assign.map((user: IPerson, index: number) => {
-                  return (
-                    <Avatar
-                      key={user.id}
-                      alt={user.name}
-                      className={clsx(classes.assignAvatar, { zIndex: index })}
-                      src={user.avatar || defaultAvatar}
-                    />
-                  );
-                })
-              )}
+        </Tooltip>
+      </div>
+      <div className={classes.labelsContainer}>
+        {task.labels.map((label: ITaskLabel) => {
+          return (
+            <div key={label.id} style={{ background: label.color }} className={classes.chip}>
+              {label.name}
             </div>
-          </Tooltip>
-        </div>
-        <div className={classes.labelsContainer}>
-          {task.labels.map((label: ITaskLabel) => {
-            return (
-              <div key={label.id} style={{ background: label.color }} className={classes.chip}>
-                {label.name}
-              </div>
-            );
-          })}
-        </div>
-        <Typography className={classes.taskTitle}>{task.title}</Typography>
-        <div className={classes.taskFooter}>
-          <Tooltip title={`Points: ${task.points}`}>
-            <div className={clsx(classes.taskPoints, classes.chip)}>{task.points}</div>
-          </Tooltip>
-          <Tooltip title={`Priority: ${task.priority}`}>
-            <div className={clsx(classes.priorityIcon, classes.chip)}>{task.priority}</div>
-          </Tooltip>
-          {/* <Tooltip title={`Comments: ${task.comments.length}`}>
+          );
+        })}
+      </div>
+      <Typography className={classes.taskTitle}>{task.title}</Typography>
+      <div className={classes.taskFooter}>
+        <Tooltip title={`Points: ${task.points}`}>
+          <div className={clsx(classes.taskPoints, classes.chip)}>{task.points}</div>
+        </Tooltip>
+        <Tooltip title={`Priority: ${task.priority}`}>
+          <div className={clsx(classes.priorityIcon, classes.chip)}>{task.priority}</div>
+        </Tooltip>
+        {/* <Tooltip title={`Comments: ${task.comments.length}`}>
             <Badge max={9} badgeContent={task.comments.length} color="secondary">
               <Comment style={{ color: blue[500] }} />
             </Badge>
           </Tooltip> */}
-        </div>
       </div>
-      {/* <SprintAssignTaskModal
-        assignModalOpen={assignModalOpen}
-        setAssignModalOpen={setAssignModalOpen}
-        task={task}
-      /> */}
-    </React.Fragment>
+    </div>
   );
 };
 

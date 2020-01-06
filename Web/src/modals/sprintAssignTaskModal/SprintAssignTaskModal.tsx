@@ -20,12 +20,11 @@ import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { ITask } from 'models/types/task';
 import { PersonAdd, PersonAddDisabled, Search } from '@material-ui/icons';
 import { IPerson } from 'models/types/person';
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 interface IProps {
   assignModalOpen: boolean;
   setAssignModalOpen: any;
-  task: ITask;
+  task?: ITask;
 }
 
 const SprintAssignTaskModal = (props: IProps) => {
@@ -36,15 +35,18 @@ const SprintAssignTaskModal = (props: IProps) => {
   const { assignModalOpen, setAssignModalOpen, task } = props;
 
   const users: IPerson[] = [
-    { id: '1', name: 'Piotr Tarasiński' },
-    { id: '2', name: 'Szymmon Tarasiński' },
+    { id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab', name: 'Piotr Tarasiński' },
+    { id: '2', name: 'Szymmon Tarasiński', email: 'szymko@gmail.com' },
     { id: '3', name: 'Szymmon Tokarzewski' },
     { id: '4', name: 'Agnieszka Skwarczyńska' },
     { id: '5', name: 'Samanta Wiśniewska' },
   ];
 
   const renderAssignIcon = (user: IPerson) => {
-    const selectedType = activeTab === 0 ? task.assign : task.revievers;
+    let selectedType: IPerson[] = [];
+    if (task) {
+      selectedType = activeTab === 0 ? task.assign : task.reviewers;
+    }
 
     return selectedType.filter((assigne: IPerson) => assigne.id === user.id).length > 0 ? (
       <Tooltip title="Unassign">
@@ -70,7 +72,6 @@ const SprintAssignTaskModal = (props: IProps) => {
           indicatorColor="primary"
           textColor="primary"
           onChange={(event: React.ChangeEvent<{}>, newValue: number) => setActiveTab(newValue)}
-          aria-label="disabled tabs example"
         >
           <Tab label="Assignees" />
           <Tab label="Reviewers" />
@@ -94,14 +95,18 @@ const SprintAssignTaskModal = (props: IProps) => {
           </div>
           <List className={classes.listContainer} dense={true}>
             {users
-              .filter((user: IPerson) => user.name.toLowerCase().includes(search.toLowerCase()))
+              .filter(
+                (user: IPerson) =>
+                  user.name.toLowerCase().includes(search.toLowerCase()) ||
+                  (user.email || '').toLowerCase().includes(search.toLowerCase()),
+              )
               .map((user: IPerson) => {
                 return (
                   <ListItem key={user.id}>
                     <ListItemAvatar>
                       <Avatar className={classes.avatar} src={user.avatar || defaultAvatar} />
                     </ListItemAvatar>
-                    <ListItemText primary={user.name} />
+                    <ListItemText primary={user.name} secondary={user.email} />
                     <ListItemSecondaryAction>
                       <IconButton edge="end" aria-label="delete">
                         {renderAssignIcon(user)}

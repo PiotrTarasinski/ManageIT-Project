@@ -6,7 +6,7 @@ export interface ITask {
   identifier: string;
   title: string;
   description?: string;
-  comments: IComment[];
+  comments?: IComment[];
   state: taskState;
   type: taskType;
   index: number;
@@ -14,7 +14,7 @@ export interface ITask {
   priority: taskPriority;
   labels: ITaskLabel[];
   assign: IPerson[];
-  revievers: IPerson[];
+  reviewers: IPerson[];
 }
 
 export interface ITaskLabel {
