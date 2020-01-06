@@ -73,13 +73,12 @@ class SprintMethods {
           });
           entries.forEach(async instance => {
             if (instance.index || instance.index === 0) {
-              console.log(instance.index, indexFrom);
               // tslint:disable-next-line:triple-equals
               if (instance.index == indexFrom) {
                 await instance.update({ index: indexTo });
               } else if (instance.index <= indexTo && instance.index > indexFrom) {
                 await instance.decrement('index', { by: 1 });
-              } else if (instance.index > indexTo && indexFrom > indexTo && instance.index < indexFrom) {
+              } else if (instance.index >= indexTo && indexFrom > indexTo && instance.index < indexFrom) {
                 await instance.increment('index', { by: 1 });
               }
             }
