@@ -13,6 +13,11 @@ const setProjectList = (projectList: ProjectsListData, projectListCount: number)
   payload: { projectList, projectListCount },
 });
 
+const setProjectMembers = (projectMemberList: any, projectMemberCount: number) => ({
+  type: projectActionTypes.SET_PROJECT_MEMBER_LIST,
+  payload: { projectMemberList, projectMemberCount },
+});
+
 const getProjectList = (
   order: orderTypes,
   orderBy: string,
@@ -24,6 +29,24 @@ const getProjectList = (
     .getProjectList(order, orderBy, page, rowsPerPage, search)
     .then((res: any) => {
       dispatch(setProjectList(res.data.projects, res.data.count));
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const getProjectMembers = (
+  projectId: string,
+  order: orderTypes,
+  orderBy: string,
+  page: number,
+  rowsPerPage: number,
+  search: string,
+) => (dispatch: Dispatch<Action>) => {
+  return API.project
+    .getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search)
+    .then((res: any) => {
+      dispatch(setProjectMembers(res.data.users, res.data.count));
     })
     .catch((err: any) => {
       return handleError(err)(dispatch);
@@ -60,4 +83,4 @@ const handleDeleteProject = (id: string, name: string) => (dispatch: Dispatch<Ac
   });
 };
 
-export { handleLeaveProject, handleDeleteProject, getProjectList };
+export { handleLeaveProject, handleDeleteProject, getProjectList, getProjectMembers };

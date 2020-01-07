@@ -5,9 +5,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import useStyles from './projectsTable.style';
-import ProjectsTableToolbar from './ProjectsTableToolbar';
-import SortableTableHead from 'components/sortableTableHead/SortableTableHead';
+import useStyles from './teamTable.style';
+import ProjectsTableToolbar from './TeamTableToolbar';
 import { Tooltip, IconButton, Chip, Avatar } from '@material-ui/core';
 import { AppState, Action } from 'models/types/store';
 import { ProjectsListData } from 'models/types/project';
@@ -20,12 +19,14 @@ import { ROUTES } from 'models/variables/routes';
 import { StoreAction } from 'store/actions';
 import { orderTypes } from 'models/enums/orderTypes';
 import ProjectStateChip from 'components/projectStateChip/ProjectStateChip';
+import SortableTableHead from 'components/sortableTableHead/SortableTableHead';
 import { headCell } from 'models/types/table';
 
 interface IDispatchProps {
   handleLeaveProject: (id: string, name: string) => void;
   handleDeleteProject: (id: string, name: string) => void;
-  getProjectList: (
+  getProjectMembers: (
+    projectId: string,
     order: orderTypes,
     orderBy: string,
     page: number,
@@ -42,7 +43,7 @@ interface IStoreProps {
 
 type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
-function ProjectsTable(props: Props) {
+function TeamTable(props: Props) {
   const classes = useStyles();
 
   const [order, setOrder] = React.useState<orderTypes>(orderTypes.ASC);
@@ -52,15 +53,19 @@ function ProjectsTable(props: Props) {
   const [search, setSearch] = React.useState<string>('');
 
   useEffect(() => {
-    props.getProjectList(order, orderBy, page, rowsPerPage, search);
+    const projectId = props.match.params.id;
+    console.log(projectId);
+    props.getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, orderBy, page, rowsPerPage, search]);
 
   const headCells: headCell[] = [
-    { id: 'name', label: 'Project Name', icon: 'bookmark' },
-    { id: 'createdAt', label: 'Creation Date', icon: 'calendar_today' },
-    { id: 'lead', label: 'Project Lead', icon: 'person' },
-    { id: 'state', label: 'Project State', icon: 'timeline' },
+    { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face' },
+    { id: 'name', label: 'Name', icon: 'person' },
+    { id: 'email', label: 'Email', icon: 'email' },
+    { id: 'dateOfJoin', label: 'Date Of Join', icon: 'calendar_today' },
+    { id: 'role', label: 'Role', disableSorting: true, icon: 'work' },
+    { id: 'permissions', label: 'Permissions', icon: 'verified_user' },
     { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
   ];
 
@@ -86,16 +91,6 @@ function ProjectsTable(props: Props) {
     setPage(0);
   };
 
-  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
-    event.stopPropagation();
-    props.handleLeaveProject(row.id, row.name);
-  };
-
-  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
-    event.stopPropagation();
-    props.handleDeleteProject(row.id, row.name);
-  };
-
   return (
     <Paper className={classes.paper}>
       <ProjectsTableToolbar classes={classes} handleSearch={handleSearch} />
@@ -108,7 +103,7 @@ function ProjectsTable(props: Props) {
             headCells={headCells}
           />
           <TableBody>
-            {props.projectList &&
+            {/* {props.projectList &&
               props.projectList.map(row => {
                 return (
                   <TableRow
@@ -164,7 +159,7 @@ function ProjectsTable(props: Props) {
                     </TableCell>
                   </TableRow>
                 );
-              })}
+              })} */}
           </TableBody>
         </Table>
       </div>
@@ -198,13 +193,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => (
     dispatch(StoreAction.project.handleLeaveProject(id, name)),
   handleDeleteProject: (id: string, name: string) =>
     dispatch(StoreAction.project.handleDeleteProject(id, name)),
-  getProjectList: (
+  getProjectMembers: (
+    projectId: string,
     order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,
     search: string,
-  ) => dispatch(StoreAction.project.getProjectList(order, orderBy, page, rowsPerPage, search)),
+  ) =>
+    dispatch(
+      StoreAction.project.getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search),
+    ),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectsTable));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TeamTable));

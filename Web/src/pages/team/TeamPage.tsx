@@ -1,59 +1,61 @@
 import React from 'react';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
 import useStyles from './teamPage.style';
-import {
-  Toolbar,
-  Typography,
-  InputBase,
-  Tooltip,
-  IconButton,
-  Paper,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Avatar,
-} from '@material-ui/core';
-import {
-  Group,
-  Search,
-  AddCircle,
-  Email,
-  Person,
-  CalendarToday,
-  Games,
-  Face,
-  Work,
-  VerifiedUser,
-} from '@material-ui/icons';
-import defaultAvatar from 'assets/images/utils/default_avatar.png';
+import TeamTable from './teamTable/TeamTable';
+// import {
+//   Toolbar,
+//   Typography,
+//   InputBase,
+//   Tooltip,
+//   IconButton,
+//   Paper,
+//   Table,
+//   TableHead,
+//   TableBody,
+//   TableRow,
+//   TableCell,
+//   Avatar,
+// } from '@material-ui/core';
+// import {
+//   Group,
+//   Search,
+//   AddCircle,
+//   Email,
+//   Person,
+//   CalendarToday,
+//   Games,
+//   Face,
+//   Work,
+//   VerifiedUser,
+// } from '@material-ui/icons';
+// import defaultAvatar from 'assets/images/utils/default_avatar.png';
 
 function TeamPage() {
   const classes = useStyles();
 
-  const [search, setSearch] = React.useState<string>('');
+  // const [search, setSearch] = React.useState<string>('');
 
-  const members = [
-    {
-      id: '1',
-      name: 'Piotr Tarasiński',
-      email: 'piotrt337@gmail.com',
-      avatar: null,
-      dateOfJoin: new Date(),
-    },
-    {
-      id: '2',
-      name: 'Szymon Tokarzewski',
-      email: 'szymko@gmail.com',
-      avatar: null,
-      dateOfJoin: new Date(),
-    },
-  ];
+  // const members = [
+  //   {
+  //     id: '1',
+  //     name: 'Piotr Tarasiński',
+  //     email: 'piotrt337@gmail.com',
+  //     avatar: null,
+  //     dateOfJoin: new Date(),
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Szymon Tokarzewski',
+  //     email: 'szymko@gmail.com',
+  //     avatar: null,
+  //     dateOfJoin: new Date(),
+  //   },
+  // ];
 
   return (
     <PageContainer className={classes.mainContainer}>
-      <Paper className={classes.paper}>
+      <TeamTable />
+      {/* <Paper className={classes.paper}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.title}>
             <Group className={classes.headCellIcon} />
@@ -154,7 +156,7 @@ function TeamPage() {
               })}
           </TableBody>
         </Table>
-      </Paper>
+      </Paper> */}
     </PageContainer>
   );
 }

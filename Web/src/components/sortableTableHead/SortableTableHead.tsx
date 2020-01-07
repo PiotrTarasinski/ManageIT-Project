@@ -4,27 +4,31 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { Icon } from '@material-ui/core';
-import useStyles from './projectsTable.style';
+import useStyles from './sortableTableHead.style';
 import { headCell } from 'models/types/table';
 import { orderTypes } from 'models/enums/orderTypes';
 
-interface ProjectsTableHeadProps {
-  classes: ReturnType<typeof useStyles>;
+interface SortableTableHeadProps {
   onRequestSort: (property: string) => void;
   order: orderTypes;
   orderBy: string;
+  headCells: headCell[];
 }
 
-const headCells: headCell[] = [
-  { id: 'name', label: 'Project Name', icon: 'bookmark' },
-  { id: 'createdAt', label: 'Creation Date', icon: 'calendar_today' },
-  { id: 'lead', label: 'Project Lead', icon: 'person' },
-  { id: 'state', label: 'Project State', icon: 'timeline' },
-  { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
-];
+// const headCells: headCell[] = [
+//   { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face' },
+//   { id: 'name', label: 'name', icon: 'person' },
+//   { id: 'email', label: 'email', icon: 'email' },
+//   { id: 'dateOfJoin', label: 'Date Of Join', icon: 'calendar_today' },
+//   { id: 'role', label: 'Role', icon: 'work' },
+//   { id: 'permissions', label: 'Permissions', icon: 'verified_user' },
+//   { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
+// ];
 
-function ProjectsTableHead(props: ProjectsTableHeadProps) {
-  const { classes, order, orderBy, onRequestSort } = props;
+function SortableTableHead(props: SortableTableHeadProps) {
+  const classes = useStyles();
+
+  const { order, orderBy, onRequestSort, headCells } = props;
   const createSortHandler = (property: string) => () => {
     onRequestSort(property);
   };
@@ -59,4 +63,4 @@ function ProjectsTableHead(props: ProjectsTableHeadProps) {
   );
 }
 
-export default ProjectsTableHead;
+export default SortableTableHead;

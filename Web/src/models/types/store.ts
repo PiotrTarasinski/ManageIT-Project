@@ -21,6 +21,7 @@ export interface UserState {
   readonly name?: string;
   readonly avatar?: string;
   readonly activeProjectId?: string;
+  readonly activeSprintId?: string;
 }
 
 export interface ApplicationState {
@@ -31,6 +32,8 @@ export interface ApplicationState {
 export interface ProjectState {
   readonly projectList: ProjectsListData[];
   readonly projectListCount: number;
+  readonly projectMemberList: any[];
+  readonly projectMemberCount: number;
 }
 
 export interface SprintState {
