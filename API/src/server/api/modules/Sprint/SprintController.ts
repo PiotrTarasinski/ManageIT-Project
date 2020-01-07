@@ -6,6 +6,7 @@ import SprintFormatter from '../../shared/formatter/SprintFormatter';
 import Validate from '../../validation/Validate';
 import { SprintInstance } from '../../../database/models/Sprint';
 import ProjectEntriesFormatter from '../../shared/formatter/ProjectEntriesFormatter';
+import CommentFormatter from '../../shared/formatter/CommentsFormatter';
 
 class SprintController extends Controller {
   async getSprintEntries() {
@@ -163,6 +164,79 @@ class SprintController extends Controller {
     const response = await new SprintMethods().removeEntryFromSprint(id);
 
     return this.res(response).code(response.statusCode);
+  }
+
+  async addComment() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
+    }
+
+    const { id, content } = this.req.payload;
+
+    const validationResponse = Validate.sprintAddComment(id, content);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().addComment(id, this.user.id, content);
+
+    if (response) {
+      return this.res(await new CommentFormatter().format(response));
+    }
+    return this.res(CustomResponse(500, 'Couldn\'t add comment.', { formError: 'Database error.' })).code(500);
+  }
+
+  async deleteComment() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
+    }
+
+    const { id } = this.req.payload;
+
+    const validationResponse = Validate.getSprintEntries(id, 'id');
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().deleteComment(id);
+
+    return this.res(response).code(response.statusCode);
+  }
+
+  async updateComment() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
+    }
+
+    const { id, content } = this.req.payload;
+
+    const validationResponse = Validate.sprintAddComment(id, content);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new SprintMethods().updateComment(id, content);
+
+    if (response) {
+      return this.res(await new CommentFormatter().format(response));
+    }
+
+    return this.res(CustomResponse(500, 'Couldn\'t update comment.', { formError: 'Database error.' })).code(500);
   }
 }
 

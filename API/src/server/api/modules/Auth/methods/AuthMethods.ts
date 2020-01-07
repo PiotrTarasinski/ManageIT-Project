@@ -43,10 +43,35 @@ class AuthMethods {
       if (project) {
         return await user.setActiveProject(project)
         .then(async () => {
-          return { response: CustomResponse(200, 'Active sprint set successfully.'), token: await new Token().generateTokenForUserInstance(user) };
+          return await user.setActiveSprint(project.activeSprintId)
+          .then(async () => {
+            return {
+              response: CustomResponse(200, 'Active project set successfully.'),
+              token: await new Token().generateTokenForUserInstance(user)
+            };
+          });
         });
       }
       return { response: CustomResponse(404, 'No such project.', { formError: 'Project not found.' }) };
+    }
+    return { response: CustomResponse(404, 'No such user.', { formError: 'User not found.' }) };
+  }
+
+  async setActiveSprint(userId: string, id: string): Promise<AuthResponseFormat> {
+    const user = await db.User.findByPk(userId);
+
+    if (user) {
+      const sprint = await db.Sprint.findByPk(id);
+      if (sprint) {
+        return await user.setActiveSprint(sprint)
+        .then(async () => {
+          return {
+            response: CustomResponse(200, 'Active sprint set successfully.'),
+            token: await new Token().generateTokenForUserInstance(user)
+          };
+        });
+      }
+      return { response: CustomResponse(404, 'No such sprint.', { formError: 'Sprint not found.' }) };
     }
     return { response: CustomResponse(404, 'No such user.', { formError: 'User not found.' }) };
   }

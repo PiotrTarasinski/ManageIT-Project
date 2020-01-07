@@ -1,7 +1,6 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { ProjectInstance } from '../../../database/models/Project';
 import { SprintInstance } from '../../../database/models/Sprint';
-import { SprintEntryAttributes, SprintEntryInstance } from '../../../database/models/SprintEntry';
+import { SprintEntryInstance } from '../../../database/models/SprintEntry';
 import bulkFormat from '../../../../utils/bulkFormat';
 import SprintEntriesFormatter, { SprintEntriesResponseFormat } from './SprintEntriesFormatter';
 

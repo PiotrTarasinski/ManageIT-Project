@@ -62,6 +62,27 @@ class SprintRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new SprintController(req, res).removeEntryFromSprint()
         }
+      },
+      {
+        method: 'POST',
+        path: '/add_comment',
+        options: {
+          handler: (req, res) => new SprintController(req, res).addComment()
+        }
+      },
+      {
+        method: 'DELETE',
+        path: '/delete_comment',
+        options: {
+          handler: (req, res) => new SprintController(req, res).deleteComment()
+        }
+      },
+      {
+        method: 'PUT',
+        path: '/update_comment',
+        options: {
+          handler: (req, res) => new SprintController(req, res).updateComment()
+        }
       }
     ];
   }
