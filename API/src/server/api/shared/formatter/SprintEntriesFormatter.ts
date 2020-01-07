@@ -6,6 +6,7 @@ import { UserInstance } from '../../../database/models/User';
 import LabelFormatter, { LabelResponseFormat } from './LabelFormatter';
 import CommentFormatter, { CommentResponseFormat } from './CommentsFormatter';
 import { CommentInstance } from '../../../database/models/Comment';
+import bulkFormatHideId from '../../../../utils/bulkFormatHideId';
 
 export type SprintEntriesResponseFormat = {
   id: string;
@@ -36,10 +37,10 @@ class SprintEntriesFormatter implements ResponseFormatter<SprintEntryInstance, S
       priority: sprintEntry.priority,
       title: sprintEntry.title,
       description: sprintEntry.description,
-      assign: await bulkFormat(new UserFormatter(), <UserInstance[]>sprintEntry.assign),
-      reviewers: await bulkFormat(new UserFormatter(), <UserInstance[]>sprintEntry.reviewers),
+      assign: await bulkFormatHideId(new UserFormatter(), <UserInstance[]>sprintEntry.assign),
+      reviewers: await bulkFormatHideId(new UserFormatter(), <UserInstance[]>sprintEntry.reviewers),
       labels: await bulkFormat(new LabelFormatter(), labels),
-      comments: await bulkFormat(new CommentFormatter(), <CommentInstance[]>sprintEntry.comments)
+      comments: await bulkFormatHideId(new CommentFormatter(), <CommentInstance[]>sprintEntry.comments)
     };
   }
 }

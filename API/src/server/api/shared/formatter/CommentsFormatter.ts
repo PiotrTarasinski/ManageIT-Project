@@ -18,7 +18,7 @@ class CommentFormatter implements ResponseFormatter<CommentInstance, CommentResp
       content: comment.content,
       createdAt: <Date>comment.createdAt,
       updatedAt: <Date>comment.updatedAt,
-      user: await new UserFormatter().format(<UserInstance>comment.user)
+      user: await new UserFormatter().format(<UserInstance>comment.user, true)
     };
   }
 }
