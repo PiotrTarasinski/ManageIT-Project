@@ -1,6 +1,4 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { UserInstance, UserAttributes } from '../../../database/models/User';
-import UserFormatter, { UserResponseFormat } from './UserFormatter';
 import { ProjectInstance } from '../../../database/models/Project';
 
 export type UserProjectProjectInFormat = {

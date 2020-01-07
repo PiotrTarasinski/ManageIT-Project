@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { UserAttributes } from './User';
-import { UserProjectAttributes } from './UserProject';
+import { UserInstance } from './User';
 import { SprintEntryAttributes, SprintEntryInstance } from './SprintEntry';
 import { ProjectAttributes } from './Project';
 
@@ -16,13 +15,15 @@ export interface SprintAttributes {
   /**
    * Associations
    */
-  sprintEntries?: SprintEntryAttributes[];
+  sprintEntries?: SprintEntryInstance[];
   project?: ProjectAttributes;
+  users?: UserInstance[];
 }
 
 export interface SprintInstance extends Sequelize.Instance<SprintAttributes>, SprintAttributes {
   getSprintEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
   addSprintEntry: Sequelize.HasManyAddAssociationMixin<SprintEntryInstance, SprintEntryAttributes['id']>;
+  getUsers: Sequelize.HasManyGetAssociationsMixin<UserInstance>;
 }
 
 export const SprintFactory = (
@@ -62,6 +63,7 @@ export const SprintFactory = (
   Sprint.associate = models => {
     Sprint.hasMany(models.SprintEntry, { as: 'sprintEntries', foreignKey: 'sprintId' });
     Sprint.hasOne(models.Project, { as: 'project', foreignKey: 'activeSprintId' });
+    Sprint.hasMany(models.User, { as: 'users', foreignKey: 'activeSprintId' });
   };
 
   return Sprint;

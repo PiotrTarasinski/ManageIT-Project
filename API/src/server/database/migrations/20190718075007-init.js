@@ -114,6 +114,15 @@ module.exports = {
       allowNull: true
     });
 
+    await queryInterface.addColumn('users', 'active_sprint_id', {
+      type: Sequelize.UUID,
+      references: {
+        model: 'sprints',
+        key: 'id'
+      },
+      allowNull: true
+    });
+
     await queryInterface.createTable('usersProjects', {
       projectId: {
         type: DataTypes.UUID,
@@ -228,6 +237,45 @@ module.exports = {
       }
     });
 
+    await queryInterface.createTable('comments', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        field: 'user_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      sprintEntryId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'sprintEntries',
+          key: 'id'
+        },
+        field: 'sprint_entry_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      content: {
+        type: DataTypes.STRING
+      }
+    });
+
     await queryInterface.createTable('labels', {
       id: {
         type: DataTypes.UUID,
@@ -250,8 +298,8 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryLabel', {
-      sprint_entry_id: {
+    await queryInterface.createTable('sprintEntryLabels', {
+      sprintEntryId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
@@ -259,9 +307,10 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'sprint_entry_id'
       },
-      label_id: {
+      labelId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
@@ -269,13 +318,16 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'label_id'
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'updated_at'
       }
     });
 

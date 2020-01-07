@@ -1,5 +1,4 @@
 import { documentation } from '../../../../utils';
-import * as Joi from '@hapi/joi';
 import { RouteConfig } from '../../../../typings/Hapi';
 import MainRoutes from '../../shared/routes/MainRoutes';
 import FileController from './FileController';

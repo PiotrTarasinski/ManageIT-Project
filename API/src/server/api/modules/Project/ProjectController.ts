@@ -1,5 +1,4 @@
 import Controller from '../../shared/controller/Controller';
-import db from '../../../database';
 import ProjectMethods from './methods/ProjectMethods';
 import CustomResponse from '../../error/CustomError';
 import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
@@ -51,7 +50,7 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.addUserToProject(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -74,7 +73,7 @@ class ProjectController extends Controller {
 
     const { projectId, userId } = this.req.payload;
 
-    const validationResponse = Validate.addUserToProject(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -97,13 +96,44 @@ class ProjectController extends Controller {
 
     const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.getProjectUsers(projectId);
+    const validationResponse = Validate.uuid(projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
     const projectUsers = await new ProjectMethods().getProjectUsers(projectId);
+
+    if (!projectUsers) {
+      return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
+    }
+
+    if (projectUsers.rows.length === 0) {
+      return this.res(projectUsers);
+    }
+
+    return this.res(await new ProjectUsersFormatter().format(projectUsers));
+  }
+
+  async getProjectUsersPaginated() {
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+    }
+
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
+    const { projectId, order, orderBy, page, rowsPerPage, search } = this.req.payload;
+
+    const validationResponse = Validate.getProjectUsers(projectId, order, orderBy, page, rowsPerPage, search);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const projectUsers = await new ProjectMethods().getProjectUsersPaginated(projectId, order, orderBy, page, rowsPerPage, search);
 
     if (!projectUsers) {
       return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
@@ -149,7 +179,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getProjectUsers(id);
+    const validationResponse = Validate.uuid(id);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);

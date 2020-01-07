@@ -1,7 +1,8 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { ProjectAttributes, ProjectInstance } from './Project';
-import { SprintEntryAttributes } from './SprintEntry';
+import { ProjectInstance } from './Project';
+import { SprintEntryInstance } from './SprintEntry';
+import { SprintInstance } from './Sprint';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -14,18 +15,22 @@ export interface UserAttributes {
   email: string;
   avatar?: string | null;
   activeProjectId?: string;
+  activeSprintId?: string;
 
   /**
    * Associations
    */
-  leadIn?: ProjectAttributes[];
-  projectsIn?: ProjectAttributes[];
-  assignIn?: SprintEntryAttributes[];
-  reviewerIn?: SprintEntryAttributes[];
+  leadIn?: ProjectInstance[];
+  projectsIn?: ProjectInstance[];
+  assignIn?: SprintEntryInstance[];
+  reviewerIn?: SprintEntryInstance[];
+  activeProject?: ProjectInstance[];
+  activeSprint?: SprintInstance[];
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
   setActiveProject: Sequelize.BelongsToSetAssociationMixin<ProjectInstance, ProjectInstance['id']>;
+  setActiveSprint: Sequelize.BelongsToSetAssociationMixin<SprintInstance, SprintInstance['id']>;
 }
 
 export const UserFactory =
@@ -66,7 +71,17 @@ export const UserFactory =
           model: 'projects',
           key: 'id'
         },
-        field: 'active_project_id'
+        field: 'active_project_id',
+        allowNull: true
+      },
+      activeSprintId: {
+        type: DataTypes.STRING,
+        references: {
+          model: 'sprints',
+          key: 'id'
+        },
+        allowNull: true,
+        field: 'active_sprint_id'
       }
     };
 
@@ -74,7 +89,9 @@ export const UserFactory =
       .define<UserInstance, UserAttributes>('user', attributes);
 
     User.associate = (models) => {
+      User.hasMany(models.Comment, { as: 'comments', foreignKey: 'userId' });
       User.belongsTo(models.Project, { as: 'activeProject', foreignKey: 'activeProjectId' });
+      User.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
       User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });

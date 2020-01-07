@@ -1,8 +1,8 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
 import { UserAttributes } from '../../../database/models/User';
-import { ProjectInstance, ProjectAttributes } from '../../../database/models/Project';
-import bulkFormat from '../../../../utils/bulkFormat';
+import { ProjectInstance } from '../../../database/models/Project';
 import UserFormatter, { UserResponseFormat } from './UserFormatter';
+import bulkFormatHideId from '../../../../utils/bulkFormatHideId';
 
 type ProjectUsersInstance = {
   count: number;
@@ -18,7 +18,7 @@ class ProjectUsersFormatter implements ResponseFormatter<ProjectUsersInstance, P
   async format(project: ProjectUsersInstance) {
     return {
       count: project.count,
-      users: await bulkFormat(new UserFormatter(), <UserAttributes[]>project.rows[0].users)
+      users: await bulkFormatHideId(new UserFormatter(), <UserAttributes[]>project.rows[0].users)
     };
   }
 }

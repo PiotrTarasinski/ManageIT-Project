@@ -1,11 +1,6 @@
 import db from '../../../../database';
-import { UserInstance } from '../../../../database/models/User';
-import * as fs from 'fs';
-import { join, extname } from 'path';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
-import Token from '../../../shared/token/Token';
 import { Op } from 'sequelize';
-import { triggerAsyncId } from 'async_hooks';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -112,6 +107,30 @@ class ProjectMethods {
       });
   }
 
+  async getProjectUsersPaginated(projectId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+    return await db.Project.findAndCountAll({
+      subQuery: false,
+      include: [
+        {
+          model: db.User,
+          as: 'users'
+        }
+      ],
+      where: {
+        id: projectId,
+        [Op.or]: [
+          { '$users.name$': { [Op.iLike]: `%${search}%` } },
+          { '$users.email$': { [Op.iLike]: `%${search}%` } }
+        ]
+      },
+      order: [
+        [{ model: db.User, as: 'users' }, orderBy, order]
+      ],
+      limit: rowsPerPage,
+      offset: (page * rowsPerPage)
+    });
+  }
+
   async getProjectUsers(projectId: string) {
     return await db.Project.findAndCountAll({
       where: {
@@ -187,6 +206,17 @@ class ProjectMethods {
             {
               model: db.Label,
               as: 'labels'
+            },
+            {
+              model: db.Comment,
+              as: 'comments',
+              separate: true,
+              include: [
+                {
+                  model: db.User,
+                  as: 'user'
+                }
+              ]
             }
           ]
         }

@@ -74,6 +74,18 @@ class ProjectRoutes extends MainRoutes {
           //   }
           // }
         }
+      },
+      {
+        method: 'POST',
+        path: '/get_all_project_users_paginated',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).getProjectUsersPaginated()
+          // plugins: {
+          //   routePermissions: {
+          //     projects: { view: true }
+          //   }
+          // }
+        }
       }
     ];
   }
