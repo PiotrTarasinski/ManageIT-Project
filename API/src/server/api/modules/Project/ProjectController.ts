@@ -115,6 +115,37 @@ class ProjectController extends Controller {
     return this.res(await new ProjectUsersFormatter().format(projectUsers));
   }
 
+  async getProjectUsersPaginated() {
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
+    }
+
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
+    const { projectId, order, orderBy, page, rowsPerPage, search } = this.req.payload;
+
+    const validationResponse = Validate.getProjectUsers(projectId, order, orderBy, page, rowsPerPage, search);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const projectUsers = await new ProjectMethods().getProjectUsersPaginated(projectId, order, orderBy, page, rowsPerPage, search);
+
+    if (!projectUsers) {
+      return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
+    }
+
+    if (projectUsers.rows.length === 0) {
+      return this.res(projectUsers);
+    }
+
+    return this.res(await new ProjectUsersFormatter().format(projectUsers));
+  }
+
   async createProject() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);

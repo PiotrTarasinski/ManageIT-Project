@@ -115,6 +115,24 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
+  getProjectUsers(projectId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+    const errorsArray = [
+      validators.isString(order, 'order'),
+      validators.required(order, 'orderBy'),
+      validators.isString(orderBy, 'orderBy'),
+      validators.required(orderBy, 'orderBy'),
+      validators.isNumber(page, 'page'),
+      validators.isNumber(rowsPerPage, 'rowsPerPage'),
+      validators.required(rowsPerPage, 'rowsPerPage'),
+      validators.isString(search, 'search'),
+      validators.isString(projectId, 'projectId'),
+      validators.required(projectId, 'projectId'),
+      validators.uuid(projectId, 'projectId')
+    ];
+
+    return this.makeResponse(errorsArray);
+  },
+
   sprintDeleteEntry(id: string) {
     const errorsArray = [
       validators.isString(id, 'id'),

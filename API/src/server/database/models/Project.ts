@@ -1,9 +1,9 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { UserAttributes, UserInstance } from './User';
+import { UserInstance } from './User';
 import { UserProjectAttributes, UserProjectInstance } from './UserProject';
-import { SprintAttributes } from './Sprint';
-import { SprintEntryInstance, SprintEntryAttributes } from './SprintEntry';
+import { SprintInstance } from './Sprint';
+import { SprintEntryInstance } from './SprintEntry';
 
 export interface ProjectAttributes {
   id?: string;
@@ -17,11 +17,11 @@ export interface ProjectAttributes {
   /**
    * Associations
    */
-  lead?: UserAttributes;
-  users?: UserAttributes[];
-  usersProjects?: UserProjectAttributes;
-  activeSprint?: SprintAttributes;
-  entries?: SprintEntryAttributes[];
+  lead?: UserInstance;
+  users?: UserInstance[];
+  usersProjects?: UserProjectInstance;
+  activeSprint?: SprintInstance;
+  entries?: SprintEntryInstance[];
 }
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
