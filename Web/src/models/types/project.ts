@@ -1,14 +1,10 @@
-export interface ProjectLead {
-  id: string;
-  name: string;
-  avatar?: string;
-}
+import { IPerson } from './person';
 
 export interface ProjectsListData {
   id: string;
   name: string;
   createdAt: Date;
-  lead: ProjectLead;
+  lead: IPerson;
   state: ProjectState;
 }
 

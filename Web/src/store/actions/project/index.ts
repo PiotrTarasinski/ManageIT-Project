@@ -2,11 +2,11 @@ import { Dispatch } from 'redux';
 import { Action } from 'models/types/store';
 import Swal from 'sweetalert2';
 import { displaySnackbar } from '../application';
-import { Order } from 'models/types/table';
 import { handleError } from 'utils/handleError';
 import { API } from 'store/api';
 import { ProjectsListData } from 'models/types/project';
 import { projectActionTypes } from 'models/enums/storeActions';
+import { orderTypes } from 'models/enums/orderTypes';
 
 const setProjectList = (projectList: ProjectsListData, projectListCount: number) => ({
   type: projectActionTypes.SET_PROJECT_LIST,
@@ -14,7 +14,7 @@ const setProjectList = (projectList: ProjectsListData, projectListCount: number)
 });
 
 const getProjectList = (
-  order: Order,
+  order: orderTypes,
   orderBy: string,
   page: number,
   rowsPerPage: number,

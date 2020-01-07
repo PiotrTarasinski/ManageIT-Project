@@ -6,26 +6,26 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import useStyles from './projectsTable.style';
-import { Order } from 'models/types/table';
 import ProjectsTableHead from './ProjectsTableHead';
 import ProjectsTableToolbar from './ProjectsTableToolbar';
 import { Tooltip, IconButton, Chip, Avatar } from '@material-ui/core';
 import { AppState, Action } from 'models/types/store';
-import { ProjectState, ProjectsListData } from 'models/types/project';
+import { ProjectsListData } from 'models/types/project';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { CheckCircle, Delete, Cancel, Settings, EmojiObjectsRounded } from '@material-ui/icons';
+import { Delete, Cancel } from '@material-ui/icons';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { ROUTES } from 'models/variables/routes';
-import clsx from 'clsx';
 import { StoreAction } from 'store/actions';
+import { orderTypes } from 'models/enums/orderTypes';
+import ProjectStateChip from 'components/projectStateChip/ProjectStateChip';
 
 interface IDispatchProps {
   handleLeaveProject: (id: string, name: string) => void;
   handleDeleteProject: (id: string, name: string) => void;
   getProjectList: (
-    order: Order,
+    order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,
@@ -39,33 +39,12 @@ interface IStoreProps {
   projectListCount: number;
 }
 
-const renderProjectState = (classes: ReturnType<typeof useStyles>, projectState: ProjectState) => {
-  let icon: JSX.Element | undefined = undefined;
-  if (projectState === 'Completed') icon = <CheckCircle />;
-  if (projectState === 'In Development') icon = <Settings />;
-  if (projectState === 'Planning') icon = <EmojiObjectsRounded />;
-  if (projectState === 'Cancelled') icon = <Cancel />;
-
-  return (
-    <Chip
-      label={projectState}
-      icon={icon}
-      className={clsx(classes.projectStateChip, {
-        [classes.completedStateChip]: projectState === 'Completed',
-        [classes.inDevelopmentStateChip]: projectState === 'In Development',
-        [classes.planningStateChip]: projectState === 'Planning',
-        [classes.cancelledStateChip]: projectState === 'Cancelled',
-      })}
-    />
-  );
-};
-
 type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
 function ProjectsTable(props: Props) {
   const classes = useStyles();
 
-  const [order, setOrder] = React.useState<Order>('asc');
+  const [order, setOrder] = React.useState<orderTypes>(orderTypes.ASC);
   const [orderBy, setOrderBy] = React.useState<string>('name');
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(15);
@@ -88,8 +67,8 @@ function ProjectsTable(props: Props) {
   };
 
   const handleRequestSort = (property: string) => {
-    const isDesc = orderBy === property && order === 'desc';
-    setOrder(isDesc ? 'asc' : 'desc');
+    const isDesc = orderBy === property && order === orderTypes.DESC;
+    setOrder(isDesc ? orderTypes.ASC : orderTypes.DESC);
     setOrderBy(property);
   };
 
@@ -145,7 +124,9 @@ function ProjectsTable(props: Props) {
                         onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
                       />
                     </TableCell>
-                    <TableCell>{renderProjectState(classes, row.state)}</TableCell>
+                    <TableCell>
+                      <ProjectStateChip projectState={row.state} />
+                    </TableCell>
                     <TableCell align="center">
                       {row.lead.id === props.userId && (
                         <Tooltip title="Delete project">
@@ -209,7 +190,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => (
   handleDeleteProject: (id: string, name: string) =>
     dispatch(StoreAction.project.handleDeleteProject(id, name)),
   getProjectList: (
-    order: Order,
+    order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,

@@ -1,9 +1,9 @@
 import { httpRequest } from '../httpRequest';
-import { Order } from 'models/types/table';
+import { orderTypes } from 'models/enums/orderTypes';
 
 const project = {
   getProjectList: (
-    order: Order,
+    order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,
@@ -15,6 +15,11 @@ const project = {
       page,
       rowsPerPage,
       search,
+    });
+  },
+  getSprint: (id: string) => {
+    return httpRequest.post('sprint', {
+      id,
     });
   },
 };
