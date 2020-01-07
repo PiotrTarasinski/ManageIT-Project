@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme, fade } from '@material-ui/core/styles';
-import { grey } from '@material-ui/core/colors';
+import { grey, deepPurple } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -8,17 +8,20 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingRight: theme.spacing(1),
     },
     toolbar: {
-      backgroundColor: grey['300'],
+      backgroundColor: deepPurple[500],
+      borderTopLeftRadius: theme.shape.borderRadius,
+      borderTopRightRadius: theme.shape.borderRadius,
     },
     title: {
       flex: '1 1 100%',
       display: 'flex',
       alignItems: 'center',
+      color: grey[50],
     },
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.85),
+      backgroundColor: fade(theme.palette.common.white, 0.9),
       '&:hover': {
         backgroundColor: fade(theme.palette.common.white, 0.95),
       },
@@ -38,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    createProjectIcon: {
+      color: grey[50],
     },
     inputRoot: {
       color: 'inherit',

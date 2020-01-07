@@ -37,7 +37,7 @@ const ProjectsTableToolbar = (props: ProjectsTableToolbarProps) => {
         />
       </div>
       <Tooltip title="New project">
-        <IconButton aria-label="new project">
+        <IconButton className={classes.createProjectIcon} aria-label="new project">
           <AddCircleIcon />
         </IconButton>
       </Tooltip>
