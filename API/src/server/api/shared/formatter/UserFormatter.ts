@@ -7,6 +7,7 @@ export type UserResponseFormat = {
   name: string;
   avatar: string | null | undefined;
   activeProjectId?: string;
+  activeSprintId?: string;
 };
 
 class UserFormatter implements ResponseFormatter<UserInstance, UserResponseFormat> {
@@ -16,7 +17,8 @@ class UserFormatter implements ResponseFormatter<UserInstance, UserResponseForma
       email: user.email,
       name: user.name,
       avatar: user.avatar,
-      activeProjectId: user.activeProjectId
+      activeProjectId: user.activeProjectId,
+      activeSprintId: user.activeSprintId
     };
   }
 }

@@ -1,15 +1,11 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { ProjectInstance } from '../../../database/models/Project';
-import { SprintInstance } from '../../../database/models/Sprint';
 import { SprintEntryInstance } from '../../../database/models/SprintEntry';
 import UserFormatter, { UserResponseFormat } from './UserFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
 import { UserInstance } from '../../../database/models/User';
 import LabelFormatter, { LabelResponseFormat } from './LabelFormatter';
-import { LabelInstance } from '../../../database/models/Label';
 import CommentFormatter, { CommentResponseFormat } from './CommentsFormatter';
 import { CommentInstance } from '../../../database/models/Comment';
-import db from '../../../database';
 
 export type SprintEntriesResponseFormat = {
   id: string;
@@ -21,9 +17,9 @@ export type SprintEntriesResponseFormat = {
   priority: string;
   title: string;
   description?: string;
-  assign: UserResponseFormat[];
-  reviewers: UserResponseFormat[];
-  labels: LabelResponseFormat[];
+  assign?: UserResponseFormat[];
+  reviewers?: UserResponseFormat[];
+  labels?: LabelResponseFormat[];
   comments?: CommentResponseFormat[];
 };
 

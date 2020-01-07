@@ -187,6 +187,17 @@ class ProjectMethods {
             {
               model: db.Label,
               as: 'labels'
+            },
+            {
+              model: db.Comment,
+              as: 'comments',
+              separate: true,
+              include: [
+                {
+                  model: db.User,
+                  as: 'user'
+                }
+              ]
             }
           ]
         }

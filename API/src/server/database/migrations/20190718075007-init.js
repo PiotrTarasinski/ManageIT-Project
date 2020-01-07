@@ -114,6 +114,15 @@ module.exports = {
       allowNull: true
     });
 
+    await queryInterface.addColumn('users', 'active_sprint_id', {
+      type: Sequelize.UUID,
+      references: {
+        model: 'sprints',
+        key: 'id'
+      },
+      allowNull: true
+    });
+
     await queryInterface.createTable('usersProjects', {
       projectId: {
         type: DataTypes.UUID,
