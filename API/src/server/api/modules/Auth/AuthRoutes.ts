@@ -1,11 +1,7 @@
 import { documentation } from '../../../../utils';
 import { RouteConfig } from '../../../../typings/Hapi';
 import AuthController from './AuthController';
-import * as jwt from 'jsonwebtoken';
-import * as fs from 'fs';
 import MainRoutes from '../../shared/routes/MainRoutes';
-import { join } from 'path';
-import { resolve, reject } from 'bluebird';
 
 class AuthRoutes extends MainRoutes {
 

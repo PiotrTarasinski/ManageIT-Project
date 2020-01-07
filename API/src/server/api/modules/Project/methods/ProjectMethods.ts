@@ -1,11 +1,6 @@
 import db from '../../../../database';
-import { UserInstance } from '../../../../database/models/User';
-import * as fs from 'fs';
-import { join, extname } from 'path';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
-import Token from '../../../shared/token/Token';
 import { Op } from 'sequelize';
-import { triggerAsyncId } from 'async_hooks';
 
 interface ProjectResponse {
   response: CustomResponseType;

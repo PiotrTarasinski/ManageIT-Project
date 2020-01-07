@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { ProjectAttributes, ProjectInstance } from './Project';
-import { SprintEntryAttributes, SprintEntryInstance } from './SprintEntry';
+import { ProjectInstance } from './Project';
+import { SprintEntryInstance } from './SprintEntry';
 import { SprintInstance } from './Sprint';
 
 export type AccountRole = 'admin' | 'user';

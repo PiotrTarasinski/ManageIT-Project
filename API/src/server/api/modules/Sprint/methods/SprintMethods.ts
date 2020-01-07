@@ -1,7 +1,6 @@
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import db from '../../../../database';
 import { Op } from 'sequelize';
-import { resolve } from 'dns';
 
 class SprintMethods {
 

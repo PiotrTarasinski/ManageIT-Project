@@ -1,12 +1,7 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { ProjectInstance } from '../../../database/models/Project';
-import { SprintInstance } from '../../../database/models/Sprint';
-import { SprintEntryAttributes, SprintEntryInstance } from '../../../database/models/SprintEntry';
-import bulkFormat from '../../../../utils/bulkFormat';
-import SprintEntriesFormatter, { SprintEntriesResponseFormat } from './SprintEntriesFormatter';
 import { CommentInstance } from '../../../database/models/Comment';
 import UserFormatter, { UserResponseFormat } from './UserFormatter';
-import { UserInstance, UserAttributes } from '../../../database/models/User';
+import { UserInstance } from '../../../database/models/User';
 
 export type CommentResponseFormat = {
   id: string;

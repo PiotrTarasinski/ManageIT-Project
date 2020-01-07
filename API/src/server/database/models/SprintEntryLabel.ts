@@ -1,7 +1,5 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SprintEntryInstance } from './SprintEntry';
-import { LabelInstance } from './Label';
 
 export interface SprintEntryLabelAttributes {
   sprintEntryId: string;

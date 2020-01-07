@@ -1,5 +1,4 @@
 import Controller from '../../shared/controller/Controller';
-import db from '../../../database';
 import ProjectMethods from './methods/ProjectMethods';
 import CustomResponse from '../../error/CustomError';
 import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
