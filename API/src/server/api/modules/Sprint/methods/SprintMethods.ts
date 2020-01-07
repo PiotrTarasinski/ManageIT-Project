@@ -1,6 +1,7 @@
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import db from '../../../../database';
 import { Op } from 'sequelize';
+import { resolve } from 'dns';
 
 class SprintMethods {
 
@@ -19,10 +20,6 @@ class SprintMethods {
             {
               model: db.User,
               as: 'reviewers'
-            },
-            {
-              model: db.Label,
-              as: 'labels'
             },
             {
               model: db.Comment,

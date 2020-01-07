@@ -9,6 +9,7 @@ import LabelFormatter, { LabelResponseFormat } from './LabelFormatter';
 import { LabelInstance } from '../../../database/models/Label';
 import CommentFormatter, { CommentResponseFormat } from './CommentsFormatter';
 import { CommentInstance } from '../../../database/models/Comment';
+import db from '../../../database';
 
 export type SprintEntriesResponseFormat = {
   id: string;
@@ -28,6 +29,7 @@ export type SprintEntriesResponseFormat = {
 
 class SprintEntriesFormatter implements ResponseFormatter<SprintEntryInstance, SprintEntriesResponseFormat> {
   async format(sprintEntry: SprintEntryInstance) {
+    const labels = await sprintEntry.getLabels();
     return {
       id: <string>sprintEntry.id,
       state: sprintEntry.state,
@@ -40,7 +42,7 @@ class SprintEntriesFormatter implements ResponseFormatter<SprintEntryInstance, S
       description: sprintEntry.description,
       assign: await bulkFormat(new UserFormatter(), <UserInstance[]>sprintEntry.assign),
       reviewers: await bulkFormat(new UserFormatter(), <UserInstance[]>sprintEntry.reviewers),
-      labels: await bulkFormat(new LabelFormatter(), <LabelInstance[]>sprintEntry.labels),
+      labels: await bulkFormat(new LabelFormatter(), labels),
       comments: await bulkFormat(new CommentFormatter(), <CommentInstance[]>sprintEntry.comments)
     };
   }

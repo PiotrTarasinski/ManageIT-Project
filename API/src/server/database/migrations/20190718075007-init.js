@@ -289,8 +289,8 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryLabel', {
-      sprint_entry_id: {
+    await queryInterface.createTable('sprintEntryLabels', {
+      sprintEntryId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
@@ -298,9 +298,10 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'sprint_entry_id'
       },
-      label_id: {
+      labelId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
@@ -308,13 +309,16 @@ module.exports = {
           key: 'id'
         },
         onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        field: 'label_id'
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'updated_at'
       }
     });
 

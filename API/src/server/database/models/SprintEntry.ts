@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes, UserInstance } from './User';
-import { LabelAttributes } from './Label';
+import { LabelAttributes, LabelInstance } from './Label';
 import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
 import { SprintEntryUserReviewerAttributes } from './SprintEntryUserReviewer';
 import { SprintAttributes } from './Sprint';
@@ -38,6 +38,7 @@ export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttri
   addReviewer: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], SprintEntryUserReviewerAttributes>;
   removeAssign: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   removeReviewer: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
+  getLabels: Sequelize.BelongsToManyGetAssociationsMixin<LabelInstance>;
 }
 
 export const SprintEntryFactory = (

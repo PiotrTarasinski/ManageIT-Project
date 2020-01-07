@@ -16,7 +16,7 @@ export interface SprintAttributes {
   /**
    * Associations
    */
-  sprintEntries?: SprintEntryAttributes[];
+  sprintEntries?: SprintEntryInstance[];
   project?: ProjectAttributes;
 }
 
