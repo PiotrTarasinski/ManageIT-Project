@@ -70,7 +70,39 @@ class AuthController extends Controller {
 
     const { id } = this.req.payload;
 
+    const validationResponse = validate.uuid(id);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
     const authResponse = await new AuthMethods().setActiveProject(this.user.id, id);
+
+    if (authResponse.token) {
+      return this.res(authResponse.response).code(authResponse.response.statusCode).header('access_token', authResponse.token);
+    }
+
+    return this.res(authResponse.response).code(authResponse.response.statusCode);
+  }
+
+  async setActiveSprint() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
+    }
+
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
+    }
+
+    const { id } = this.req.payload;
+
+    const validationResponse = validate.uuid(id);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const authResponse = await new AuthMethods().setActiveSprint(this.user.id, id);
 
     if (authResponse.token) {
       return this.res(authResponse.response).code(authResponse.response.statusCode).header('access_token', authResponse.token);

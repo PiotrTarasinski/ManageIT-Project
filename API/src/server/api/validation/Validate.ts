@@ -76,7 +76,7 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
-  addUserToProject(userId: string, projectId: string) {
+  twoUUID(userId: string, projectId: string) {
 
     const errorsArray = [
       validators.isString(userId, 'userId'),
@@ -90,7 +90,7 @@ const Validate = {
     return this.makeResponse(errorsArray);
   },
 
-  getProjectUsers(projectId: string) {
+  uuid(projectId: string) {
     const errorArray = [
       validators.isString(projectId, 'projectId'),
       validators.required(projectId, 'projectId'),

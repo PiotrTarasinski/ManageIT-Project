@@ -51,7 +51,7 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.addUserToProject(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -74,7 +74,7 @@ class ProjectController extends Controller {
 
     const { projectId, userId } = this.req.payload;
 
-    const validationResponse = Validate.addUserToProject(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -97,7 +97,7 @@ class ProjectController extends Controller {
 
     const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.getProjectUsers(projectId);
+    const validationResponse = Validate.uuid(projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -149,7 +149,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getProjectUsers(id);
+    const validationResponse = Validate.uuid(id);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);

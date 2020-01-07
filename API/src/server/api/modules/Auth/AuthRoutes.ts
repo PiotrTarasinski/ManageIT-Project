@@ -41,7 +41,13 @@ class AuthRoutes extends MainRoutes {
           handler: (req, res) => new AuthController(req, res).setActiveProject()
         }
       },
-
+      {
+        method: 'POST',
+        path: '/set_active_sprint',
+        options: {
+          handler: (req, res) => new AuthController(req, res).setActiveSprint()
+        }
+      },
       {
         method: 'POST',
         path: '/sign_up',
@@ -52,36 +58,6 @@ class AuthRoutes extends MainRoutes {
           tags: documentation('private', 'Auth'),
           plugins: {},
           auth: false
-        }
-      },
-      {
-        method: 'POST',
-        path: '/test',
-        options: {
-          handler: async (req, res) => {
-            const privateKey = await new Promise((resolve, reject) => {
-              fs.readFile('src/server/key/cert_priv.pub', 'UTF-8', (err, content) => {
-                if (err) {
-                  reject(err);
-                }
-                resolve(content);
-              });
-            });
-            const publicKey = await new Promise((resolve, reject) => {
-              fs.readFile('src/server/key/cert.pub', 'UTF-8', (err, content) => {
-                if (err) {
-                  reject(err);
-                }
-                resolve(content);
-              });
-            });
-            const signed = jwt.sign(req.payload, privateKey as string, { algorithm: 'RS256', noTimestamp: true });
-            const decoded = jwt.verify(signed, publicKey as string);
-            console.log(signed);
-            return res.response(decoded);
-          },
-          tags: documentation('private', 'Auth'),
-          plugins: {}
         }
       }
     ];
