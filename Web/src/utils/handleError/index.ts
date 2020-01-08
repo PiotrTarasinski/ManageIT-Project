@@ -10,6 +10,9 @@ const handleError = (err: any) => (dispatch: Dispatch<Action>) => {
   } else if (err.response.data.statusCode === 500) {
     dispatch(displaySnackbar({ text: 'Server Error Occurred', variant: 'error' }));
     return null;
+  } else if (err.response.data.statusCode === 401) {
+    dispatch(displaySnackbar({ text: 'Unathorized', variant: 'error' }));
+    return null;
   } else {
     let errors = err.response.data.errors;
     if (errors.formError) {

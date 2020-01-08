@@ -152,6 +152,13 @@ const useStyles = makeStyles((theme: Theme) =>
         color: red['500'],
       },
     },
+    activeNavLink: {
+      borderRight: '3px solid',
+      borderRightColor: deepPurple[500],
+      '& .MuiListItemIcon-root': {
+        color: deepPurple[500],
+      },
+    },
   }),
 );
 

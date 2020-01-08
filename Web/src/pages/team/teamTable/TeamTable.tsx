@@ -5,46 +5,51 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import useStyles from './projectsTable.style';
-import ProjectsTableToolbar from './ProjectsTableToolbar';
-import SortableTableHead from 'components/sortableTableHead/SortableTableHead';
+import useStyles from './teamTable.style';
+import ProjectsTableToolbar from './TeamTableToolbar';
 import { Tooltip, IconButton, Chip, Avatar } from '@material-ui/core';
-import { AppState, Action } from 'models/types/store';
-import { ProjectsListData } from 'models/types/project';
+import { AppState, Action, UserState } from 'models/types/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { Delete, Cancel } from '@material-ui/icons';
+import { Edit, Cancel } from '@material-ui/icons';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { ROUTES } from 'models/variables/routes';
 import { StoreAction } from 'store/actions';
 import { orderTypes } from 'models/enums/orderTypes';
-import ProjectStateChip from 'components/projectStateChip/ProjectStateChip';
+import SortableTableHead from 'components/sortableTableHead/SortableTableHead';
 import { headCell } from 'models/types/table';
-import { History } from 'history';
+import { IPerson } from 'models/types/person';
 
 interface IDispatchProps {
-  handleLeaveProject: (id: string, name: string) => void;
-  handleDeleteProject: (id: string, name: string) => void;
-  getProjectList: (
+  handleRemoveMember: (
+    projectId: string,
+    member: IPerson,
     order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,
     search: string,
   ) => void;
-  setActiveProject: (projectId: string, history: History) => void;
+  getProjectMembers: (
+    projectId: string,
+    order: orderTypes,
+    orderBy: string,
+    page: number,
+    rowsPerPage: number,
+    search: string,
+  ) => void;
 }
 
 interface IStoreProps {
-  userId?: string;
-  projectList: ProjectsListData[];
-  projectListCount: number;
+  user: UserState;
+  projectMemberList: IPerson[];
+  projectMemberCount: number;
 }
 
 type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
-function ProjectsTable(props: Props) {
+function TeamTable(props: Props) {
   const classes = useStyles();
 
   const [order, setOrder] = React.useState<orderTypes>(orderTypes.ASC);
@@ -54,15 +59,18 @@ function ProjectsTable(props: Props) {
   const [search, setSearch] = React.useState<string>('');
 
   useEffect(() => {
-    props.getProjectList(order, orderBy, page, rowsPerPage, search);
+    const projectId = props.match.params.id;
+    props.getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, orderBy, page, rowsPerPage, search]);
 
   const headCells: headCell[] = [
-    { id: 'name', label: 'Project Name', icon: 'bookmark' },
-    { id: 'createdAt', label: 'Creation Date', icon: 'calendar_today' },
-    { id: 'lead', label: 'Project Lead', icon: 'person' },
-    { id: 'state', label: 'Project State', icon: 'timeline' },
+    { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face' },
+    { id: 'name', label: 'Name', icon: 'person' },
+    { id: 'email', label: 'Email', icon: 'email' },
+    { id: 'dateOfJoin', label: 'Date Of Join', icon: 'calendar_today' },
+    { id: 'role', label: 'Role', disableSorting: true, icon: 'work' },
+    { id: 'permissions', label: 'Permissions', icon: 'verified_user' },
     { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
   ];
 
@@ -88,18 +96,14 @@ function ProjectsTable(props: Props) {
     setPage(0);
   };
 
-  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, project: ProjectsListData) => {
+  const handleRemoveMember = (event: React.MouseEvent<HTMLElement>, member: IPerson) => {
     event.stopPropagation();
-    props.handleLeaveProject(project.id, project.name);
+    const projectId = props.match.params.id;
+    props.handleRemoveMember(projectId, member, order, orderBy, page, rowsPerPage, search);
   };
 
-  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, project: ProjectsListData) => {
+  const handleEditMember = (event: React.MouseEvent<HTMLElement>, member: IPerson) => {
     event.stopPropagation();
-    props.handleDeleteProject(project.id, project.name);
-  };
-
-  const selectProject = (project: ProjectsListData) => {
-    props.setActiveProject(project.id, props.history);
   };
 
   return (
@@ -114,53 +118,48 @@ function ProjectsTable(props: Props) {
             headCells={headCells}
           />
           <TableBody>
-            {props.projectList &&
-              props.projectList.map(row => {
+            {props.projectMemberList &&
+              props.projectMemberList.map((member: IPerson) => {
                 return (
                   <TableRow
                     hover
-                    onClick={() => selectProject(row)}
-                    key={row.name}
+                    onClick={() => props.history.push(`${ROUTES.profile.pathname}/${member.id}`)}
+                    key={member.id}
                     className={classes.tableRow}
                   >
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{new Date(row.createdAt).toDateString()}</TableCell>
                     <TableCell>
-                      <Chip
-                        component={Link}
-                        to={`${ROUTES.profile.pathname}/${row.lead.id}`}
-                        avatar={
-                          <Avatar
-                            alt={row.lead.name}
-                            src={row.lead.avatar ? row.lead.avatar : defaultAvatar}
-                          />
-                        }
-                        label={row.lead.name}
-                        onClick={(event: React.MouseEvent<HTMLElement>) => event.stopPropagation()}
+                      <Avatar
+                        alt={member.name}
+                        src={member.avatar || defaultAvatar}
+                        className={classes.avatar}
                       />
                     </TableCell>
+                    <TableCell>{member.name}</TableCell>
+                    <TableCell>{member.email}</TableCell>
                     <TableCell>
-                      <ProjectStateChip projectState={row.state} />
+                      {member.dateOfJoin ? new Date(member.dateOfJoin).toDateString() : ''}
                     </TableCell>
+                    <TableCell>{member.role || ''}</TableCell>
+                    <TableCell>{member.permissions || ''}</TableCell>
                     <TableCell align="center">
-                      {row.lead.id === props.userId && (
-                        <Tooltip title="Delete project">
+                      {member.id !== props.user.id && (
+                        <Tooltip title="Edit member">
                           <IconButton
-                            aria-label="delete project"
+                            aria-label="Edit member"
                             onClick={(event: React.MouseEvent<HTMLElement>) =>
-                              handleDeleteProject(event, row)
+                              handleEditMember(event, member)
                             }
                           >
-                            <Delete />
+                            <Edit />
                           </IconButton>
                         </Tooltip>
                       )}
-                      {row.lead.id !== props.userId && (
-                        <Tooltip title="Leave project">
+                      {member.id !== props.user.id && (
+                        <Tooltip title="Remove meber">
                           <IconButton
-                            aria-label="leave project"
+                            aria-label="Remove meber"
                             onClick={(event: React.MouseEvent<HTMLElement>) =>
-                              handleLeaveProject(event, row)
+                              handleRemoveMember(event, member)
                             }
                           >
                             <Cancel />
@@ -177,7 +176,7 @@ function ProjectsTable(props: Props) {
       <TablePagination
         rowsPerPageOptions={[10, 15, 20]}
         component="div"
-        count={props.projectListCount}
+        count={props.projectMemberCount}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -194,25 +193,43 @@ function ProjectsTable(props: Props) {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  userId: state.user.id,
-  projectList: state.project.projectList,
-  projectListCount: state.project.projectListCount,
+  user: state.user,
+  projectMemberList: state.project.projectMemberList,
+  projectMemberCount: state.project.projectMemberCount,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
-  setActiveProject: (projectId: string, history: History) =>
-    dispatch(StoreAction.user.setActiveProject(projectId, history)),
-  handleLeaveProject: (id: string, name: string) =>
-    dispatch(StoreAction.project.handleLeaveProject(id, name)),
-  handleDeleteProject: (id: string, name: string) =>
-    dispatch(StoreAction.project.handleDeleteProject(id, name)),
-  getProjectList: (
+  handleRemoveMember: (
+    projectId: string,
+    member: IPerson,
     order: orderTypes,
     orderBy: string,
     page: number,
     rowsPerPage: number,
     search: string,
-  ) => dispatch(StoreAction.project.getProjectList(order, orderBy, page, rowsPerPage, search)),
+  ) =>
+    dispatch(
+      StoreAction.project.handleRemoveMember(
+        projectId,
+        member,
+        order,
+        orderBy,
+        page,
+        rowsPerPage,
+        search,
+      ),
+    ),
+  getProjectMembers: (
+    projectId: string,
+    order: orderTypes,
+    orderBy: string,
+    page: number,
+    rowsPerPage: number,
+    search: string,
+  ) =>
+    dispatch(
+      StoreAction.project.getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search),
+    ),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectsTable));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TeamTable));

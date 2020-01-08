@@ -1,6 +1,7 @@
 import { INotification } from './notification';
 import { ProjectsListData } from './project';
 import { ITaskList } from './task';
+import { IPerson } from './person';
 
 export interface Action {
   type: number | string;
@@ -21,6 +22,7 @@ export interface UserState {
   readonly name?: string;
   readonly avatar?: string;
   readonly activeProjectId?: string;
+  readonly activeSprintId?: string;
 }
 
 export interface ApplicationState {
@@ -31,6 +33,8 @@ export interface ApplicationState {
 export interface ProjectState {
   readonly projectList: ProjectsListData[];
   readonly projectListCount: number;
+  readonly projectMemberList: IPerson[];
+  readonly projectMemberCount: number;
 }
 
 export interface SprintState {

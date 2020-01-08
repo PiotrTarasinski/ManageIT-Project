@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -8,26 +7,27 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import GroupIcon from '@material-ui/icons/Group';
-import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
-import AccountTreeIcon from '@material-ui/icons/AccountTree';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import MenuIcon from '@material-ui/icons/Menu';
+import {
+  AccountBox,
+  Settings,
+  ViewList,
+  ExitToApp,
+  Dashboard,
+  Group,
+  DeveloperBoard,
+  AccountTree,
+  Assignment,
+  TrendingDown,
+  ChevronLeft,
+  ChevronRight,
+  ExpandLess,
+  ExpandMore,
+} from '@material-ui/icons';
 import useStyles from './navigation.style';
-
 import logo from 'assets/images/logos/manageIT.png';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
@@ -38,6 +38,7 @@ import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-
 import { ROUTES } from 'models/variables/routes';
 import { StoreAction } from 'store/actions';
 import { History } from 'history';
+import { SideNavLink } from 'models/types/sideNavLink';
 
 interface IDispatchProps {
   handleLogOut: (history: History) => void;
@@ -63,6 +64,77 @@ function Navigation(props: Props) {
   const logOut = () => {
     setUserMenu(null);
     return props.handleLogOut(props.history);
+  };
+
+  const navLinks: SideNavLink[] = [
+    {
+      hasProp: false,
+      title: 'Projects List',
+      pathname: ROUTES.projects.pathname,
+      icon: <ViewList />,
+    },
+    {
+      hasProp: true,
+      title: 'Dashboard',
+      pathname: ROUTES.dashboard.pathname,
+      icon: <Dashboard />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Team',
+      pathname: ROUTES.team.pathname,
+      icon: <Group />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Backlog',
+      pathname: ROUTES.backlog.pathname,
+      icon: <DeveloperBoard />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Active Sprint',
+      pathname: ROUTES.sprint.pathname,
+      icon: <AccountTree />,
+      prop: user.activeSprintId,
+    },
+    {
+      hasProp: true,
+      title: 'Task List',
+      pathname: ROUTES.tasks.pathname,
+      icon: <Assignment />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Raports',
+      pathname: ROUTES.raport.pathname,
+      icon: <TrendingDown />,
+      prop: user.activeProjectId,
+    },
+  ];
+
+  const renderSideNavLink = (link: SideNavLink) => {
+    const { hasProp, title, pathname, icon, prop } = link;
+    if (!hasProp || (hasProp && prop)) {
+      return (
+        <ListItem
+          key={title}
+          button
+          component={Link}
+          to={hasProp ? `${pathname}/${prop}` : pathname}
+          className={clsx({
+            [classes.activeNavLink]: props.location.pathname.includes(pathname),
+          })}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
+          <ListItemText>{title}</ListItemText>
+        </ListItem>
+      );
+    }
   };
 
   useEffect(() => {
@@ -92,7 +164,16 @@ function Navigation(props: Props) {
               <MenuIcon />
             </IconButton>
           )}
-          <Link to={ROUTES.home.pathname} className={classes.logo}>
+          <Link
+            to={
+              user.isAuth
+                ? user.activeProjectId
+                  ? `${ROUTES.dashboard.pathname}/${user.activeProjectId}`
+                  : ROUTES.projects.pathname
+                : ROUTES.home.pathname
+            }
+            className={classes.logo}
+          >
             <img src={logo} alt="ManageIT" />
           </Link>
           <div className={classes.spacer}></div>
@@ -133,13 +214,13 @@ function Navigation(props: Props) {
               onClick={() => setUserMenu(null)}
             >
               <ListItemIcon>
-                <AccountBoxIcon />
+                <AccountBox />
               </ListItemIcon>
               <ListItemText>My Profile</ListItemText>
             </MenuItem>
             <MenuItem className={classes.appBarLogoutButton} onClick={() => logOut()}>
               <ListItemIcon>
-                <ExitToAppIcon />
+                <ExitToApp />
               </ListItemIcon>
               <ListItemText>Logout</ListItemText>
             </MenuItem>
@@ -164,14 +245,14 @@ function Navigation(props: Props) {
         >
           <div className={classes.toolbar}>
             <IconButton onClick={() => setDrawerOpen(false)}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
             </IconButton>
           </div>
           <Divider />
           <List>
             <ListItem button onClick={() => setDrawerProfileOpen(!drawerProfileOpen)}>
               <ListItemIcon>
-                <AccountBoxIcon />
+                <AccountBox />
               </ListItemIcon>
               <ListItemText>My Profile</ListItemText>
               {drawerProfileOpen ? <ExpandLess /> : <ExpandMore />}
@@ -194,61 +275,22 @@ function Navigation(props: Props) {
               <List>
                 <ListItem button component={Link} to={`${ROUTES.profile.pathname}/${user.id}`}>
                   <ListItemIcon>
-                    <SettingsIcon />
+                    <Settings />
                   </ListItemIcon>
                   <ListItemText>Profile Settings</ListItemText>
                 </ListItem>
                 <ListItem button className={classes.drawerLogoutButton} onClick={() => logOut()}>
                   <ListItemIcon>
-                    <ExitToAppIcon />
+                    <ExitToApp />
                   </ListItemIcon>
                   <ListItemText>Logout</ListItemText>
                 </ListItem>
                 <Divider />
               </List>
             </Collapse>
-            <ListItem button component={Link} to={ROUTES.projects.pathname}>
-              <ListItemIcon>
-                <ViewListIcon />
-              </ListItemIcon>
-              <ListItemText>Projects List</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.dashboard.pathname}>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText>Dashboard</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.team.pathname}>
-              <ListItemIcon>
-                <GroupIcon />
-              </ListItemIcon>
-              <ListItemText>Team</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.backlog.pathname}>
-              <ListItemIcon>
-                <DeveloperBoardIcon />
-              </ListItemIcon>
-              <ListItemText>Backlog</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.sprint.pathname}>
-              <ListItemIcon>
-                <AccountTreeIcon />
-              </ListItemIcon>
-              <ListItemText>Active Sprint</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.tasks.pathname}>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText>Task List</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.raport.pathname}>
-              <ListItemIcon>
-                <TrendingDownIcon />
-              </ListItemIcon>
-              <ListItemText>Raports</ListItemText>
-            </ListItem>
+            {navLinks.map((link: SideNavLink) => {
+              return renderSideNavLink(link);
+            })}
           </List>
         </Drawer>
       )}

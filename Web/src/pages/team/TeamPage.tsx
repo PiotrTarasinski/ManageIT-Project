@@ -1,10 +1,16 @@
 import React from 'react';
 import PageContainer from 'components/containers/pageContainer/PageContainer';
+import useStyles from './teamPage.style';
+import TeamTable from './teamTable/TeamTable';
 
-export class TeamPage extends React.Component {
-  render() {
-    return <PageContainer>TeamPage</PageContainer>;
-  }
+function TeamPage() {
+  const classes = useStyles();
+
+  return (
+    <PageContainer className={classes.mainContainer}>
+      <TeamTable />
+    </PageContainer>
+  );
 }
 
 export default TeamPage;

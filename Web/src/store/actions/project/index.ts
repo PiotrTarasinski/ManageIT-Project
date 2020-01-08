@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { Action } from 'models/types/store';
+import { Action, AppState } from 'models/types/store';
 import Swal from 'sweetalert2';
 import { displaySnackbar } from '../application';
 import { handleError } from 'utils/handleError';
@@ -7,10 +7,17 @@ import { API } from 'store/api';
 import { ProjectsListData } from 'models/types/project';
 import { projectActionTypes } from 'models/enums/storeActions';
 import { orderTypes } from 'models/enums/orderTypes';
+import { IPerson } from 'models/types/person';
+import { ThunkDispatch } from 'redux-thunk';
 
 const setProjectList = (projectList: ProjectsListData, projectListCount: number) => ({
   type: projectActionTypes.SET_PROJECT_LIST,
   payload: { projectList, projectListCount },
+});
+
+const setProjectMembers = (projectMemberList: IPerson[], projectMemberCount: number) => ({
+  type: projectActionTypes.SET_PROJECT_MEMBER_LIST,
+  payload: { projectMemberList, projectMemberCount },
 });
 
 const getProjectList = (
@@ -30,6 +37,24 @@ const getProjectList = (
     });
 };
 
+const getProjectMembers = (
+  projectId: string,
+  order: orderTypes,
+  orderBy: string,
+  page: number,
+  rowsPerPage: number,
+  search: string,
+) => (dispatch: Dispatch<Action>) => {
+  return API.project
+    .getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search)
+    .then((res: any) => {
+      dispatch(setProjectMembers(res.data.users, res.data.count));
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
 const handleLeaveProject = (id: string, name: string) => (dispatch: Dispatch<Action>) => {
   Swal.fire({
     title: 'Are you sure?',
@@ -37,11 +62,17 @@ const handleLeaveProject = (id: string, name: string) => (dispatch: Dispatch<Act
     type: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Confirm',
-  }).then(result => {
-    if (result.value) {
-      dispatch(displaySnackbar({ text: `Successfully left project ${name}`, variant: 'success' }));
-    }
-  });
+  })
+    .then(result => {
+      if (result.value) {
+        dispatch(
+          displaySnackbar({ text: `Successfully left project ${name}`, variant: 'success' }),
+        );
+      }
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
 };
 
 const handleDeleteProject = (id: string, name: string) => (dispatch: Dispatch<Action>) => {
@@ -51,13 +82,58 @@ const handleDeleteProject = (id: string, name: string) => (dispatch: Dispatch<Ac
     type: 'warning',
     showCancelButton: true,
     confirmButtonText: 'Confirm',
+  })
+    .then(result => {
+      if (result.value) {
+        dispatch(
+          displaySnackbar({ text: `Successfully removed project ${name}`, variant: 'success' }),
+        );
+      }
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const handleRemoveMember = (
+  projectId: string,
+  member: IPerson,
+  order: orderTypes,
+  orderBy: string,
+  page: number,
+  rowsPerPage: number,
+  search: string,
+) => (dispatch: ThunkDispatch<AppState, any, Action>) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: `Please confirm that you want to remove ${member.name} from the project`,
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Confirm',
   }).then(result => {
     if (result.value) {
-      dispatch(
-        displaySnackbar({ text: `Successfully removed project ${name}`, variant: 'success' }),
-      );
+      return API.project
+        .removeMember(member.id, projectId)
+        .then((res: any) => {
+          dispatch(getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search));
+          dispatch(
+            displaySnackbar({
+              text: `Successfully removed ${member.name} from the project`,
+              variant: 'success',
+            }),
+          );
+        })
+        .catch((err: any) => {
+          return handleError(err)(dispatch);
+        });
     }
   });
 };
 
-export { handleLeaveProject, handleDeleteProject, getProjectList };
+export {
+  handleLeaveProject,
+  handleDeleteProject,
+  getProjectList,
+  getProjectMembers,
+  handleRemoveMember,
+};

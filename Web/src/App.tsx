@@ -24,6 +24,7 @@ interface IDispatchProps {
 
 interface IStoreProps {
   isAuth: boolean;
+  activeProjectId?: string;
   sidebarVisible: boolean;
 }
 
@@ -34,13 +35,14 @@ type RouteProps = RouteComponentProps<any> & any;
 
 class App extends React.Component<Props> {
   renderPage = (props: RouteProps, page: IRoute) => {
-    const { isAuth } = this.props;
+    const { isAuth, sidebarVisible } = this.props;
+    if (sidebarVisible !== page.sidebarVisible) {
+      this.props.toggleSidebar(page.sidebarVisible);
+    }
     if (page.permission) {
       if (isAuth) {
-        this.props.toggleSidebar(page.sidebarVisible);
         return <page.component {...props} />;
       } else {
-        this.props.toggleSidebar(ROUTES.login.sidebarVisible);
         Swal.fire({
           title: 'Unauthorized',
           text: 'You are not logged in',
@@ -57,7 +59,6 @@ class App extends React.Component<Props> {
         );
       }
     } else {
-      this.props.toggleSidebar(page.sidebarVisible);
       return <page.component {...props} />;
     }
   };
@@ -79,7 +80,17 @@ class App extends React.Component<Props> {
                 />
               );
             })}
-            <Redirect from="*" to={ROUTES.home.pathname} />
+            {/* <Redirect from="*" to={ROUTES.home.pathname} /> */}
+            <Redirect
+              from="*"
+              to={
+                this.props.isAuth
+                  ? this.props.activeProjectId
+                    ? `${ROUTES.dashboard.pathname}/${this.props.activeProjectId}`
+                    : ROUTES.projects.pathname
+                  : ROUTES.home.pathname
+              }
+            />
           </Switch>
         </MainContainer>
       </Router>
@@ -89,6 +100,7 @@ class App extends React.Component<Props> {
 
 const mapStateToProps = (state: AppState) => ({
   isAuth: state.user.isAuth,
+  activeProjectId: state.user.activeProjectId,
   sidebarVisible: state.app.sidebarVisible,
 });
 

@@ -15,6 +15,16 @@ const user = {
       confirmPassword,
     });
   },
+  setActiveProject: (projectId: string) => {
+    return httpRequest.post('auth/set_active_project', {
+      id: projectId,
+    });
+  },
+  setActiveSprint: (sprintId: string) => {
+    return httpRequest.post('auth/set_active_sprint', {
+      sprintId,
+    });
+  },
 };
 
 export { user };
