@@ -71,7 +71,11 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
     }
 
-    const { projectId, userId } = this.req.payload;
+    if (!this.req.payload.data) {
+      return this.res(CustomResponse(400, 'Invalid payload input.', { data: 'data is required' }));
+    }
+
+    const { userId, projectId } = this.req.payload.data;
 
     const validationResponse = Validate.twoUUID(userId, projectId);
 
