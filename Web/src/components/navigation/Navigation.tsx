@@ -8,22 +8,24 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import GroupIcon from '@material-ui/icons/Group';
-import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
-import AccountTreeIcon from '@material-ui/icons/AccountTree';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
+import MenuIcon from '@material-ui/icons/Menu';
+import {
+  AccountBox,
+  Settings,
+  ViewList,
+  ExitToApp,
+  Dashboard,
+  Group,
+  DeveloperBoard,
+  AccountTree,
+  Assignment,
+  TrendingDown,
+  ChevronLeft,
+  ChevronRight,
+} from '@material-ui/icons';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './navigation.style';
@@ -71,48 +73,48 @@ function Navigation(props: Props) {
       hasProp: false,
       title: 'Projects List',
       pathname: ROUTES.projects.pathname,
-      icon: <ViewListIcon />,
+      icon: <ViewList />,
     },
     {
       hasProp: true,
       title: 'Dashboard',
       pathname: ROUTES.dashboard.pathname,
-      icon: <DashboardIcon />,
+      icon: <Dashboard />,
       prop: user.activeProjectId,
     },
     {
       hasProp: true,
       title: 'Team',
       pathname: ROUTES.team.pathname,
-      icon: <GroupIcon />,
+      icon: <Group />,
       prop: user.activeProjectId,
     },
     {
       hasProp: true,
       title: 'Backlog',
       pathname: ROUTES.backlog.pathname,
-      icon: <DeveloperBoardIcon />,
+      icon: <DeveloperBoard />,
       prop: user.activeProjectId,
     },
     {
       hasProp: true,
       title: 'Active Sprint',
       pathname: ROUTES.sprint.pathname,
-      icon: <AccountTreeIcon />,
+      icon: <AccountTree />,
       prop: user.activeSprintId,
     },
     {
       hasProp: true,
       title: 'Task List',
       pathname: ROUTES.tasks.pathname,
-      icon: <AssignmentIcon />,
+      icon: <Assignment />,
       prop: user.activeProjectId,
     },
     {
       hasProp: true,
       title: 'Raports',
       pathname: ROUTES.raport.pathname,
-      icon: <TrendingDownIcon />,
+      icon: <TrendingDown />,
       prop: user.activeProjectId,
     },
   ];
@@ -211,13 +213,13 @@ function Navigation(props: Props) {
               onClick={() => setUserMenu(null)}
             >
               <ListItemIcon>
-                <AccountBoxIcon />
+                <AccountBox />
               </ListItemIcon>
               <ListItemText>My Profile</ListItemText>
             </MenuItem>
             <MenuItem className={classes.appBarLogoutButton} onClick={() => logOut()}>
               <ListItemIcon>
-                <ExitToAppIcon />
+                <ExitToApp />
               </ListItemIcon>
               <ListItemText>Logout</ListItemText>
             </MenuItem>
@@ -242,14 +244,14 @@ function Navigation(props: Props) {
         >
           <div className={classes.toolbar}>
             <IconButton onClick={() => setDrawerOpen(false)}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
             </IconButton>
           </div>
           <Divider />
           <List>
             <ListItem button onClick={() => setDrawerProfileOpen(!drawerProfileOpen)}>
               <ListItemIcon>
-                <AccountBoxIcon />
+                <AccountBox />
               </ListItemIcon>
               <ListItemText>My Profile</ListItemText>
               {drawerProfileOpen ? <ExpandLess /> : <ExpandMore />}
@@ -272,13 +274,13 @@ function Navigation(props: Props) {
               <List>
                 <ListItem button component={Link} to={`${ROUTES.profile.pathname}/${user.id}`}>
                   <ListItemIcon>
-                    <SettingsIcon />
+                    <Settings />
                   </ListItemIcon>
                   <ListItemText>Profile Settings</ListItemText>
                 </ListItem>
                 <ListItem button className={classes.drawerLogoutButton} onClick={() => logOut()}>
                   <ListItemIcon>
-                    <ExitToAppIcon />
+                    <ExitToApp />
                   </ListItemIcon>
                   <ListItemText>Logout</ListItemText>
                 </ListItem>
