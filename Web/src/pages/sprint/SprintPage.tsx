@@ -54,8 +54,7 @@ function SprintPage(props: Props) {
   const { sprint } = props;
 
   useEffect(() => {
-    // props.getSprint(props.match.params.id);
-    props.getSprint('38184a13-4273-499a-af73-f5a053cdb589');
+    props.getSprint(props.match.params.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

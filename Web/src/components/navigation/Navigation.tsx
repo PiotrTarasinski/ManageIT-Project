@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -25,11 +24,10 @@ import {
   TrendingDown,
   ChevronLeft,
   ChevronRight,
+  ExpandLess,
+  ExpandMore,
 } from '@material-ui/icons';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './navigation.style';
-
 import logo from 'assets/images/logos/manageIT.png';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
@@ -128,6 +126,9 @@ function Navigation(props: Props) {
           button
           component={Link}
           to={hasProp ? `${pathname}/${prop}` : pathname}
+          className={clsx({
+            [classes.activeNavLink]: props.location.pathname.includes(pathname),
+          })}
         >
           <ListItemIcon>{icon}</ListItemIcon>
           <ListItemText>{title}</ListItemText>
