@@ -38,6 +38,7 @@ import { Collapse, Avatar, Typography, Button, MenuItem, Menu } from '@material-
 import { ROUTES } from 'models/variables/routes';
 import { StoreAction } from 'store/actions';
 import { History } from 'history';
+import { SideNavLink } from 'models/types/sideNavLink';
 
 interface IDispatchProps {
   handleLogOut: (history: History) => void;
@@ -63,6 +64,74 @@ function Navigation(props: Props) {
   const logOut = () => {
     setUserMenu(null);
     return props.handleLogOut(props.history);
+  };
+
+  const navLinks: SideNavLink[] = [
+    {
+      hasProp: false,
+      title: 'Projects List',
+      pathname: ROUTES.projects.pathname,
+      icon: <ViewListIcon />,
+    },
+    {
+      hasProp: true,
+      title: 'Dashboard',
+      pathname: ROUTES.dashboard.pathname,
+      icon: <DashboardIcon />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Team',
+      pathname: ROUTES.team.pathname,
+      icon: <GroupIcon />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Backlog',
+      pathname: ROUTES.backlog.pathname,
+      icon: <DeveloperBoardIcon />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Active Sprint',
+      pathname: ROUTES.sprint.pathname,
+      icon: <AccountTreeIcon />,
+      prop: user.activeSprintId,
+    },
+    {
+      hasProp: true,
+      title: 'Task List',
+      pathname: ROUTES.tasks.pathname,
+      icon: <AssignmentIcon />,
+      prop: user.activeProjectId,
+    },
+    {
+      hasProp: true,
+      title: 'Raports',
+      pathname: ROUTES.raport.pathname,
+      icon: <TrendingDownIcon />,
+      prop: user.activeProjectId,
+    },
+  ];
+
+  const renderSideNavLink = (link: SideNavLink) => {
+    const { hasProp, title, pathname, icon, prop } = link;
+    if (!hasProp || (hasProp && prop)) {
+      return (
+        <ListItem
+          key={title}
+          button
+          component={Link}
+          to={hasProp ? `${pathname}/${prop}` : pathname}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
+          <ListItemText>{title}</ListItemText>
+        </ListItem>
+      );
+    }
   };
 
   useEffect(() => {
@@ -92,7 +161,16 @@ function Navigation(props: Props) {
               <MenuIcon />
             </IconButton>
           )}
-          <Link to={ROUTES.home.pathname} className={classes.logo}>
+          <Link
+            to={
+              user.isAuth
+                ? user.activeProjectId
+                  ? `${ROUTES.dashboard.pathname}/${user.activeProjectId}`
+                  : ROUTES.projects.pathname
+                : ROUTES.home.pathname
+            }
+            className={classes.logo}
+          >
             <img src={logo} alt="ManageIT" />
           </Link>
           <div className={classes.spacer}></div>
@@ -207,48 +285,9 @@ function Navigation(props: Props) {
                 <Divider />
               </List>
             </Collapse>
-            <ListItem button component={Link} to={ROUTES.projects.pathname}>
-              <ListItemIcon>
-                <ViewListIcon />
-              </ListItemIcon>
-              <ListItemText>Projects List</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.dashboard.pathname}>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText>Dashboard</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.team.pathname}>
-              <ListItemIcon>
-                <GroupIcon />
-              </ListItemIcon>
-              <ListItemText>Team</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.backlog.pathname}>
-              <ListItemIcon>
-                <DeveloperBoardIcon />
-              </ListItemIcon>
-              <ListItemText>Backlog</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.sprint.pathname}>
-              <ListItemIcon>
-                <AccountTreeIcon />
-              </ListItemIcon>
-              <ListItemText>Active Sprint</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.tasks.pathname}>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText>Task List</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={ROUTES.raport.pathname}>
-              <ListItemIcon>
-                <TrendingDownIcon />
-              </ListItemIcon>
-              <ListItemText>Raports</ListItemText>
-            </ListItem>
+            {navLinks.map((link: SideNavLink) => {
+              return renderSideNavLink(link);
+            })}
           </List>
         </Drawer>
       )}

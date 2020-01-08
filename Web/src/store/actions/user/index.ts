@@ -74,10 +74,10 @@ const setActiveProject = (projectId: string, history: History) => (dispatch: Dis
   return API.user
     .setActiveProject(projectId)
     .then((res: any) => {
+      dispatch(setUserData(getUserDataFromToken()));
       history.push(`${ROUTES.dashboard.pathname}/${projectId}`);
     })
     .catch((err: any) => {
-      // return handleError(err)(dispatch);
       if (handleError(err)(dispatch)) {
         dispatch(displaySnackbar({ text: 'Something went wrong', variant: 'error' }));
       }
