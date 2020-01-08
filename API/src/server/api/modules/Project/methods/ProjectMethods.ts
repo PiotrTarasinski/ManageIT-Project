@@ -10,6 +10,8 @@ interface ProjectResponse {
 }
 
 class ProjectMethods {
+
+  // Returns paginated projects result
   async getUserProjects(userId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
     if (orderBy === 'lead') {
       return await db.User.findAndCountAll({
@@ -71,6 +73,8 @@ class ProjectMethods {
     });
   }
 
+  // Return CustomResponse either with error code or 200
+  // Backlogs to project
   async addUserToProject(userId: string, projectId: string, loggedUserId: string) {
 
     return await db.UserProject.create({
@@ -100,6 +104,8 @@ class ProjectMethods {
       });
   }
 
+  // Returns CustomResponse
+  // Backlogs to project
   async deleteUserFromProject(userId: string, projectId: string, loggedUserId: string) {
     return await db.UserProject.destroy({
       where: {
@@ -116,7 +122,8 @@ class ProjectMethods {
           action: 'removed',
           message: 'from project.',
           type: 'user',
-          userId: loggedUserId
+          userId: loggedUserId,
+          eventId: userId
         })
         .then(() => CustomResponse(200, 'Successfully removed user from project.'))
         .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
@@ -126,6 +133,7 @@ class ProjectMethods {
       });
   }
 
+  // Returns paginated users from project result
   async getProjectUsersPaginated(projectId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
     if (orderBy === 'dateOfJoin' || orderBy === 'permissions') {
       return await db.Project.findAndCountAll({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
@@ -183,6 +191,7 @@ class ProjectMethods {
     });
   }
 
+  // Returns users from project
   async getProjectUsers(projectId: string) {
     return await db.Project.findAndCountAll({
       where: {
@@ -197,6 +206,8 @@ class ProjectMethods {
     });
   }
 
+  // Creates and returns project or undefined
+  // Backlogs to project
   async createProject(name: string, state: string, leadId: string) {
     return await db.Project.create({
       name,
@@ -219,6 +230,7 @@ class ProjectMethods {
       });
   }
 
+  // Removes project from db
   async deleteProject(id: string) {
     const project = await db.Project.findByPk(id);
     if (project) {
@@ -229,7 +241,9 @@ class ProjectMethods {
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
   }
 
-  async updateProject(id: string, name: string, state: string, leadId: string) {
+  // Returns CustomResponse
+  // Backlogs to project
+  async updateProject(id: string, name: string, state: string, leadId: string, loggedUserId: string) {
     const project = await db.Project.findByPk(id);
 
     if (project) {
@@ -243,7 +257,18 @@ class ProjectMethods {
         project.leadId = leadId;
       }
       return await project.save()
+      .then(async () => {
+        return await db.Backlog.create({
+          projectId: id,
+          action: 'updated',
+          message: 'a project.',
+          type: 'project',
+          userId: loggedUserId,
+          eventId: id
+        })
         .then(() => CustomResponse(200, 'Project updated successfully'))
+        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Database error.' }));
+      })
         .catch(() => CustomResponse(500, 'Couldn\'t update project.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
@@ -290,6 +315,7 @@ class ProjectMethods {
   }
 
   // Create entry for given project
+  // Backlogs to project
   async createEntry(
     points: string,
     priority: string,
@@ -298,7 +324,8 @@ class ProjectMethods {
     title: string,
     description: string,
     projectId: string,
-    projectName: string) {
+    projectName: string,
+    loggedUserId: string) {
     const count = await db.SprintEntry.count({
       where: {
         projectId
@@ -314,12 +341,18 @@ class ProjectMethods {
       description,
       projectId
     })
-      .then(() => {
-        return true;
+    .then(async (entry) => {
+      return await db.Backlog.create({
+        projectId,
+        userId: loggedUserId,
+        eventId: <string>entry.id,
+        action: 'created',
+        message: 'an entry.',
+        type: 'entry'
       })
-      .catch((err) => {
-        return false;
-      });
+      .then(() => entry)
+      .catch(() => undefined);
+    });
   }
 }
 
