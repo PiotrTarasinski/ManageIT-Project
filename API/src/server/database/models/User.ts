@@ -3,6 +3,7 @@ import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { ProjectInstance } from './Project';
 import { SprintEntryInstance } from './SprintEntry';
 import { SprintInstance } from './Sprint';
+import { UserProjectInstance } from './UserProject';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -26,6 +27,7 @@ export interface UserAttributes {
   reviewerIn?: SprintEntryInstance[];
   activeProject?: ProjectInstance[];
   activeSprint?: SprintInstance[];
+  usersProjects?: UserProjectInstance;
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
@@ -96,6 +98,7 @@ export const UserFactory =
       User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserAssign', as: 'assignIn', foreignKey: 'user_id' });
+      User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });
     };
 
     return User;

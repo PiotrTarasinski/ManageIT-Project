@@ -129,46 +129,46 @@ module.exports = {
         primaryKey: true,
         references: {
           model: 'projects',
-          key: 'id',
+          key: 'id'
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-        field: 'project_id',
+        field: 'project_id'
       },
       userId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
           model: 'users',
-          key: 'id',
+          key: 'id'
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-        field: 'user_id',
+        field: 'user_id'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      permissions: {
+        type: DataTypes.ENUM(['User', 'Admin']),
+        defaultValue: 'User'
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        field: 'is_admin',
+        field: 'is_admin'
       },
       isSupervisor: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        field: 'is_supervisor',
+        field: 'is_supervisor'
       },
       isModerator: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        field: 'is_moderator',
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at',
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at',
-      },
+        field: 'is_moderator'
+      }
     });
 
     

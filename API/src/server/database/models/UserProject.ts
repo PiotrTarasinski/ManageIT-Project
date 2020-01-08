@@ -6,6 +6,7 @@ export interface UserProjectAttributes {
   userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  permissions?: string;
   isAdmin?: boolean;
   isSupervisor?: boolean;
   isModerator?: boolean;
@@ -44,6 +45,10 @@ export const UserProjectFactory = (
       type: DataTypes.DATE,
       field: 'updated_at'
     },
+    permissions: {
+      type: DataTypes.ENUM(['User', 'Admin']),
+      defaultValue: 'User'
+    },
     isAdmin: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -62,6 +67,11 @@ export const UserProjectFactory = (
   };
 
   const UserProject = sequelize.define<UserProjectInstance, UserProjectAttributes>('usersProjects', attributes);
+
+  UserProject.associate = models => {
+    UserProject.belongsTo(models.Project, { as: 'projects', foreignKey: 'projectId' });
+    UserProject.belongsTo(models.User, { as: 'users', foreignKey: 'userId' });
+  };
 
   return UserProject;
 };
