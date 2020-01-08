@@ -1,6 +1,8 @@
 import db from '../../../../database';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import { Op } from 'sequelize';
+import sequelize = require('sequelize');
+import permissions from '../../../../../utils/permissions';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -108,6 +110,39 @@ class ProjectMethods {
   }
 
   async getProjectUsersPaginated(projectId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+    if (orderBy === 'dateOfJoin' || orderBy === 'permissions') {
+      return await db.Project.findAndCountAll({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
+        subQuery: false,
+        include: [
+          {
+            model: db.User,
+            as: 'users',
+            include: [
+              {
+                model: db.UserProject,
+                as: 'permissions',
+                where: {
+                  projectId
+                }
+              }
+            ]
+          }
+        ],
+        where: {
+          id: projectId,
+          [Op.or]: [
+            { '$users.name$': { [Op.iLike]: `%${search}%` } },
+            { '$users.email$': { [Op.iLike]: `%${search}%` } }
+          ]
+        },
+        order: [
+          [{ model: db.User, as: 'users' },
+           { model: db.UserProject, as: 'permissions' }, orderBy === 'dateOfJoin' ? 'createdAt' : 'permissions', order]
+        ],
+        limit: rowsPerPage,
+        offset: (page * rowsPerPage)
+      });
+    }
     return await db.Project.findAndCountAll({
       subQuery: false,
       include: [
@@ -152,7 +187,7 @@ class ProjectMethods {
       leadId
     })
       .then(async project => {
-        await project.addUser(leadId, { through: { isAdmin: true } });
+        await project.addUser(leadId, { through: { permissions: 'Admin' } });
         return project;
       });
   }

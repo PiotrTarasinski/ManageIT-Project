@@ -27,6 +27,7 @@ export interface ProjectAttributes {
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
   getEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
   addUser: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], UserProjectAttributes>;
+  getUsers: Sequelize.BelongsToManyGetAssociationsMixin<UserInstance>;
 }
 
 export const ProjectFactory = (
@@ -81,6 +82,7 @@ export const ProjectFactory = (
       as: 'users',
       foreignKey: 'projectId'
     });
+    Project.hasMany(models.UserProject, { as: 'projectsUsers', foreignKey: 'projectId' });
     Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
     Project.hasMany(models.SprintEntry, { as: 'entries', foreignKey: 'projectId' });
   };

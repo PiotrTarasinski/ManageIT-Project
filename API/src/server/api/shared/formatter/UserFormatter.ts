@@ -8,11 +8,23 @@ export type UserResponseFormat = {
   avatar: string | null | undefined;
   activeProjectId?: string;
   activeSprintId?: string;
+  permissions?: string;
+  dateOfJoin?: Date;
 };
 
 class UserFormatter implements ResponseFormatter<UserInstance, UserResponseFormat> {
   async format(user: UserInstance, shouldHideIds?: boolean) {
     if (shouldHideIds) {
+      if (user.usersProjects) {
+        return {
+          id: <string>user.id,
+          email: user.email,
+          name: user.name,
+          avatar: user.avatar,
+          permissions: user.usersProjects.permissions,
+          dateOfJoin: user.usersProjects.createdAt
+        };
+      }
       return {
         id: <string>user.id,
         email: user.email,
