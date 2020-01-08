@@ -21,6 +21,7 @@ import { StoreAction } from 'store/actions';
 import { orderTypes } from 'models/enums/orderTypes';
 import ProjectStateChip from 'components/projectStateChip/ProjectStateChip';
 import { headCell } from 'models/types/table';
+import { History } from 'history';
 
 interface IDispatchProps {
   handleLeaveProject: (id: string, name: string) => void;
@@ -32,6 +33,7 @@ interface IDispatchProps {
     rowsPerPage: number,
     search: string,
   ) => void;
+  setActiveProject: (projectId: string, history: History) => void;
 }
 
 interface IStoreProps {
@@ -86,14 +88,18 @@ function ProjectsTable(props: Props) {
     setPage(0);
   };
 
-  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
+  const handleLeaveProject = (event: React.MouseEvent<HTMLElement>, project: ProjectsListData) => {
     event.stopPropagation();
-    props.handleLeaveProject(row.id, row.name);
+    props.handleLeaveProject(project.id, project.name);
   };
 
-  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, row: ProjectsListData) => {
+  const handleDeleteProject = (event: React.MouseEvent<HTMLElement>, project: ProjectsListData) => {
     event.stopPropagation();
-    props.handleDeleteProject(row.id, row.name);
+    props.handleDeleteProject(project.id, project.name);
+  };
+
+  const selectProject = (project: ProjectsListData) => {
+    props.setActiveProject(project.id, props.history);
   };
 
   return (
@@ -113,7 +119,7 @@ function ProjectsTable(props: Props) {
                 return (
                   <TableRow
                     hover
-                    onClick={() => props.history.push(`${ROUTES.dashboard.pathname}/${row.id}`)}
+                    onClick={() => selectProject(row)}
                     key={row.name}
                     className={classes.tableRow}
                   >
@@ -194,6 +200,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
+  setActiveProject: (projectId: string, history: History) =>
+    dispatch(StoreAction.user.setActiveProject(projectId, history)),
   handleLeaveProject: (id: string, name: string) =>
     dispatch(StoreAction.project.handleLeaveProject(id, name)),
   handleDeleteProject: (id: string, name: string) =>

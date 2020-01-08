@@ -70,4 +70,18 @@ const handleLogOut = (history: History) => (dispatch: Dispatch<Action>) => {
   history.push(ROUTES.login.pathname);
 };
 
-export { setUserData, handleSignIn, handleLogOut, handleSignUp };
+const setActiveProject = (projectId: string, history: History) => (dispatch: Dispatch<Action>) => {
+  return API.user
+    .setActiveProject(projectId)
+    .then((res: any) => {
+      history.push(`${ROUTES.dashboard.pathname}/${projectId}`);
+    })
+    .catch((err: any) => {
+      // return handleError(err)(dispatch);
+      if (handleError(err)(dispatch)) {
+        dispatch(displaySnackbar({ text: 'Something went wrong', variant: 'error' }));
+      }
+    });
+};
+
+export { setUserData, handleSignIn, handleLogOut, handleSignUp, setActiveProject };

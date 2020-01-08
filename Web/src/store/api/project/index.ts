@@ -34,6 +34,14 @@ const project = {
       search,
     });
   },
+  removeMember: (userId: string, projectId: string) => {
+    return httpRequest.delete('project/user', {
+      data: {
+        userId,
+        projectId,
+      },
+    });
+  },
   getSprint: (id: string) => {
     return httpRequest.post('sprint', {
       id,

@@ -1,6 +1,7 @@
 import { INotification } from './notification';
 import { ProjectsListData } from './project';
 import { ITaskList } from './task';
+import { IPerson } from './person';
 
 export interface Action {
   type: number | string;
@@ -32,7 +33,7 @@ export interface ApplicationState {
 export interface ProjectState {
   readonly projectList: ProjectsListData[];
   readonly projectListCount: number;
-  readonly projectMemberList: any[];
+  readonly projectMemberList: IPerson[];
   readonly projectMemberCount: number;
 }
 
