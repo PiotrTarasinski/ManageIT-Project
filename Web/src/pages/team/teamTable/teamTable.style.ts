@@ -78,6 +78,12 @@ const useStyles = makeStyles((theme: Theme) =>
     headCellIcon: {
       marginRight: theme.spacing(1),
     },
+    memberPermissionChip: {
+      color: grey['50'],
+      '& svg': {
+        fill: grey['50'],
+      },
+    },
   }),
 );
 

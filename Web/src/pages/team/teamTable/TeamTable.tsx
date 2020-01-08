@@ -11,15 +11,17 @@ import { Tooltip, IconButton, Chip, Avatar } from '@material-ui/core';
 import { AppState, Action, UserState } from 'models/types/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { Edit, Cancel } from '@material-ui/icons';
+import { Edit, Cancel, SupervisedUserCircle, AccountCircle } from '@material-ui/icons';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { ROUTES } from 'models/variables/routes';
 import { StoreAction } from 'store/actions';
 import { orderTypes } from 'models/enums/orderTypes';
 import SortableTableHead from 'components/sortableTableHead/SortableTableHead';
 import { headCell } from 'models/types/table';
 import { IPerson } from 'models/types/person';
+import { userPermission } from 'models/enums/userPermission';
+import { green, blue } from '@material-ui/core/colors';
 
 interface IDispatchProps {
   handleRemoveMember: (
@@ -106,6 +108,30 @@ function TeamTable(props: Props) {
     event.stopPropagation();
   };
 
+  const renderPermissionChip = (member: IPerson) => {
+    let icon: JSX.Element | undefined = undefined;
+    let color = '';
+    if (member.permissions === userPermission.ADMIN) {
+      icon = <SupervisedUserCircle />;
+      color = blue[500];
+    }
+    if (member.permissions === userPermission.USER) {
+      icon = <AccountCircle />;
+      color = green[700];
+    }
+
+    if (member.permissions) {
+      return (
+        <Chip
+          label={member.permissions}
+          icon={icon}
+          className={classes.memberPermissionChip}
+          style={{ backgroundColor: color }}
+        />
+      );
+    }
+  };
+
   return (
     <Paper className={classes.paper}>
       <ProjectsTableToolbar classes={classes} handleSearch={handleSearch} />
@@ -140,7 +166,7 @@ function TeamTable(props: Props) {
                       {member.dateOfJoin ? new Date(member.dateOfJoin).toDateString() : ''}
                     </TableCell>
                     <TableCell>{member.role || ''}</TableCell>
-                    <TableCell>{member.permissions || ''}</TableCell>
+                    <TableCell>{renderPermissionChip(member)}</TableCell>
                     <TableCell align="center">
                       {member.id !== props.user.id && (
                         <Tooltip title="Edit member">
