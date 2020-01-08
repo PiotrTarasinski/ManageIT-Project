@@ -71,7 +71,7 @@ class ProjectMethods {
     });
   }
 
-  async addUserToProject(userId: string, projectId: string) {
+  async addUserToProject(userId: string, projectId: string, loggedUserId: string) {
 
     return await db.UserProject.create({
       projectId,
@@ -80,8 +80,17 @@ class ProjectMethods {
       isModerator: false,
       isSupervisor: false
     })
-      .then(() => {
-        return CustomResponse(200, 'User created successfully');
+      .then(async () => {
+        return await db.Backlog.create({
+          userId: loggedUserId,
+          projectId,
+          action: 'added',
+          message: 'to project.',
+          eventId: userId,
+          type: 'user'
+        })
+        .then(() => CustomResponse(200, 'User created successfully'))
+        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
       })
       .catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
@@ -91,18 +100,26 @@ class ProjectMethods {
       });
   }
 
-  async deleteUserFromProject(userId: string, projectId: string) {
+  async deleteUserFromProject(userId: string, projectId: string, loggedUserId: string) {
     return await db.UserProject.destroy({
       where: {
         userId,
         projectId
       }
     })
-      .then((count) => {
+      .then(async (count) => {
         if (!count) {
           return CustomResponse(400, 'User not in project.', { formError: 'Supplied user is not a part of this project.' });
         }
-        return CustomResponse(200, 'User deleted successfully');
+        return await db.Backlog.create({
+          projectId,
+          action: 'removed',
+          message: 'from project.',
+          type: 'user',
+          userId: loggedUserId
+        })
+        .then(() => CustomResponse(200, 'Successfully removed user from project.'))
+        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
       })
       .catch(() => {
         return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
@@ -187,7 +204,17 @@ class ProjectMethods {
       leadId
     })
       .then(async project => {
-        await project.addUser(leadId, { through: { permissions: 'Admin' } });
+        await project.addUser(leadId, { through: { permissions: 'Admin' } })
+        .then(async () => {
+          await db.Backlog.create({
+            projectId: <string>project.id,
+            action: 'created',
+            message: 'a project.',
+            type: 'project',
+            userId: leadId,
+            eventId: <string>project.id
+          });
+        });
         return project;
       });
   }

@@ -1,12 +1,12 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes, UserInstance } from './User';
-import { LabelAttributes, LabelInstance } from './Label';
+import { LabelInstance } from './Label';
 import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
 import { SprintEntryUserReviewerAttributes } from './SprintEntryUserReviewer';
-import { SprintAttributes } from './Sprint';
-import { ProjectAttributes } from './Project';
-import { CommentAttributes } from './Comment';
+import { SprintInstance } from './Sprint';
+import { ProjectInstance } from './Project';
+import { CommentInstance } from './Comment';
 
 export interface SprintEntryAttributes {
   id?: string;
@@ -22,15 +22,17 @@ export interface SprintEntryAttributes {
   description?: string;
   sprintId?: string;
   projectId: string;
-    /**
-     * Associations
-     */
-  assign?: UserAttributes[];
-  reviewers?: UserAttributes[];
-  labels?: LabelAttributes[];
-  sprint?: SprintAttributes;
-  project?: ProjectAttributes;
-  comments?: CommentAttributes[];
+
+  //
+  // Here be associations!
+  //
+
+  assign?: UserInstance[];
+  reviewers?: UserInstance[];
+  labels?: LabelInstance[];
+  sprint?: SprintInstance;
+  project?: ProjectInstance;
+  comments?: CommentInstance[];
 }
 
 export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes {

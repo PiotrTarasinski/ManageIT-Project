@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SprintEntryAttributes } from './SprintEntry';
+import { SprintEntryInstance } from './SprintEntry';
 
 export interface LabelAttributes {
   id?: string;
@@ -8,7 +8,12 @@ export interface LabelAttributes {
   updatedAt?: Date;
   name: string;
   color: string;
-  sprintEntriesIn?: SprintEntryAttributes[];
+
+  //
+  // Here be associations!
+  //
+
+  sprintEntriesIn?: SprintEntryInstance[];
 }
 
 export interface LabelInstance extends Sequelize.Instance<LabelAttributes>, LabelAttributes {}

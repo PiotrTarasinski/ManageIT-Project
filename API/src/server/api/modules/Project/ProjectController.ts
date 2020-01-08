@@ -50,13 +50,13 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().addUserToProject(userId, projectId);
+    const response = await new ProjectMethods().addUserToProject(userId, projectId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -73,13 +73,13 @@ class ProjectController extends Controller {
 
     const { projectId, userId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId);
+    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -96,7 +96,7 @@ class ProjectController extends Controller {
 
     const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(projectId);
+    const validationResponse = Validate.uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -179,7 +179,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id);
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -216,7 +216,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getSprintEntries(id, 'id');
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);

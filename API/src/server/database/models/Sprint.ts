@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
 import { SprintEntryAttributes, SprintEntryInstance } from './SprintEntry';
-import { ProjectAttributes } from './Project';
+import { ProjectInstance } from './Project';
 
 export interface SprintAttributes {
   id?: string;
@@ -12,11 +12,13 @@ export interface SprintAttributes {
   description: string;
   start: Date;
   end: Date;
-  /**
-   * Associations
-   */
+
+  //
+  // Here be associations!
+  //
+
   sprintEntries?: SprintEntryInstance[];
-  project?: ProjectAttributes;
+  project?: ProjectInstance;
   users?: UserInstance[];
 }
 

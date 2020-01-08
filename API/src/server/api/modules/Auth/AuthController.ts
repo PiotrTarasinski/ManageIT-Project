@@ -70,7 +70,7 @@ class AuthController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = validate.uuid(id);
+    const validationResponse = validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -96,7 +96,7 @@ class AuthController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = validate.uuid(id);
+    const validationResponse = validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);

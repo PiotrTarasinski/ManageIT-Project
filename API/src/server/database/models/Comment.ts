@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { UserAttributes, UserInstance } from './User';
+import { UserInstance } from './User';
 
 export interface CommentAttributes {
   id?: string;
@@ -9,7 +9,12 @@ export interface CommentAttributes {
   content: string;
   userId: string;
   sprintEntryId: string;
-  user?: UserAttributes;
+
+  //
+  // Here be associations!
+  //
+
+  user?: UserInstance;
 }
 
 export interface CommentInstance extends Sequelize.Instance<CommentAttributes>, CommentAttributes {

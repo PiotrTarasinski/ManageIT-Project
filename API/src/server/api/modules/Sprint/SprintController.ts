@@ -17,7 +17,7 @@ class SprintController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getSprintEntries(id, 'id');
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -59,7 +59,7 @@ class SprintController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.sprintDeleteEntry(id);
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -155,7 +155,7 @@ class SprintController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getSprintEntries(id, 'id');
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -202,7 +202,7 @@ class SprintController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getSprintEntries(id, 'id');
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);

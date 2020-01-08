@@ -4,6 +4,7 @@ import { ProjectInstance } from './Project';
 import { SprintEntryInstance } from './SprintEntry';
 import { SprintInstance } from './Sprint';
 import { UserProjectInstance } from './UserProject';
+import { BacklogInstance } from './Backlog';
 
 export type AccountRole = 'admin' | 'user';
 
@@ -18,9 +19,10 @@ export interface UserAttributes {
   activeProjectId?: string;
   activeSprintId?: string;
 
-  /**
-   * Associations
-   */
+  //
+  // Here be associations!
+  //
+
   leadIn?: ProjectInstance[];
   projectsIn?: ProjectInstance[];
   assignIn?: SprintEntryInstance[];
@@ -28,6 +30,7 @@ export interface UserAttributes {
   activeProject?: ProjectInstance[];
   activeSprint?: SprintInstance[];
   usersProjects?: UserProjectInstance;
+  logs?: BacklogInstance[];
 }
 
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
@@ -99,6 +102,7 @@ export const UserFactory =
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserAssign', as: 'assignIn', foreignKey: 'user_id' });
       User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });
+      User.hasMany(models.Backlog, { as: 'userLogs', foreignKey: 'userId' });
     };
 
     return User;

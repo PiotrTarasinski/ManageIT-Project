@@ -298,6 +298,55 @@ module.exports = {
       }
     });
 
+    await queryInterface.createTable('backlogs', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        field: 'user_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      projectId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'project_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      message: {
+        type: DataTypes.STRING
+      },
+      action: {
+        type: DataTypes.STRING
+      },
+      eventId: {
+        type: DataTypes.UUID,
+        field: 'event_id'
+      },
+      type: {
+        type: DataTypes.STRING
+      }
+    })
+
     await queryInterface.createTable('sprintEntryLabels', {
       sprintEntryId: {
         type: DataTypes.UUID,
