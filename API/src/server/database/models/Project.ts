@@ -89,6 +89,7 @@ export const ProjectFactory = (
     Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
     Project.hasMany(models.SprintEntry, { as: 'entries', foreignKey: 'projectId' });
     Project.hasMany(models.Backlog, { as: 'projectLogs', foreignKey: 'projectId' });
+    Project.hasMany(models.UserProjectLabel, { foreignKey: 'projectId' });
   };
 
   return Project;

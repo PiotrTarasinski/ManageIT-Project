@@ -135,8 +135,25 @@ class ProjectMethods {
 
   // Returns paginated users from project result
   async getProjectUsersPaginated(projectId: string, order: string, orderBy: string, page: number, rowsPerPage: number, search: string) {
+
+    const count = await db.Project.count({
+      include: [
+        {
+          model: db.User,
+          as: 'users'
+        }
+      ],
+      where: {
+        id: projectId,
+        [Op.or]: [
+          { '$users.name$': { [Op.iLike]: `%${search}%` } },
+          { '$users.email$': { [Op.iLike]: `%${search}%` } }
+        ]
+      }
+    });
+
     if (orderBy === 'dateOfJoin' || orderBy === 'permissions') {
-      return await db.Project.findAndCountAll({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
+      const users = await db.Project.findAll({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
         subQuery: false,
         include: [
           {
@@ -149,6 +166,15 @@ class ProjectMethods {
                 where: {
                   projectId
                 }
+              },
+              {
+                model: db.UserProjectLabel,
+                include: [
+                  {
+                    model: db.RoleLabel,
+                    as: 'roleLabels'
+                  }
+                ]
               }
             ]
           }
@@ -167,8 +193,10 @@ class ProjectMethods {
         limit: rowsPerPage,
         offset: (page * rowsPerPage)
       });
+
+      return { rows: users, count };
     }
-    return await db.Project.findAndCountAll({
+    const users = await db.Project.findAll({
       subQuery: false,
       include: [
         {
@@ -189,21 +217,75 @@ class ProjectMethods {
       limit: rowsPerPage,
       offset: (page * rowsPerPage)
     });
+
+    return { rows: users, count };
   }
 
   // Returns users from project
   async getProjectUsers(projectId: string) {
-    return await db.Project.findAndCountAll({
+    const count = await db.Project.count({
       where: {
         id: projectId
       },
       include: [
         {
           model: db.User,
-          as: 'users'
+          as: 'users',
+          include: [
+            {
+              model: db.UserProject,
+              as: 'permissions',
+              where: {
+                projectId
+              }
+            },
+            {
+              model: db.UserProjectLabel,
+              include: [
+                {
+                  model: db.RoleLabel,
+                  as: 'roleLabels'
+                }
+              ]
+            }
+          ]
         }
       ]
     });
+    const user = await db.Project.findAll({
+      where: {
+        id: projectId
+      },
+      include: [
+        {
+          model: db.User,
+          as: 'users',
+          include: [
+            {
+              model: db.UserProject,
+              as: 'permissions',
+              where: {
+                projectId
+              }
+            },
+            {
+              model: db.UserProjectLabel,
+              include: [
+                {
+                  model: db.RoleLabel,
+                  as: 'roleLabels'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      order: [
+        [{ model: db.User, as: 'users' }, 'name', 'ASC']
+      ]
+    });
+
+    return { rows: user, count };
   }
 
   // Creates and returns project or undefined

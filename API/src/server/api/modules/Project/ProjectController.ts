@@ -142,7 +142,6 @@ class ProjectController extends Controller {
     if (projectUsers.rows.length === 0) {
       return this.res(projectUsers);
     }
-
     return this.res(await new ProjectUsersFormatter().format(projectUsers));
   }
 
