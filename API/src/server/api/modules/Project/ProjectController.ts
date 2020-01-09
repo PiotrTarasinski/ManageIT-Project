@@ -50,13 +50,13 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().addUserToProject(userId, projectId);
+    const response = await new ProjectMethods().addUserToProject(userId, projectId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -73,13 +73,13 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId);
+    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId);
+    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -96,7 +96,7 @@ class ProjectController extends Controller {
 
     const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(projectId);
+    const validationResponse = Validate.uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -142,7 +142,6 @@ class ProjectController extends Controller {
     if (projectUsers.rows.length === 0) {
       return this.res(projectUsers);
     }
-
     return this.res(await new ProjectUsersFormatter().format(projectUsers));
   }
 
@@ -179,7 +178,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id);
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -195,6 +194,10 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
+    }
+
     const { id, name, state, leadId } = this.req.payload;
 
     const validationResponse = Validate.projectUpdateProject(id, name, state, leadId);
@@ -203,7 +206,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().updateProject(id, name, state, leadId);
+    const response = await new ProjectMethods().updateProject(id, name, state, leadId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -216,7 +219,7 @@ class ProjectController extends Controller {
 
     const { id } = this.req.payload;
 
-    const validationResponse = Validate.getSprintEntries(id, 'id');
+    const validationResponse = Validate.uuid(id, 'id');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -236,6 +239,10 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
+    if (!this.user.id) {
+      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
+    }
+
     const { points, priority, state, type, title, description, projectId, projectName } = this.req.payload;
 
     const validationResponse = Validate.sprintCreateEntry(points, priority, state, type, title, description, projectId, projectName);
@@ -244,7 +251,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().createEntry(points, priority, state, type, title, description, projectId, projectName);
+    const response = await new ProjectMethods().createEntry(points, priority, state, type, title, description, projectId, projectName, this.user.id);
 
     if (response) {
       return this.res(CustomResponse(200, 'Sprint entry created successfully.'));

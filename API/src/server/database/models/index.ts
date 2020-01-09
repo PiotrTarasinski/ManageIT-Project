@@ -11,6 +11,9 @@ import { SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes, SprintE
 import { SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes, SprintEntryUserReviewerFactory } from './SprintEntryUserReviewer';
 import { CommentInstance, CommentAttributes, CommentFactory } from './Comment';
 import { SprintEntryLabelInstance, SprintEntryLabelAttributes, SprintEntryLabelFactory } from './SprintEntryLabel';
+import { BacklogInstance, BacklogAttributes, BacklogFactory } from './Backlog';
+import { RoleLabelInstance, RoleLabelAttributes, RoleLabelFactory } from './RoleLabel';
+import { UserProjectLabelInstance, UserProjectLabelAttributes, UserProjectLabelFactory } from './UserProjectLabel';
 
 
 export type DbModels = {
@@ -24,6 +27,9 @@ export type DbModels = {
   SprintEntryUserReviewer: Sequelize.Model<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes>;
   SprintEntryLabel: Sequelize.Model<SprintEntryLabelInstance, SprintEntryLabelAttributes>;
   Comment: Sequelize.Model<CommentInstance, CommentAttributes>;
+  Backlog: Sequelize.Model<BacklogInstance, BacklogAttributes>;
+  RoleLabel: Sequelize.Model<RoleLabelInstance, RoleLabelAttributes>;
+  UserProjectLabel: Sequelize.Model<UserProjectLabelInstance, UserProjectLabelAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -40,7 +46,7 @@ export const sequelize = new Sequelize(
     port: <number>env.DB.PORT,
     dialect: env.DB.DIALECT,
     operatorsAliases: false,
-    logging: (env.NODE_ENV === 'development' && env.DB.FORCE_SUPRESS_LOGS) || env.NODE_ENV === 'production' ? (sql: any) => logger.info(sql) : false,
+    logging: (env.NODE_ENV === 'development' && !env.DB.FORCE_SUPRESS_LOGS) || env.NODE_ENV === 'production' ? (sql: any) => logger.info(sql) : false,
     pool: {
       max: 5,
       min: 0,
@@ -63,7 +69,10 @@ export const createModels = (): DbInterface => {
     SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize),
     SprintEntryUserReviewer: SprintEntryUserReviewerFactory(sequelize, Sequelize),
     Comment: CommentFactory(sequelize, Sequelize),
-    SprintEntryLabel: SprintEntryLabelFactory(sequelize, Sequelize)
+    SprintEntryLabel: SprintEntryLabelFactory(sequelize, Sequelize),
+    Backlog: BacklogFactory(sequelize, Sequelize),
+    RoleLabel: RoleLabelFactory(sequelize, Sequelize),
+    UserProjectLabel: UserProjectLabelFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

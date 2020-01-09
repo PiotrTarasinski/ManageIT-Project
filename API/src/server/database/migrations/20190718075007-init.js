@@ -124,6 +124,11 @@ module.exports = {
     });
 
     await queryInterface.createTable('usersProjects', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
       projectId: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -298,6 +303,77 @@ module.exports = {
       }
     });
 
+    await queryInterface.createTable('backlogs', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        field: 'user_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      projectId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'project_id',
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      message: {
+        type: DataTypes.STRING
+      },
+      action: {
+        type: DataTypes.STRING
+      },
+      eventId: {
+        type: DataTypes.UUID,
+        field: 'event_id'
+      },
+      type: {
+        type: DataTypes.STRING
+      }
+    });
+
+    await queryInterface.createTable('roleLabels', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      name: {
+        type: DataTypes.STRING
+      },
+      color: {
+        type: DataTypes.STRING
+      }
+    });
+
     await queryInterface.createTable('sprintEntryLabels', {
       sprintEntryId: {
         type: DataTypes.UUID,
@@ -352,6 +428,36 @@ module.exports = {
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+        field: 'user_id'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      }
+    });
+
+    await queryInterface.createTable('usersProjectsLabels', {
+      roleLabelId: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        references: {
+          model: 'roleLabels',
+          key: 'id'
+        },
+        field: 'role_label_id'
+      },
+      projectId: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        field: 'project_id'
+      },
+      userId: {
+        type: DataTypes.UUID,
+        primaryKey: true,
         field: 'user_id'
       },
       createdAt: {

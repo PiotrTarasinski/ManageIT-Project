@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
 export interface UserProjectAttributes {
+  id?: string;
   projectId?: string;
   userId?: string;
   createdAt?: Date;
