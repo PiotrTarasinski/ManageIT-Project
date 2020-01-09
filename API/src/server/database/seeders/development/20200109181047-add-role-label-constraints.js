@@ -44,13 +44,6 @@ module.exports = {
         user_id: '544dda84-8986-405c-8135-b0da3b956f0c',
         project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         role_label_id: 'ff0f1487-ece2-4ef4-a7ea-105c59301e85'
-      },
-      {
-        created_at: new Date(2019, 12, 1),
-        updated_at: new Date(2019, 12, 1),
-        user_id: '08fcba32-23b9-4678-ba4a-bc688b6472c1',
-        project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
-        role_label_id: 'ff0f1487-ece2-4ef4-a7ea-105c59301e85'
       }
     ]);
   },

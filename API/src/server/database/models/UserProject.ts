@@ -49,21 +49,6 @@ export const UserProjectFactory = (
     permissions: {
       type: DataTypes.ENUM(['User', 'Admin']),
       defaultValue: 'User'
-    },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: 'is_admin'
-    },
-    isSupervisor: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: 'is_supervisor'
-    },
-    isModerator: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: 'is_moderator'
     }
   };
 

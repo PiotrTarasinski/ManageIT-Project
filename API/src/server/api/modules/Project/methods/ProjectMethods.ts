@@ -140,16 +140,36 @@ class ProjectMethods {
       include: [
         {
           model: db.User,
-          as: 'users'
+          as: 'users',
+          include: [
+            {
+              model: db.UserProject,
+              as: 'permissions',
+              where: {
+                projectId
+              }
+            },
+            {
+              model: db.UserProjectLabel,
+              include: [
+                {
+                  model: db.RoleLabel,
+                  as: 'roleLabels'
+                }
+              ]
+            }
+          ]
         }
       ],
       where: {
         id: projectId,
         [Op.or]: [
           { '$users.name$': { [Op.iLike]: `%${search}%` } },
-          { '$users.email$': { [Op.iLike]: `%${search}%` } }
+          { '$users.email$': { [Op.iLike]: `%${search}%` } },
+          { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
         ]
-      }
+      },
+      group: 'users.id'
     });
 
     if (orderBy === 'dateOfJoin' || orderBy === 'permissions') {
@@ -183,7 +203,8 @@ class ProjectMethods {
           id: projectId,
           [Op.or]: [
             { '$users.name$': { [Op.iLike]: `%${search}%` } },
-            { '$users.email$': { [Op.iLike]: `%${search}%` } }
+            { '$users.email$': { [Op.iLike]: `%${search}%` } },
+            { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
           ]
         },
         order: [
@@ -194,21 +215,40 @@ class ProjectMethods {
         offset: (page * rowsPerPage)
       });
 
-      return { rows: users, count };
+      return { rows: users, count: (<any>count).length };
     }
     const users = await db.Project.findAll({
       subQuery: false,
       include: [
         {
           model: db.User,
-          as: 'users'
+          as: 'users',
+          include: [
+            {
+              model: db.UserProject,
+              as: 'permissions',
+              where: {
+                projectId
+              }
+            },
+            {
+              model: db.UserProjectLabel,
+              include: [
+                {
+                  model: db.RoleLabel,
+                  as: 'roleLabels'
+                }
+              ]
+            }
+          ]
         }
       ],
       where: {
         id: projectId,
         [Op.or]: [
           { '$users.name$': { [Op.iLike]: `%${search}%` } },
-          { '$users.email$': { [Op.iLike]: `%${search}%` } }
+          { '$users.email$': { [Op.iLike]: `%${search}%` } },
+          { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
         ]
       },
       order: [
@@ -218,7 +258,7 @@ class ProjectMethods {
       offset: (page * rowsPerPage)
     });
 
-    return { rows: users, count };
+    return { rows: users, count: (<any>count).length };
   }
 
   // Returns users from project
