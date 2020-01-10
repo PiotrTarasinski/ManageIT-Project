@@ -11,6 +11,13 @@ module.exports = {
         role_label_id: '26eedec7-8790-4147-b284-39905123683d'
       },
       {
+        created_at: new Date(2019, 12, 1),
+        updated_at: new Date(2019, 12, 1),
+        user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+        project_id: '38184a13-4273-499a-af73-f5a053cdb589',
+        role_label_id: '26eedec7-8790-4147-b284-39905123683d'
+      },
+      {
         created_at: new Date(2019, 12, 16),
         updated_at: new Date(2019, 12, 1),
         user_id: '114a2cdb-dd92-4093-af17-52e221683330',

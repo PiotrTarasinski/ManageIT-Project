@@ -189,6 +189,9 @@ class ProjectMethods {
               },
               {
                 model: db.UserProjectLabel,
+                where: {
+                  projectId
+                },
                 include: [
                   {
                     model: db.RoleLabel,
@@ -233,6 +236,9 @@ class ProjectMethods {
             },
             {
               model: db.UserProjectLabel,
+              where: {
+                projectId
+              },
               include: [
                 {
                   model: db.RoleLabel,
