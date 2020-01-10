@@ -2,9 +2,11 @@ import Controller from '../../shared/controller/Controller';
 import ProjectMethods from './methods/ProjectMethods';
 import CustomResponse from '../../error/CustomError';
 import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
-import Validate from '../../validation/Validate';
 import ProjectUsersFormatter from '../../shared/formatter/ProjectUsersFormatter';
 import ProjectEntriesFormatter from '../../shared/formatter/ProjectEntriesFormatter';
+import bulkFormat from '../../../../utils/bulkFormat';
+import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
+import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, taskCreate } from '../../validation/Validate';
 
 class ProjectController extends Controller {
   async getUserProjects() {
@@ -19,7 +21,7 @@ class ProjectController extends Controller {
 
     const { order, orderBy, page, rowsPerPage, search } = this.req.payload;
 
-    const validationResponse = Validate.getUserProjects(order, orderBy, page, rowsPerPage, search);
+    const validationResponse = userGetProjects(order, orderBy, page, rowsPerPage, search);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -50,7 +52,7 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
+    const validationResponse = twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -73,7 +75,7 @@ class ProjectController extends Controller {
 
     const { userId, projectId } = this.req.payload;
 
-    const validationResponse = Validate.twoUUID(userId, projectId, 'userId', 'projectId');
+    const validationResponse = twoUUID(userId, projectId, 'userId', 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -96,7 +98,7 @@ class ProjectController extends Controller {
 
     const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(projectId, 'projectId');
+    const validationResponse = uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -127,7 +129,7 @@ class ProjectController extends Controller {
 
     const { projectId, order, orderBy, page, rowsPerPage, search } = this.req.payload;
 
-    const validationResponse = Validate.getProjectUsers(projectId, order, orderBy, page, rowsPerPage, search);
+    const validationResponse = projectGetUsers(projectId, order, orderBy, page, rowsPerPage, search);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -156,7 +158,7 @@ class ProjectController extends Controller {
 
     const { name, state } = this.req.payload;
 
-    const validationResponse = Validate.projectCreateProject(name, state);
+    const validationResponse = projectCreate(name, state);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -176,15 +178,15 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id } = this.req.payload;
+    const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().deleteProject(id);
+    const response = await new ProjectMethods().deleteProject(projectId);
 
     return this.res(response).code(response.statusCode);
   }
@@ -198,15 +200,15 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
     }
 
-    const { id, name, state, leadId } = this.req.payload;
+    const { projectId, name, state, leadId } = this.req.payload;
 
-    const validationResponse = Validate.projectUpdateProject(id, name, state, leadId);
+    const validationResponse = projectUpdate(projectId, name, state, leadId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().updateProject(id, name, state, leadId, this.user.id);
+    const response = await new ProjectMethods().updateProject(projectId, name, state, leadId, this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -217,15 +219,15 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id } = this.req.payload;
+    const { projectId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().getProjectEntries(id);
+    const response = await new ProjectMethods().getProjectEntries(projectId);
 
     if (response) {
       return this.res(await new ProjectEntriesFormatter().format(response));
@@ -245,7 +247,7 @@ class ProjectController extends Controller {
 
     const { points, priority, state, type, title, description, projectId, projectName } = this.req.payload;
 
-    const validationResponse = Validate.sprintCreateEntry(points, priority, state, type, title, description, projectId, projectName);
+    const validationResponse = taskCreate(points, priority, state, type, title, description, projectId, projectName);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -258,6 +260,29 @@ class ProjectController extends Controller {
     }
 
     return this.res(CustomResponse(500, 'Couldn\'t create sprint entry', { formError: 'Database error.' })).code(500);
+  }
+
+  async getProjectRoles() {
+
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { projectId } = this.req.payload;
+
+    const validationResponse = uuid(projectId, 'projectId');
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().getProjectRoles(projectId);
+
+    if (response) {
+      return this.res(await bulkFormat(new RoleLabelFormatter(), response));
+    }
+
+    return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
   }
 }
 

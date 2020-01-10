@@ -1,11 +1,8 @@
 import Controller from '../../shared/controller/Controller';
-import db from '../../../database';
 import SprintMethods from './methods/SprintMethods';
 import CustomResponse from '../../error/CustomError';
 import SprintFormatter from '../../shared/formatter/SprintFormatter';
-import Validate from '../../validation/Validate';
-import { SprintInstance } from '../../../database/models/Sprint';
-import ProjectEntriesFormatter from '../../shared/formatter/ProjectEntriesFormatter';
+import { uuid, twoUUID, sprintChangeTaskState, taskAddUser, taskUpdate, sprintAddComment, sprintUpdateComment } from '../../validation/Validate';
 import CommentFormatter from '../../shared/formatter/CommentsFormatter';
 
 class SprintController extends Controller {
@@ -15,15 +12,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id } = this.req.payload;
+    const { sprintId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(sprintId, 'sprintId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().getSprintEntries(id);
+    const response = await new SprintMethods().getSprintEntries(sprintId);
 
     if (response) {
       return this.res(await new SprintFormatter().format(response));
@@ -39,15 +36,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo } = this.req.payload;
+    const { sprintId, taskId, indexFrom, indexTo, stateFrom, stateTo } = this.req.payload;
 
-    const validationResponse = Validate.sprintChangeEntryType(sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo);
+    const validationResponse = sprintChangeTaskState(sprintId, taskId, indexFrom, indexTo, stateFrom, stateTo);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().changeEntryState(sprintId, entryId, indexFrom, indexTo, stateFrom, stateTo);
+    const response = await new SprintMethods().changeEntryState(sprintId, taskId, indexFrom, indexTo, stateFrom, stateTo);
 
     return this.res(response).code(response.statusCode);
   }
@@ -57,15 +54,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id } = this.req.payload;
+    const { taskId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(taskId, 'taskId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().deleteEntry(id);
+    const response = await new SprintMethods().deleteEntry(taskId);
 
     if (response) {
       return this.res(CustomResponse(200, 'Successfully deleted sprint entry.'));
@@ -74,22 +71,20 @@ class SprintController extends Controller {
     return this.res(CustomResponse(500, 'Couldn\'t delete sprint entry', { formError: 'Database error.' })).code(500);
   }
 
-
-
   async addEntryUser() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, userId, type } = this.req.payload;
+    const { taskId, userId, type } = this.req.payload;
 
-    const validationResponse = Validate.sprintAddEntryUser(id, userId, type);
+    const validationResponse = taskAddUser(taskId, userId, type);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addUserToEntry(id, userId, type);
+    const response = await new SprintMethods().addUserToEntry(taskId, userId, type);
 
     return this.res(response).code(response.statusCode);
   }
@@ -99,15 +94,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, userId, type } = this.req.payload;
+    const { taskId, userId, type } = this.req.payload;
 
-    const validationResponse = Validate.sprintAddEntryUser(id, userId, type);
+    const validationResponse = taskAddUser(taskId, userId, type);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().removeUserFromEntry(id, userId, type);
+    const response = await new SprintMethods().removeUserFromEntry(taskId, userId, type);
 
     return this.res(response).code(response.statusCode);
   }
@@ -117,15 +112,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, points, priority, type, title, description } = this.req.payload;
+    const { taskId, points, priority, type, title, description } = this.req.payload;
 
-    const validationResponse = Validate.sprintUpdateEntry(id, points, priority, type, title, description);
+    const validationResponse = taskUpdate(taskId, points, priority, type, title, description);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().updateEntry(id, points, priority, type, title, description);
+    const response = await new SprintMethods().updateEntry(taskId, points, priority, type, title, description);
 
     return this.res(response).code(response.statusCode);
   }
@@ -135,15 +130,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id, sprintId } = this.req.payload;
+    const { taskId, sprintId } = this.req.payload;
 
-    const validationResponse = Validate.sprintAddEntry(id, sprintId);
+    const validationResponse = twoUUID(taskId, sprintId, 'taskId', 'sprintId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addEntryToSprint(id, sprintId);
+    const response = await new SprintMethods().addEntryToSprint(taskId, sprintId);
 
     return this.res(response).code(response.statusCode);
   }
@@ -153,15 +148,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { id } = this.req.payload;
+    const { taskId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(taskId, 'taskId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().removeEntryFromSprint(id);
+    const response = await new SprintMethods().removeEntryFromSprint(taskId);
 
     return this.res(response).code(response.statusCode);
   }
@@ -175,15 +170,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
     }
 
-    const { id, content } = this.req.payload;
+    const { taskId, content } = this.req.payload;
 
-    const validationResponse = Validate.sprintAddComment(id, content);
+    const validationResponse = sprintAddComment(taskId, content);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addComment(id, this.user.id, content);
+    const response = await new SprintMethods().addComment(taskId, this.user.id, content);
 
     if (response) {
       return this.res(await new CommentFormatter().format(response));
@@ -200,15 +195,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
     }
 
-    const { id } = this.req.payload;
+    const { commentId } = this.req.payload;
 
-    const validationResponse = Validate.uuid(id, 'id');
+    const validationResponse = uuid(commentId, 'commentId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().deleteComment(id);
+    const response = await new SprintMethods().deleteComment(commentId);
 
     return this.res(response).code(response.statusCode);
   }
@@ -222,15 +217,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
     }
 
-    const { id, content } = this.req.payload;
+    const { commentId, content } = this.req.payload;
 
-    const validationResponse = Validate.sprintAddComment(id, content);
+    const validationResponse = sprintUpdateComment(commentId, content);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().updateComment(id, content);
+    const response = await new SprintMethods().updateComment(commentId, content);
 
     if (response) {
       return this.res(await new CommentFormatter().format(response));

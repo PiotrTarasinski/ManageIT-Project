@@ -26,7 +26,9 @@ export const UserProjectLabelFactory = (
         model: 'roleLabels',
         key: 'id'
       },
-      field: 'role_label_id'
+      field: 'role_label_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     projectId: {
       type: DataTypes.UUID,
@@ -35,7 +37,9 @@ export const UserProjectLabelFactory = (
         model: 'projects',
         key: 'id'
       },
-      field: 'project_id'
+      field: 'project_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     userId: {
       type: DataTypes.UUID,
@@ -44,7 +48,9 @@ export const UserProjectLabelFactory = (
         model: 'users',
         key: 'id'
       },
-      field: 'user_id'
+      field: 'user_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     createdAt: {
       type: DataTypes.DATE,

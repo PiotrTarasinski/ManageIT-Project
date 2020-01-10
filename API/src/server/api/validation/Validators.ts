@@ -54,7 +54,7 @@ export const Validator = {
   },
 
   required(toTest: any, key: string): { key: string; message: string } | null {
-    if (!toTest) {
+    if (!toTest && toTest !== 0) {
       return this.errorMessage(key, `${key} is required.`);
     }
     return null;

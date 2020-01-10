@@ -111,7 +111,9 @@ module.exports = {
         model: 'projects',
         key: 'id'
       },
-      allowNull: true
+      allowNull: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     });
 
     await queryInterface.addColumn('users', 'active_sprint_id', {
@@ -120,15 +122,12 @@ module.exports = {
         model: 'sprints',
         key: 'id'
       },
-      allowNull: true
+      allowNull: true,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     });
 
     await queryInterface.createTable('usersProjects', {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-      },
       projectId: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -136,7 +135,9 @@ module.exports = {
           model: 'projects',
           key: 'id'
         },
-        field: 'project_id'
+        field: 'project_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       userId: {
         type: DataTypes.UUID,
@@ -145,7 +146,9 @@ module.exports = {
           model: 'users',
           key: 'id'
         },
-        field: 'user_id'
+        field: 'user_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -343,6 +346,16 @@ module.exports = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
+      projectId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'project_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'
@@ -433,6 +446,8 @@ module.exports = {
           model: 'roleLabels',
           key: 'id'
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         field: 'role_label_id'
       },
       projectId: {

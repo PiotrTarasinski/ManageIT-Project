@@ -2,15 +2,11 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
 export interface UserProjectAttributes {
-  id?: string;
   projectId?: string;
   userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
   permissions?: string;
-  isAdmin?: boolean;
-  isSupervisor?: boolean;
-  isModerator?: boolean;
 }
 
 export interface UserProjectInstance extends Sequelize.Instance<UserProjectAttributes>, UserProjectAttributes { }
@@ -27,7 +23,9 @@ export const UserProjectFactory = (
         model: 'projects',
         key: 'id'
       },
-      field: 'project_id'
+      field: 'project_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     userId: {
       type: DataTypes.UUID,
@@ -36,7 +34,9 @@ export const UserProjectFactory = (
         model: 'users',
         key: 'id'
       },
-      field: 'user_id'
+      field: 'user_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     createdAt: {
       type: DataTypes.DATE,

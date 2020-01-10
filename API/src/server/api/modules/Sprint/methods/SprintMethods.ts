@@ -234,6 +234,9 @@ class SprintMethods {
     if (sprint) {
       const entry = await db.SprintEntry.findByPk(id);
       if (entry) {
+        if (entry.sprintId === sprintId) {
+          return CustomResponse(400, 'Task already in sprint.', { formError: 'Task already in this sprint.' });
+        }
         return await sprint.addSprintEntry(entry)
         .then(() => CustomResponse(200, 'Successfully added entry to sprint.'))
         .catch(() => CustomResponse(500, 'Database error.', { formError: 'Database error.' }));

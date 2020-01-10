@@ -86,6 +86,13 @@ class ProjectRoutes extends MainRoutes {
           //   }
           // }
         }
+      },
+      {
+        method: 'POST',
+        path: '/get_project_roles',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).getProjectRoles()
+        }
       }
     ];
   }

@@ -1,9 +1,9 @@
 import Controller from '../../shared/controller/Controller';
 import AuthMethods from './methods/AuthMethods';
 import { encryption } from '../../../../utils';
-import validate from '../../validation/Validate';
 import CustomResponse from '../../error/CustomError';
 import Token from '../../shared/token/Token';
+import { uuid, signUp, login } from '../../validation/Validate';
 
 class AuthController extends Controller {
   async login() {
@@ -13,7 +13,7 @@ class AuthController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const validationResponse = validate.login(payload); // Custom validation
+    const validationResponse = login(payload); // Custom validation
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode); // Return error if fails
@@ -48,7 +48,7 @@ class AuthController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const validationResponse = validate.signUp(payload);
+    const validationResponse = signUp(payload);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -68,15 +68,15 @@ class AuthController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
     }
 
-    const { id } = this.req.payload;
+    const { projectId } = this.req.payload;
 
-    const validationResponse = validate.uuid(id, 'id');
+    const validationResponse = uuid(projectId, 'projectId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const authResponse = await new AuthMethods().setActiveProject(this.user.id, id);
+    const authResponse = await new AuthMethods().setActiveProject(this.user.id, projectId);
 
     if (authResponse.token) {
       return this.res(authResponse.response).code(authResponse.response.statusCode).header('access_token', authResponse.token);
@@ -94,15 +94,15 @@ class AuthController extends Controller {
       return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
     }
 
-    const { id } = this.req.payload;
+    const { sprintId } = this.req.payload;
 
-    const validationResponse = validate.uuid(id, 'id');
+    const validationResponse = uuid(sprintId, 'sprintId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const authResponse = await new AuthMethods().setActiveSprint(this.user.id, id);
+    const authResponse = await new AuthMethods().setActiveSprint(this.user.id, sprintId);
 
     if (authResponse.token) {
       return this.res(authResponse.response).code(authResponse.response.statusCode).header('access_token', authResponse.token);

@@ -13,7 +13,7 @@ class FileController extends Controller {
     }
 
     const { file } = this.req.payload;
-    console.log(file);
+
     if (!file) {
       return this.res(CustomResponse(400, 'There is no file.', { file: 'There is no file.' })).code(400);
     }

@@ -9,7 +9,7 @@ export interface RoleLabelAttributes {
   updatedAt?: Date;
   name: string;
   color: string;
-  // projectId: string;
+  projectId: string;
 
   //
   // Here be associations!
@@ -31,16 +31,16 @@ export const RoleLabelFactory = (
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    // projectId: {
-    //   type: DataTypes.UUID,
-    //   references: {
-    //     model: 'projects',
-    //     key: 'id'
-    //   },
-    //   field: 'sprint_id',
-    //   onDelete: 'CASCADE',
-    //   onUpdate: 'CASCADE'
-    // },
+    projectId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'projects',
+        key: 'id'
+      },
+      field: 'project_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    },
     createdAt: {
       type: DataTypes.DATE,
       field: 'created_at'
@@ -60,7 +60,7 @@ export const RoleLabelFactory = (
   const RoleLabel = sequelize.define<RoleLabelInstance, RoleLabelAttributes>('roleLabel', attributes);
 
   RoleLabel.associate = models => {
-    // RoleLabel.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
+    RoleLabel.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
     RoleLabel.hasMany(models.UserProjectLabel, { foreignKey: 'roleLabelId' });
   };
 

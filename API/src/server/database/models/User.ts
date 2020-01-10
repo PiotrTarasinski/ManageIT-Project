@@ -79,7 +79,9 @@ export const UserFactory =
           key: 'id'
         },
         field: 'active_project_id',
-        allowNull: true
+        allowNull: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       activeSprintId: {
         type: DataTypes.STRING,
@@ -88,7 +90,9 @@ export const UserFactory =
           key: 'id'
         },
         allowNull: true,
-        field: 'active_sprint_id'
+        field: 'active_sprint_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       }
     };
 
@@ -100,7 +104,7 @@ export const UserFactory =
       User.belongsTo(models.Project, { as: 'activeProject', foreignKey: 'activeProjectId' });
       User.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
-      // User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
+      User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
       User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserAssign', as: 'assignIn', foreignKey: 'user_id' });
       User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });

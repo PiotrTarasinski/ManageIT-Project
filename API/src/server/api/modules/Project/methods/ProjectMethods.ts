@@ -79,10 +79,7 @@ class ProjectMethods {
 
     return await db.UserProject.create({
       projectId,
-      userId,
-      isAdmin: false,
-      isModerator: false,
-      isSupervisor: false
+      userId
     })
       .then(async () => {
         return await db.Backlog.create({
@@ -100,6 +97,7 @@ class ProjectMethods {
         if (err.name === 'SequelizeUniqueConstraintError') {
           return CustomResponse(400, 'User already in project', { formError: 'User is already in this project.' });
         }
+        console.log(err);
         return CustomResponse(500, 'Couldn\'t create constraint', { formError: 'Internal server error.' });
       });
   }
@@ -296,9 +294,10 @@ class ProjectMethods {
             }
           ]
         }
-      ]
+      ],
+      group: 'users.id'
     });
-    const user = await db.Project.findAll({
+    const users = await db.Project.findAll({
       where: {
         id: projectId
       },
@@ -331,7 +330,7 @@ class ProjectMethods {
       ]
     });
 
-    return { rows: user, count };
+    return { rows: users, count: (<any>count).length };
   }
 
   // Creates and returns project or undefined
@@ -364,7 +363,7 @@ class ProjectMethods {
     if (project) {
       return project.destroy()
         .then(() => CustomResponse(200, 'Project deleted successfully'))
-        .catch(() => CustomResponse(500, 'Couldn\'t delete project.', { formError: 'Database error.' }));
+        .catch((err) => CustomResponse(500, 'Couldn\'t delete project.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
   }
@@ -481,6 +480,36 @@ class ProjectMethods {
       .then(() => entry)
       .catch(() => undefined);
     });
+  }
+
+  // Returns an array of UserRoles
+  async getProjectRoles(projectId: string) {
+    return await db.RoleLabel.findAll({
+      where: {
+        projectId
+      },
+      order: [
+        ['color', 'ASC']
+      ]
+    });
+  }
+
+  async updateProjectRole(projectId: string, roleId: string, name: string, color: string) {
+    const roleLabel = await db.RoleLabel.find({
+      where: {
+        id: roleId,
+        projectId
+      }
+    });
+
+    if (roleLabel) {
+      return await roleLabel.update({
+        name, color
+      })
+      .then(() => CustomResponse(200, 'Role updated successfully.'))
+      .catch(() => CustomResponse(500, 'Couldn\'t update role.', { formError: 'Database error.' }));
+    }
+    return CustomResponse(404, 'No such role.', { formError: 'Role not found' });
   }
 }
 
