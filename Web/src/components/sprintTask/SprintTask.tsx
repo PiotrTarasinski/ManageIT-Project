@@ -94,11 +94,11 @@ const SprintTask = (props: IProps) => {
         <Tooltip title={`Priority: ${task.priority}`}>
           <div className={clsx(classes.priorityIcon, classes.chip)}>{task.priority}</div>
         </Tooltip>
-        {/* <Tooltip title={`Comments: ${task.comments.length}`}>
-            <Badge max={9} badgeContent={task.comments.length} color="secondary">
-              <Comment style={{ color: blue[500] }} />
-            </Badge>
-          </Tooltip> */}
+        <Tooltip title={`Comments: ${task.comments.length}`}>
+          <Badge max={9} badgeContent={task.comments.length} color="secondary">
+            <Comment style={{ color: blue[500] }} />
+          </Badge>
+        </Tooltip>
       </div>
     </div>
   );

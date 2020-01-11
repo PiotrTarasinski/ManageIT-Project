@@ -42,9 +42,9 @@ const project = {
       },
     });
   },
-  getSprint: (id: string) => {
-    return httpRequest.post('sprint', {
-      id,
+  getProjectTaskList: (projectId: string) => {
+    return httpRequest.post('project/get_tasks', {
+      projectId,
     });
   },
 };
