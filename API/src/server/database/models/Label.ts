@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SprintEntryInstance } from './SprintEntry';
+import { TaskInstance } from './Task';
 
 export interface LabelAttributes {
   id?: string;
@@ -13,7 +13,7 @@ export interface LabelAttributes {
   // Here be associations!
   //
 
-  sprintEntriesIn?: SprintEntryInstance[];
+  tasksIn?: TaskInstance[];
 }
 
 export interface LabelInstance extends Sequelize.Instance<LabelAttributes>, LabelAttributes {}
@@ -47,7 +47,7 @@ export const LabelFactory = (
   const Label = sequelize.define<LabelInstance, LabelAttributes>('label', attributes);
 
   Label.associate = models => {
-    Label.belongsToMany(models.SprintEntry, { through: 'sprintEntryLabel', as: 'sprintEntry', foreignKey: 'label_id' });
+    Label.belongsToMany(models.Task, { through: 'taskLabel', as: 'tasksIn', foreignKey: 'label_id' });
   };
 
   return Label;

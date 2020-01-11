@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
-import { SprintEntryAttributes, SprintEntryInstance } from './SprintEntry';
+import { TaskAttributes, TaskInstance } from './Task';
 import { ProjectInstance } from './Project';
 
 export interface SprintAttributes {
@@ -17,14 +17,14 @@ export interface SprintAttributes {
   // Here be associations!
   //
 
-  sprintEntries?: SprintEntryInstance[];
+  tasks?: TaskInstance[];
   project?: ProjectInstance;
   users?: UserInstance[];
 }
 
 export interface SprintInstance extends Sequelize.Instance<SprintAttributes>, SprintAttributes {
-  getSprintEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
-  addSprintEntry: Sequelize.HasManyAddAssociationMixin<SprintEntryInstance, SprintEntryAttributes['id']>;
+  getTask: Sequelize.HasManyGetAssociationsMixin<TaskInstance>;
+  addTask: Sequelize.HasManyAddAssociationMixin<TaskInstance, TaskAttributes['id']>;
   getUsers: Sequelize.HasManyGetAssociationsMixin<UserInstance>;
 }
 
@@ -63,7 +63,7 @@ export const SprintFactory = (
   const Sprint = sequelize.define<SprintInstance, SprintAttributes>('sprint', attributes);
 
   Sprint.associate = models => {
-    Sprint.hasMany(models.SprintEntry, { as: 'sprintEntries', foreignKey: 'sprintId' });
+    Sprint.hasMany(models.Task, { as: 'tasks', foreignKey: 'sprintId' });
     Sprint.hasOne(models.Project, { as: 'project', foreignKey: 'activeSprintId' });
     Sprint.hasMany(models.User, { as: 'users', foreignKey: 'activeSprintId' });
   };

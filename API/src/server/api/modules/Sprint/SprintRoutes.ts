@@ -9,58 +9,58 @@ class SprintRoutes extends MainRoutes {
     return [
       {
         method: 'POST',
-        path: '/get_entries',
+        path: '/get_tasks',
         options: {
-          handler: (req, res) => new SprintController(req, res).getSprintEntries()
+          handler: (req, res) => new SprintController(req, res).getSprintTasks()
         }
       },
       {
         method: 'POST',
         path: '/change_state',
         options: {
-          handler: (req, res) => new SprintController(req, res).changeEntryState()
+          handler: (req, res) => new SprintController(req, res).changeTaskState()
         }
       },
       {
         method: 'DELETE',
-        path: '/delete_entry',
+        path: '/delete_task',
         options: {
-          handler: (req, res) => new SprintController(req, res).deleteEntry()
+          handler: (req, res) => new SprintController(req, res).deleteTaskFromSpint()
         }
       },
       {
         method: 'POST',
         path: '/add_user',
         options: {
-          handler: (req, res) => new SprintController(req, res).addEntryUser()
+          handler: (req, res) => new SprintController(req, res).addTaskUser()
         }
       },
       {
         method: 'DELETE',
         path: '/remove_user',
         options: {
-          handler: (req, res) => new SprintController(req, res).removeEntryUser()
+          handler: (req, res) => new SprintController(req, res).removeTaskUser()
         }
       },
       {
         method: 'PUT',
-        path: '/update_entry',
+        path: '/update_task',
         options: {
-          handler: (req, res) => new SprintController(req, res).updateEntry()
+          handler: (req, res) => new SprintController(req, res).updateTask()
         }
       },
       {
         method: 'POST',
-        path: '/add_entry',
+        path: '/add_task',
         options: {
-          handler: (req, res) => new SprintController(req, res).addEntryToSprint()
+          handler: (req, res) => new SprintController(req, res).addTaskToSprint()
         }
       },
       {
         method: 'DELETE',
-        path: '/remove_entry',
+        path: '/remove_task',
         options: {
-          handler: (req, res) => new SprintController(req, res).removeEntryFromSprint()
+          handler: (req, res) => new SprintController(req, res).removeTaskFromSprint()
         }
       },
       {

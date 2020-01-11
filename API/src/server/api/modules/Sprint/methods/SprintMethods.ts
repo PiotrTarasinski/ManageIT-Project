@@ -4,13 +4,13 @@ import { Op } from 'sequelize';
 
 class SprintMethods {
 
-  // Get entries assigned to sprint with given id
-  async getSprintEntries(id: string) {
+  // Get tasks assigned to sprint with given id
+  async getSprintTasks(id: string) {
     return await db.Sprint.findByPk(id, {
       include: [
         {
-          model: db.SprintEntry,
-          as: 'sprintEntries',
+          model: db.Task,
+          as: 'tasks',
           include: [
             {
               model: db.User,
@@ -35,30 +35,30 @@ class SprintMethods {
         }
       ],
       order: [
-        [{ model: db.SprintEntry, as: 'sprintEntries' }, 'index', 'ASC']
+        [{ model: db.Task, as: 'tasks' }, 'index', 'ASC']
       ]
     });
   }
 
 
 
-  // Changes entry state and decrements or increments other entries indexes
-  async changeEntryState(
+  // Changes task state and decrements or increments other task indexes
+  async changeTaskState(
     sprintId: string,
-    entryId: string,
+    taskId: string,
     indexFrom: number | string,
     indexTo: number | string,
     stateFrom: string,
     stateTo: string): Promise<CustomResponseType> {
-    const entryToChange = await db.SprintEntry.findByPk(entryId);
-    if (entryToChange && entryToChange.sprintId) {
+    const taskToChange = await db.Task.findByPk(taskId);
+    if (taskToChange && taskToChange.sprintId) {
       // tslint:disable-next-line:triple-equals
-      if (entryToChange.state === stateFrom && entryToChange.index == indexFrom) {
+      if (taskToChange.state === stateFrom && taskToChange.index == indexFrom) {
         if (stateFrom === stateTo) {
           if (indexFrom === indexTo) {
             return CustomResponse(200, 'Nothing to change.');
           }
-          const entries = await db.SprintEntry.findAll({
+          const tasks = await db.Task.findAll({
             where: {
               sprintId,
               [Op.or]: [
@@ -67,7 +67,7 @@ class SprintMethods {
               ]
             }
           });
-          entries.forEach(async instance => {
+          tasks.forEach(async instance => {
             if (instance.index || instance.index === 0) {
               // tslint:disable-next-line:triple-equals
               if (instance.index == indexFrom) {
@@ -83,7 +83,7 @@ class SprintMethods {
           return CustomResponse(200, 'Successfully changed index.');
         }
 
-        const entries = await db.SprintEntry.findAll({
+        const tasks = await db.Task.findAll({
           where: {
             sprintId,
             [Op.or]: [
@@ -92,9 +92,9 @@ class SprintMethods {
             ]
           }
         });
-        entries.forEach(async instance => {
+        tasks.forEach(async instance => {
           if (instance.index || instance.index === 0) {
-            if (instance.id === entryId) {
+            if (instance.id === taskId) {
               instance.update({ index: indexTo, state: stateTo });
             } else if (instance.state === stateFrom && instance.index > indexFrom) {
               await instance.decrement('index', { by: 1 });
@@ -106,27 +106,27 @@ class SprintMethods {
         return CustomResponse(200, 'Successfully changed state.');
       }
     }
-    return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index, state is invalid or entry not in sprint.' });
+    return CustomResponse(400, 'Invalid payload input.', { formError: 'Either index, state is invalid or task not in sprint.' });
   }
 
-  // Deletes entry with given id
-  async deleteEntry(id: string) {
-    const entryToDelete = await db.SprintEntry.findByPk(id);
-    if (entryToDelete) {
-      const { index, state, sprintId } = entryToDelete;
+  // Deletes task with given id
+  async deleteTaskFromSprint(id: string) {
+    const taskToDelete = await db.Task.findByPk(id);
+    if (taskToDelete) {
+      const { index, state, sprintId } = taskToDelete;
       if (sprintId) {
-        const entries = await db.SprintEntry.findAll({
+        const tasks = await db.Task.findAll({
           where: {
             state,
             sprintId,
             index: { [Op.gt]: index }
           }
         });
-        entries.forEach(async instance => {
+        tasks.forEach(async instance => {
           instance.decrement('index', { by: 1 });
         });
       }
-      return entryToDelete.destroy()
+      return taskToDelete.destroy()
         .then(() => {
           return true;
         })
@@ -140,12 +140,12 @@ class SprintMethods {
 
 
 
-  // Add assignee or reviewer to entry
-  async addUserToEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
-    const entry = await db.SprintEntry.findByPk(id);
+  // Add assignee or reviewer to task
+  async addUserToTask(id: string, userId: string, type: string): Promise<CustomResponseType> {
+    const task = await db.Task.findByPk(id);
 
-    if (!entry) {
-      return CustomResponse(404, 'No entry with such id.', { formError: 'Entry not found.' });
+    if (!task) {
+      return CustomResponse(404, 'No task with such id.', { formError: 'Task not found.' });
     }
 
     const assign = await db.User.findByPk(userId);
@@ -155,7 +155,7 @@ class SprintMethods {
     }
 
     if (type === 'Assign') {
-      return await entry.addAssign(assign)
+      return await task.addAssign(assign)
         .then(() => {
           return CustomResponse(200, 'Successfully added an assignee.');
         })
@@ -164,7 +164,7 @@ class SprintMethods {
         });
     }
     if (type === 'Review') {
-      return await entry.addReviewer(assign)
+      return await task.addReviewer(assign)
         .then(() => {
           return CustomResponse(200, 'Successfully added a reviewer.');
         })
@@ -175,45 +175,45 @@ class SprintMethods {
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 
-  async removeUserFromEntry(id: string, userId: string, type: string): Promise<CustomResponseType> {
-    const entry = await db.SprintEntry.findByPk(id);
+  async removeUserFromTask(id: string, userId: string, type: string): Promise<CustomResponseType> {
+    const task = await db.Task.findByPk(id);
 
-    if (entry) {
+    if (task) {
       const user = await db.User.findByPk(userId);
 
       if (user) {
         if (type === 'Assign') {
-          return await entry.removeAssign(user)
+          return await task.removeAssign(user)
           .then(() => CustomResponse(200, 'Successfully removed assignee.'))
           .catch(() => CustomResponse(500, 'Coouldn\'t delete assignee.', { formError: 'Database error.' }));
         }
         if (type === 'Review') {
-          return await entry.removeReviewer(user)
+          return await task.removeReviewer(user)
           .then(() => CustomResponse(200, 'Successfully removed reviewer.'))
           .catch(() => CustomResponse(500, 'Coouldn\'t delete reviewer.', { formError: 'Database error.' }));
         }
         return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
       }
-      return CustomResponse(400, 'User doesn\'t exist.', { formError: 'Invalid payload input.' });
+      return CustomResponse(404, 'User doesn\'t exist.', { formError: 'User not found.' });
     }
-    return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+    return CustomResponse(404, 'Task doesn\'t exist.', { formError: 'Task not found.' });
   }
 
-  // Update existing entry
-  async updateEntry(
+  // Update existing task
+  async updateTask(
     id: string,
     points: string,
     priority: string,
     type: string,
     title: string,
     description: string): Promise<CustomResponseType> {
-    const entry = await db.SprintEntry.findByPk(id);
+    const task = await db.Task.findByPk(id);
 
-    if (!entry) {
-      return CustomResponse(404, 'No such entry.', { formError: 'Entry not found.' });
+    if (!task) {
+      return CustomResponse(404, 'No such task.', { formError: 'Task not found.' });
     }
 
-    return await entry.update({
+    return await task.update({
       points,
       priority,
       type,
@@ -221,52 +221,52 @@ class SprintMethods {
       description
     })
       .then(() => {
-        return CustomResponse(200, 'Successfully updated an entry.');
+        return CustomResponse(200, 'Successfully updated an task.');
       })
       .catch(() => {
-        return CustomResponse(500, 'Couldn\'t update an entry.', { formError: 'Database error.' });
+        return CustomResponse(500, 'Couldn\'t update an task.', { formError: 'Database error.' });
       });
   }
 
-  async addEntryToSprint(id: string, sprintId: string) {
+  async addTaskToSprint(id: string, sprintId: string) {
     const sprint = await db.Sprint.findByPk(sprintId);
 
     if (sprint) {
-      const entry = await db.SprintEntry.findByPk(id);
-      if (entry) {
-        if (entry.sprintId === sprintId) {
+      const task = await db.Task.findByPk(id);
+      if (task) {
+        if (task.sprintId === sprintId) {
           return CustomResponse(400, 'Task already in sprint.', { formError: 'Task already in this sprint.' });
         }
-        return await sprint.addSprintEntry(entry)
-        .then(() => CustomResponse(200, 'Successfully added entry to sprint.'))
+        return await sprint.addTask(task)
+        .then(() => CustomResponse(200, 'Successfully added task to sprint.'))
         .catch(() => CustomResponse(500, 'Database error.', { formError: 'Database error.' }));
       }
-      return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+      return CustomResponse(404, 'Task doesn\'t exist.', { formError: 'Task not found.' });
     }
 
-    return CustomResponse(400, 'Sprint doesn\'t exist.', { formError: 'Invalid payload input.' });
+    return CustomResponse(404, 'Sprint doesn\'t exist.', { formError: 'Sprint not found.' });
   }
 
-  async removeEntryFromSprint(id: string): Promise<CustomResponseType> {
-    const entry = await db.SprintEntry.findByPk(id);
+  async removeTaskFromSprint(id: string): Promise<CustomResponseType> {
+    const task = await db.Task.findByPk(id);
 
-    if (entry) {
-      if (!entry.sprintId) {
-        return CustomResponse(400, 'Entry is not in sprint.', { formError: 'Invalid payload input.' });
+    if (task) {
+      if (!task.sprintId) {
+        return CustomResponse(400, 'Task is not in sprint.', { formError: 'Invalid payload input.' });
       }
-      return await entry.update({ sprintId: null })
-      .then(() => CustomResponse(200, 'Successfully removed entry from sprint.'))
-      .catch(() => CustomResponse(500, 'Couldn\'t remove entry from sprint.', { formError: 'Database error.' }));
+      return await task.update({ sprintId: null })
+      .then(() => CustomResponse(200, 'Successfully removed task from sprint.'))
+      .catch(() => CustomResponse(500, 'Couldn\'t remove task from sprint.', { formError: 'Database error.' }));
     }
 
-    return CustomResponse(400, 'Entry doesn\'t exist.', { formError: 'Invalid payload input.' });
+    return CustomResponse(404, 'Task doesn\'t exist.', { formError: 'Task not found.' });
   }
 
   async addComment(id: string, userId: string, content: string) {
     const comment = await db.Comment.create({
       content,
       userId,
-      sprintEntryId: id
+      taskId: id
     });
     if (comment) {
       return await db.Comment.findByPk(comment.id, {

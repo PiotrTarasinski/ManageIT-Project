@@ -1,8 +1,8 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
 import { SprintInstance } from '../../../database/models/Sprint';
-import { SprintEntryInstance } from '../../../database/models/SprintEntry';
+import { TaskInstance } from '../../../database/models/Task';
 import bulkFormat from '../../../../utils/bulkFormat';
-import SprintEntriesFormatter, { SprintEntriesResponseFormat } from './SprintEntriesFormatter';
+import TaskFormatter, { TaskResponseFormat } from './TaskFormatter';
 
 export type SprintResponseFormat = {
   id: string;
@@ -11,20 +11,20 @@ export type SprintResponseFormat = {
   startDate: Date;
   endDate: Date;
   taskList?: {
-    toDoList: SprintEntriesResponseFormat[];
-    inProgressList: SprintEntriesResponseFormat[];
-    toReviewList: SprintEntriesResponseFormat[];
-    doneList: SprintEntriesResponseFormat[];
+    toDoList: TaskResponseFormat[];
+    inProgressList: TaskResponseFormat[];
+    toReviewList: TaskResponseFormat[];
+    doneList: TaskResponseFormat[];
   }
 };
 
 class SprintFormatter implements ResponseFormatter<SprintInstance, SprintResponseFormat> {
   async format(sprint: SprintInstance) {
-    const toDoList: SprintEntryInstance[] = [];
-    const inProgressList: SprintEntryInstance[] = [];
-    const toReviewList: SprintEntryInstance[] = [];
-    const doneList: SprintEntryInstance[] = [];
-    (sprint.sprintEntries as SprintEntryInstance[]).forEach(async entry => {
+    const toDoList: TaskInstance[] = [];
+    const inProgressList: TaskInstance[] = [];
+    const toReviewList: TaskInstance[] = [];
+    const doneList: TaskInstance[] = [];
+    (sprint.tasks as TaskInstance[]).forEach(async entry => {
       if (entry.state && entry.state === 'To do') {
         toDoList.push(entry);
       } else if (entry.state && entry.state === 'In progress') {
@@ -42,10 +42,10 @@ class SprintFormatter implements ResponseFormatter<SprintInstance, SprintRespons
       startDate: new Date(sprint.start),
       endDate: new Date(sprint.end),
       taskList: {
-        toDoList: await bulkFormat(new SprintEntriesFormatter(), toDoList),
-        inProgressList: await bulkFormat(new SprintEntriesFormatter(), inProgressList),
-        toReviewList: await bulkFormat(new SprintEntriesFormatter(), toReviewList),
-        doneList: await bulkFormat(new SprintEntriesFormatter(), doneList)
+        toDoList: await bulkFormat(new TaskFormatter(), toDoList),
+        inProgressList: await bulkFormat(new TaskFormatter(), inProgressList),
+        toReviewList: await bulkFormat(new TaskFormatter(), toReviewList),
+        doneList: await bulkFormat(new TaskFormatter(), doneList)
       }
     };
   }

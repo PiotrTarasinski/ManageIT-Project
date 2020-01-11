@@ -2,13 +2,13 @@ import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserAttributes, UserInstance } from './User';
 import { LabelInstance } from './Label';
-import { SprintEntryUserAssignAttributes } from './SprintEntryUserAssign';
-import { SprintEntryUserReviewerAttributes } from './SprintEntryUserReviewer';
+import { TaskUserAssignAttributes } from './TaskUserAssign';
+import { TaskUserReviewerAttributes } from './TaskUserReviewer';
 import { SprintInstance } from './Sprint';
 import { ProjectInstance } from './Project';
 import { CommentInstance } from './Comment';
 
-export interface SprintEntryAttributes {
+export interface TaskAttributes {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -35,19 +35,19 @@ export interface SprintEntryAttributes {
   comments?: CommentInstance[];
 }
 
-export interface SprintEntryInstance extends Sequelize.Instance<SprintEntryAttributes>, SprintEntryAttributes {
-  addAssign: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], SprintEntryUserAssignAttributes>;
-  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], SprintEntryUserReviewerAttributes>;
+export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAttributes {
+  addAssign: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserAssignAttributes>;
+  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserReviewerAttributes>;
   removeAssign: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   removeReviewer: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   getLabels: Sequelize.BelongsToManyGetAssociationsMixin<LabelInstance>;
 }
 
-export const SprintEntryFactory = (
+export const TaskFactory = (
     sequelize: Sequelize.Sequelize,
     DataTypes: Sequelize.DataTypes
-): Sequelize.Model<SprintEntryInstance, SprintEntryAttributes> => {
-  const attributes: SequelizeAttributes<SprintEntryAttributes> = {
+): Sequelize.Model<TaskInstance, TaskAttributes> => {
+  const attributes: SequelizeAttributes<TaskAttributes> = {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -111,17 +111,17 @@ export const SprintEntryFactory = (
     }
   };
 
-  const SprintEntry = sequelize.define<SprintEntryInstance, SprintEntryAttributes>('sprintEntry', attributes);
+  const Task = sequelize.define<TaskInstance, TaskAttributes>('task', attributes);
 
-  SprintEntry.associate = models => {
-    SprintEntry.belongsTo(models.Sprint, { as: 'sprint', foreignKey: 'sprintId' });
-    SprintEntry.hasMany(models.Comment, { as: 'comments', foreignKey: 'sprintEntryId' });
-    SprintEntry.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
-    SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserAssign', as: 'assign', foreignKey: 'sprint_entry_id' });
-    SprintEntry.belongsToMany(models.User, { through: 'sprintEntryUserReviewer', as: 'reviewers', foreignKey: 'sprint_entry_id' });
-    SprintEntry.belongsToMany(models.Label, { through: 'sprintEntryLabel', as: 'labels', foreignKey: 'sprint_entry_id' });
+  Task.associate = models => {
+    Task.belongsTo(models.Sprint, { as: 'sprint', foreignKey: 'sprintId' });
+    Task.hasMany(models.Comment, { as: 'comments', foreignKey: 'taskId' });
+    Task.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
+    Task.belongsToMany(models.User, { through: 'taskUserAssign', as: 'assign', foreignKey: 'task_id' });
+    Task.belongsToMany(models.User, { through: 'taskUserReviewer', as: 'reviewers', foreignKey: 'task_id' });
+    Task.belongsToMany(models.Label, { through: 'taskLabel', as: 'labels', foreignKey: 'task_id' });
 
   };
 
-  return SprintEntry;
+  return Task;
 };

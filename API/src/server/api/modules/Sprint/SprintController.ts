@@ -6,7 +6,7 @@ import { uuid, twoUUID, sprintChangeTaskState, taskAddUser, taskUpdate, sprintAd
 import CommentFormatter from '../../shared/formatter/CommentsFormatter';
 
 class SprintController extends Controller {
-  async getSprintEntries() {
+  async getSprintTasks() {
 
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
@@ -20,7 +20,7 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().getSprintEntries(sprintId);
+    const response = await new SprintMethods().getSprintTasks(sprintId);
 
     if (response) {
       return this.res(await new SprintFormatter().format(response));
@@ -31,7 +31,7 @@ class SprintController extends Controller {
 
   }
 
-  async changeEntryState() {
+  async changeTaskState() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -44,12 +44,12 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().changeEntryState(sprintId, taskId, indexFrom, indexTo, stateFrom, stateTo);
+    const response = await new SprintMethods().changeTaskState(sprintId, taskId, indexFrom, indexTo, stateFrom, stateTo);
 
     return this.res(response).code(response.statusCode);
   }
 
-  async deleteEntry() {
+  async deleteTaskFromSpint() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -62,16 +62,16 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().deleteEntry(taskId);
+    const response = await new SprintMethods().deleteTaskFromSprint(taskId);
 
     if (response) {
-      return this.res(CustomResponse(200, 'Successfully deleted sprint entry.'));
+      return this.res(CustomResponse(200, 'Successfully deleted sprint task.'));
     }
 
-    return this.res(CustomResponse(500, 'Couldn\'t delete sprint entry', { formError: 'Database error.' })).code(500);
+    return this.res(CustomResponse(500, 'Couldn\'t delete sprint task.', { formError: 'Database error.' })).code(500);
   }
 
-  async addEntryUser() {
+  async addTaskUser() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -84,12 +84,12 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addUserToEntry(taskId, userId, type);
+    const response = await new SprintMethods().addUserToTask(taskId, userId, type);
 
     return this.res(response).code(response.statusCode);
   }
 
-  async removeEntryUser() {
+  async removeTaskUser() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -102,12 +102,12 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().removeUserFromEntry(taskId, userId, type);
+    const response = await new SprintMethods().removeUserFromTask(taskId, userId, type);
 
     return this.res(response).code(response.statusCode);
   }
 
-  async updateEntry() {
+  async updateTask() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -120,12 +120,12 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().updateEntry(taskId, points, priority, type, title, description);
+    const response = await new SprintMethods().updateTask(taskId, points, priority, type, title, description);
 
     return this.res(response).code(response.statusCode);
   }
 
-  async addEntryToSprint() {
+  async addTaskToSprint() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -138,12 +138,12 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addEntryToSprint(taskId, sprintId);
+    const response = await new SprintMethods().addTaskToSprint(taskId, sprintId);
 
     return this.res(response).code(response.statusCode);
   }
 
-  async removeEntryFromSprint() {
+  async removeTaskFromSprint() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -156,7 +156,7 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().removeEntryFromSprint(taskId);
+    const response = await new SprintMethods().removeTaskFromSprint(taskId);
 
     return this.res(response).code(response.statusCode);
   }

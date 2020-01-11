@@ -1,30 +1,30 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
-export interface SprintEntryUserAssignAttributes {
-  sprintEntryId: string;
+export interface TaskUserAssignAttributes {
+  taskId: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SprintEntryUserAssignInstance extends Sequelize.Instance<SprintEntryUserAssignAttributes>, SprintEntryUserAssignAttributes { }
+export interface TaskUserAssignInstance extends Sequelize.Instance<TaskUserAssignAttributes>, TaskUserAssignAttributes { }
 
-export const SprintEntryUserAssignFactory = (
+export const TaskUserAssignFactory = (
   sequelize: Sequelize.Sequelize,
   DataTypes: Sequelize.DataTypes
-): Sequelize.Model<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes> => {
-  const attributes: SequelizeAttributes<SprintEntryUserAssignAttributes> = {
-    sprintEntryId: {
+): Sequelize.Model<TaskUserAssignInstance, TaskUserAssignAttributes> => {
+  const attributes: SequelizeAttributes<TaskUserAssignAttributes> = {
+    taskId: {
       type: DataTypes.UUID,
       primaryKey: true,
       references: {
-        model: 'sprintEntries',
+        model: 'tasks',
         key: 'id'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-      field: 'sprint_entry_id'
+      field: 'task_id'
     },
     userId: {
       type: DataTypes.UUID,
@@ -47,7 +47,7 @@ export const SprintEntryUserAssignFactory = (
     }
   };
 
-  const SprintEntryUserAssign = sequelize.define<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes>('sprintEntryUserAssign', attributes);
+  const TaskUserAssign = sequelize.define<TaskUserAssignInstance, TaskUserAssignAttributes>('taskUserAssign', attributes);
 
-  return SprintEntryUserAssign;
+  return TaskUserAssign;
 };

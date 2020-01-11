@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { ProjectInstance } from './Project';
-import { SprintEntryInstance } from './SprintEntry';
+import { TaskInstance } from './Task';
 import { SprintInstance } from './Sprint';
 import { UserProjectInstance } from './UserProject';
 import { BacklogInstance } from './Backlog';
@@ -26,8 +26,8 @@ export interface UserAttributes {
 
   leadIn?: ProjectInstance[];
   projectsIn?: ProjectInstance[];
-  assignIn?: SprintEntryInstance[];
-  reviewerIn?: SprintEntryInstance[];
+  assignIn?: TaskInstance[];
+  reviewerIn?: TaskInstance[];
   activeProject?: ProjectInstance[];
   activeSprint?: SprintInstance[];
   usersProjects?: UserProjectInstance;
@@ -80,7 +80,7 @@ export const UserFactory =
         },
         field: 'active_project_id',
         allowNull: true,
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       },
       activeSprintId: {
@@ -91,7 +91,7 @@ export const UserFactory =
         },
         allowNull: true,
         field: 'active_sprint_id',
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       }
     };
@@ -105,8 +105,8 @@ export const UserFactory =
       User.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
       User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
-      User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
-      User.belongsToMany(models.SprintEntry, { through: 'sprintEntryUserAssign', as: 'assignIn', foreignKey: 'user_id' });
+      User.belongsToMany(models.Task, { through: 'taskUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
+      User.belongsToMany(models.Task, { through: 'taskUserAssign', as: 'assignIn', foreignKey: 'user_id' });
       User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });
       User.hasMany(models.Backlog, { as: 'userLogs', foreignKey: 'userId' });
       User.hasMany(models.UserProjectLabel, { foreignKey: 'userId' });

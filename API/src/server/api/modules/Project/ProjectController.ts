@@ -3,7 +3,7 @@ import ProjectMethods from './methods/ProjectMethods';
 import CustomResponse from '../../error/CustomError';
 import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
 import ProjectUsersFormatter from '../../shared/formatter/ProjectUsersFormatter';
-import ProjectEntriesFormatter from '../../shared/formatter/ProjectEntriesFormatter';
+import ProjectTasksFormatter from '../../shared/formatter/ProjectTasksFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
 import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
 import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, taskCreate } from '../../validation/Validate';
@@ -213,7 +213,7 @@ class ProjectController extends Controller {
     return this.res(response).code(response.statusCode);
   }
 
-  async getProjectEntries() {
+  async getProjectTasks() {
 
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
@@ -227,16 +227,16 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().getProjectEntries(projectId);
+    const response = await new ProjectMethods().getProjectTasks(projectId);
 
     if (response) {
-      return this.res(await new ProjectEntriesFormatter().format(response));
+      return this.res(await new ProjectTasksFormatter().format(response));
     }
 
     return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
   }
 
-  async createEntry() {
+  async createTask() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -253,13 +253,13 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().createEntry(points, priority, state, type, title, description, projectId, projectName, this.user.id);
+    const response = await new ProjectMethods().createTask(points, priority, state, type, title, description, projectId, projectName, this.user.id);
 
     if (response) {
-      return this.res(CustomResponse(200, 'Sprint entry created successfully.'));
+      return this.res(CustomResponse(200, 'Project task created successfully.'));
     }
 
-    return this.res(CustomResponse(500, 'Couldn\'t create sprint entry', { formError: 'Database error.' })).code(500);
+    return this.res(CustomResponse(500, 'Couldn\'t create sprint task.', { formError: 'Database error.' })).code(500);
   }
 
   async getProjectRoles() {

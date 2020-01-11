@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('sprintEntries', [
+    return queryInterface.bulkInsert('tasks', [
       {
         id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
         project_id: 'a6a02365-7052-4236-8894-ac594da9c108',

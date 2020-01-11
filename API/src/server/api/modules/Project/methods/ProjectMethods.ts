@@ -401,13 +401,13 @@ class ProjectMethods {
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
   }
 
-  // Get entries assigned to project wioth given id
-  async getProjectEntries(id: string) {
+  // Get tasks assigned to project with given id
+  async getProjectTasks(id: string) {
     return await db.Project.findByPk(id, {
       include: [
         {
-          model: db.SprintEntry,
-          as: 'entries',
+          model: db.Task,
+          as: 'tasks',
           include: [
             {
               model: db.User,
@@ -436,14 +436,14 @@ class ProjectMethods {
         }
       ],
       order: [
-        [{ model: db.SprintEntry, as: 'entries' }, 'priority', 'ASC']
+        [{ model: db.Task, as: 'tasks' }, 'priority', 'ASC']
       ]
     });
   }
 
-  // Create entry for given project
+  // Create task for given project
   // Backlogs to project
-  async createEntry(
+  async createTask(
     points: string,
     priority: string,
     state: string,
@@ -453,12 +453,12 @@ class ProjectMethods {
     projectId: string,
     projectName: string,
     loggedUserId: string) {
-    const count = await db.SprintEntry.count({
+    const count = await db.Task.count({
       where: {
         projectId
       }
     });
-    return await db.SprintEntry.create({
+    return await db.Task.create({
       points: Number.parseInt(points, 10),
       priority,
       state,
@@ -468,16 +468,16 @@ class ProjectMethods {
       description,
       projectId
     })
-    .then(async (entry) => {
+    .then(async (task) => {
       return await db.Backlog.create({
         projectId,
         userId: loggedUserId,
-        eventId: <string>entry.id,
+        eventId: <string>task.id,
         action: 'created',
-        message: 'an entry.',
-        type: 'entry'
+        message: 'a task.',
+        type: 'task'
       })
-      .then(() => entry)
+      .then(() => task)
       .catch(() => undefined);
     });
   }

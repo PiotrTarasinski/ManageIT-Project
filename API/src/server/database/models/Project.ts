@@ -3,7 +3,7 @@ import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
 import { UserProjectAttributes, UserProjectInstance } from './UserProject';
 import { SprintInstance } from './Sprint';
-import { SprintEntryInstance } from './SprintEntry';
+import { TaskInstance } from './Task';
 import { BacklogInstance } from './Backlog';
 
 export interface ProjectAttributes {
@@ -23,12 +23,12 @@ export interface ProjectAttributes {
   users?: UserInstance[];
   usersProjects?: UserProjectInstance;
   activeSprint?: SprintInstance;
-  entries?: SprintEntryInstance[];
+  tasks?: TaskInstance[];
   projectLogs?: BacklogInstance[];
 }
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
-  getEntries: Sequelize.HasManyGetAssociationsMixin<SprintEntryInstance>;
+  getTasks: Sequelize.HasManyGetAssociationsMixin<TaskInstance>;
   addUser: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], UserProjectAttributes>;
   getUsers: Sequelize.BelongsToManyGetAssociationsMixin<UserInstance>;
 }
@@ -87,7 +87,7 @@ export const ProjectFactory = (
     });
     Project.hasMany(models.UserProject, { as: 'projectsUsers', foreignKey: 'projectId' });
     Project.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
-    Project.hasMany(models.SprintEntry, { as: 'entries', foreignKey: 'projectId' });
+    Project.hasMany(models.Task, { as: 'tasks', foreignKey: 'projectId' });
     Project.hasMany(models.Backlog, { as: 'projectLogs', foreignKey: 'projectId' });
     Project.hasMany(models.UserProjectLabel, { foreignKey: 'projectId' });
     Project.hasMany(models.RoleLabel, { as: 'projectLabels', foreignKey: 'projectId' });

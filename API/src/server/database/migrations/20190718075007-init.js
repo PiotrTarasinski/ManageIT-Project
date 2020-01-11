@@ -88,7 +88,7 @@ module.exports = {
           model: 'users',
           key: 'id',
         },
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
         field: 'lead_id',
       },
@@ -98,7 +98,7 @@ module.exports = {
           model: 'sprints',
           key: 'id'
         },
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
         allowNull: true,
         field: 'active_sprint_id'
@@ -112,7 +112,7 @@ module.exports = {
         key: 'id'
       },
       allowNull: true,
-      onDelete: 'CASCADE',
+      onDelete: 'SET NULL',
       onUpdate: 'CASCADE'
     });
 
@@ -123,7 +123,7 @@ module.exports = {
         key: 'id'
       },
       allowNull: true,
-      onDelete: 'CASCADE',
+      onDelete: 'SET NULL',
       onUpdate: 'CASCADE'
     });
 
@@ -166,7 +166,7 @@ module.exports = {
 
     
 
-    await queryInterface.createTable('sprintEntries', {
+    await queryInterface.createTable('tasks', {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -246,13 +246,13 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      sprintEntryId: {
+      taskId: {
         type: DataTypes.UUID,
         references: {
-          model: 'sprintEntries',
+          model: 'tasks',
           key: 'id'
         },
-        field: 'sprint_entry_id',
+        field: 'task_id',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
@@ -304,8 +304,9 @@ module.exports = {
           key: 'id'
         },
         field: 'user_id',
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: 'Set NULL',
+        onDelete: 'CASCADE',
+        allowNull: true
       },
       projectId: {
         type: DataTypes.UUID,
@@ -372,17 +373,17 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryLabels', {
-      sprintEntryId: {
+    await queryInterface.createTable('taskLabels', {
+      taskId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
-          model: 'sprintEntries',
+          model: 'tasks',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        field: 'sprint_entry_id'
+        field: 'task_id'
       },
       labelId: {
         type: DataTypes.UUID,
@@ -405,17 +406,17 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryUserAssigns', {
-      sprintEntryId: {
+    await queryInterface.createTable('taskUserAssigns', {
+      taskId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
-          model: 'sprintEntries',
+          model: 'tasks',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        field: 'sprint_entry_id'
+        field: 'task_id'
       },
       userId: {
         type: DataTypes.UUID,
@@ -470,17 +471,17 @@ module.exports = {
       }
     });
 
-    await queryInterface.createTable('sprintEntryUserReviewers', {
-      sprintEntryId: {
+    await queryInterface.createTable('taskUserReviewers', {
+      taskId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
-          model: 'sprintEntries',
+          model: 'tasks',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        field: 'sprint_entry_id'
+        field: 'task_id'
       },
       userId: {
         type: DataTypes.UUID,

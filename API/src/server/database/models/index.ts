@@ -5,12 +5,12 @@ import { logger } from '../../../utils';
 import { ProjectInstance, ProjectAttributes, ProjectFactory } from './Project';
 import { UserProjectInstance, UserProjectAttributes, UserProjectFactory } from './UserProject';
 import { SprintInstance, SprintAttributes, SprintFactory } from './Sprint';
-import { SprintEntryInstance, SprintEntryAttributes, SprintEntryFactory } from './SprintEntry';
+import { TaskInstance, TaskAttributes, TaskFactory } from './Task';
 import { LabelInstance, LabelAttributes, LabelFactory } from './Label';
-import { SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes, SprintEntryUserAssignFactory } from './SprintEntryUserAssign';
-import { SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes, SprintEntryUserReviewerFactory } from './SprintEntryUserReviewer';
+import { TaskUserAssignInstance, TaskUserAssignAttributes, TaskUserAssignFactory } from './TaskUserAssign';
+import { TaskUserReviewerInstance, TaskUserReviewerAttributes, TaskUserReviewerFactory } from './TaskUserReviewer';
 import { CommentInstance, CommentAttributes, CommentFactory } from './Comment';
-import { SprintEntryLabelInstance, SprintEntryLabelAttributes, SprintEntryLabelFactory } from './SprintEntryLabel';
+import { TaskLabelInstance, TaskLabelAttributes, TaskLabelFactory } from './TaskLabel';
 import { BacklogInstance, BacklogAttributes, BacklogFactory } from './Backlog';
 import { RoleLabelInstance, RoleLabelAttributes, RoleLabelFactory } from './RoleLabel';
 import { UserProjectLabelInstance, UserProjectLabelAttributes, UserProjectLabelFactory } from './UserProjectLabel';
@@ -21,11 +21,11 @@ export type DbModels = {
   Project: Sequelize.Model<ProjectInstance, ProjectAttributes>;
   UserProject: Sequelize.Model<UserProjectInstance, UserProjectAttributes>;
   Sprint: Sequelize.Model<SprintInstance, SprintAttributes>;
-  SprintEntry: Sequelize.Model<SprintEntryInstance, SprintEntryAttributes>;
+  Task: Sequelize.Model<TaskInstance, TaskAttributes>;
   Label: Sequelize.Model<LabelInstance, LabelAttributes>;
-  SprintEntryUserAssign: Sequelize.Model<SprintEntryUserAssignInstance, SprintEntryUserAssignAttributes>;
-  SprintEntryUserReviewer: Sequelize.Model<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes>;
-  SprintEntryLabel: Sequelize.Model<SprintEntryLabelInstance, SprintEntryLabelAttributes>;
+  TaskUserAssign: Sequelize.Model<TaskUserAssignInstance, TaskUserAssignAttributes>;
+  TaskUserReviewer: Sequelize.Model<TaskUserReviewerInstance, TaskUserReviewerAttributes>;
+  TaskLabel: Sequelize.Model<TaskLabelInstance, TaskLabelAttributes>;
   Comment: Sequelize.Model<CommentInstance, CommentAttributes>;
   Backlog: Sequelize.Model<BacklogInstance, BacklogAttributes>;
   RoleLabel: Sequelize.Model<RoleLabelInstance, RoleLabelAttributes>;
@@ -64,12 +64,12 @@ export const createModels = (): DbInterface => {
     Sprint: SprintFactory(sequelize, Sequelize),
     Project: ProjectFactory(sequelize, Sequelize),
     UserProject: UserProjectFactory(sequelize, Sequelize),
-    SprintEntry: SprintEntryFactory(sequelize, Sequelize),
+    Task: TaskFactory(sequelize, Sequelize),
     Label: LabelFactory(sequelize, Sequelize),
-    SprintEntryUserAssign: SprintEntryUserAssignFactory(sequelize, Sequelize),
-    SprintEntryUserReviewer: SprintEntryUserReviewerFactory(sequelize, Sequelize),
+    TaskUserAssign: TaskUserAssignFactory(sequelize, Sequelize),
+    TaskUserReviewer: TaskUserReviewerFactory(sequelize, Sequelize),
     Comment: CommentFactory(sequelize, Sequelize),
-    SprintEntryLabel: SprintEntryLabelFactory(sequelize, Sequelize),
+    TaskLabel: TaskLabelFactory(sequelize, Sequelize),
     Backlog: BacklogFactory(sequelize, Sequelize),
     RoleLabel: RoleLabelFactory(sequelize, Sequelize),
     UserProjectLabel: UserProjectLabelFactory(sequelize, Sequelize)

@@ -1,30 +1,30 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
-export interface SprintEntryUserReviewerAttributes {
-  sprintEntryId: string;
+export interface TaskUserReviewerAttributes {
+  taskId: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SprintEntryUserReviewerInstance extends Sequelize.Instance<SprintEntryUserReviewerAttributes>, SprintEntryUserReviewerAttributes { }
+export interface TaskUserReviewerInstance extends Sequelize.Instance<TaskUserReviewerAttributes>, TaskUserReviewerAttributes { }
 
-export const SprintEntryUserReviewerFactory = (
+export const TaskUserReviewerFactory = (
   sequelize: Sequelize.Sequelize,
   DataTypes: Sequelize.DataTypes
-): Sequelize.Model<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes> => {
-  const attributes: SequelizeAttributes<SprintEntryUserReviewerAttributes> = {
-    sprintEntryId: {
+): Sequelize.Model<TaskUserReviewerInstance, TaskUserReviewerAttributes> => {
+  const attributes: SequelizeAttributes<TaskUserReviewerAttributes> = {
+    taskId: {
       type: DataTypes.UUID,
       primaryKey: true,
       references: {
-        model: 'sprintEntries',
+        model: 'tasks',
         key: 'id'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-      field: 'sprint_entry_id'
+      field: 'task_id'
     },
     userId: {
       type: DataTypes.UUID,
@@ -47,8 +47,7 @@ export const SprintEntryUserReviewerFactory = (
     }
   };
 
-  // tslint:disable-next-line:max-line-length
-  const SprintEntryUserReviewer = sequelize.define<SprintEntryUserReviewerInstance, SprintEntryUserReviewerAttributes>('sprintEntryUserReviewer', attributes);
+  const TaskUserReviewer = sequelize.define<TaskUserReviewerInstance, TaskUserReviewerAttributes>('taskUserReviewer', attributes);
 
-  return SprintEntryUserReviewer;
+  return TaskUserReviewer;
 };

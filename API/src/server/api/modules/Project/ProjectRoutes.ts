@@ -51,16 +51,16 @@ class ProjectRoutes extends MainRoutes {
       },
       {
         method: 'POST',
-        path: '/get_entries',
+        path: '/get_tasks',
         options: {
-          handler: (req, res) => new ProjectController(req, res).getProjectEntries()
+          handler: (req, res) => new ProjectController(req, res).getProjectTasks()
         }
       },
       {
         method: 'POST',
-        path: '/create_entry',
+        path: '/create_task',
         options: {
-          handler: (req, res) => new ProjectController(req, res).createEntry()
+          handler: (req, res) => new ProjectController(req, res).createTask()
         }
       },
       {

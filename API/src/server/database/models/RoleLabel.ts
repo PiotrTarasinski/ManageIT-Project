@@ -1,6 +1,5 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { SprintEntryInstance } from './SprintEntry';
 import { ProjectInstance } from './Project';
 
 export interface RoleLabelAttributes {
@@ -15,7 +14,6 @@ export interface RoleLabelAttributes {
   // Here be associations!
   //
 
-  sprintEntriesIn?: SprintEntryInstance[];
   project?: ProjectInstance;
 }
 

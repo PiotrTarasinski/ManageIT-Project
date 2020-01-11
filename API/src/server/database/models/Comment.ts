@@ -8,7 +8,7 @@ export interface CommentAttributes {
   updatedAt?: Date;
   content: string;
   userId: string;
-  sprintEntryId: string;
+  taskId: string;
 
   //
   // Here be associations!
@@ -41,13 +41,13 @@ export const CommentFactory = (
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
-    sprintEntryId: {
+    taskId: {
       type: DataTypes.UUID,
       references: {
-        model: 'sprintEntries',
+        model: 'tasks',
         key: 'id'
       },
-      field: 'sprint_entry_id',
+      field: 'task_id',
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
@@ -69,7 +69,7 @@ export const CommentFactory = (
 
   Comment.associate = models => {
     Comment.belongsTo(models.User, { as: 'user', foreignKey: 'userId' });
-    Comment.belongsTo(models.SprintEntry, { as: 'sprintEntry', foreignKey: 'sprintEntryId' });
+    Comment.belongsTo(models.Task, { as: 'task', foreignKey: 'taskId' });
   };
 
   return Comment;

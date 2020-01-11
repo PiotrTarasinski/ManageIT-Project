@@ -1,30 +1,30 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 
-export interface SprintEntryLabelAttributes {
-  sprintEntryId: string;
+export interface TaskLabelAttributes {
+  taskId: string;
   labelId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SprintEntryLabelInstance extends Sequelize.Instance<SprintEntryLabelAttributes>, SprintEntryLabelAttributes { }
+export interface TaskLabelInstance extends Sequelize.Instance<TaskLabelAttributes>, TaskLabelAttributes { }
 
-export const SprintEntryLabelFactory = (
+export const TaskLabelFactory = (
   sequelize: Sequelize.Sequelize,
   DataTypes: Sequelize.DataTypes
-): Sequelize.Model<SprintEntryLabelInstance, SprintEntryLabelAttributes> => {
-  const attributes: SequelizeAttributes<SprintEntryLabelAttributes> = {
-    sprintEntryId: {
+): Sequelize.Model<TaskLabelInstance, TaskLabelAttributes> => {
+  const attributes: SequelizeAttributes<TaskLabelAttributes> = {
+    taskId: {
       type: DataTypes.UUID,
       primaryKey: true,
       references: {
-        model: 'sprintEntries',
+        model: 'tasks',
         key: 'id'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-      field: 'sprint_entry_id'
+      field: 'task_id'
     },
     labelId: {
       type: DataTypes.UUID,
@@ -47,8 +47,8 @@ export const SprintEntryLabelFactory = (
     }
   };
 
-  const SprintEntryLabel = sequelize.define<SprintEntryLabelInstance, SprintEntryLabelAttributes>('sprintEntryLabel', attributes);
+  const TaskLabel = sequelize.define<TaskLabelInstance, TaskLabelAttributes>('taskLabel', attributes);
 
 
-  return SprintEntryLabel;
+  return TaskLabel;
 };
