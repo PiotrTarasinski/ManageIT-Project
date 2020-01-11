@@ -15,10 +15,6 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
-    }
-
     const { order, orderBy, page, rowsPerPage, search } = this.req.payload;
 
     const validationResponse = userGetProjects(order, orderBy, page, rowsPerPage, search);
@@ -27,7 +23,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const userProjects = await new ProjectMethods().getUserProjects(this.user.id, order, orderBy, page, rowsPerPage, search);
+    const userProjects = await new ProjectMethods().getUserProjects(this.user.name, order, orderBy, page, rowsPerPage, search);
 
     if (!userProjects) {
       return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' })).code(500);
@@ -42,10 +38,6 @@ class ProjectController extends Controller {
 
   async addUserToProject() {
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
-    }
-
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
@@ -58,16 +50,12 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().addUserToProject(userId, projectId, this.user.id);
+    const response = await new ProjectMethods().addUserToProject(userId, projectId, this.user.name, <string>this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
 
   async deleteUserFromProject() {
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
-    }
 
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
@@ -81,16 +69,12 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId, this.user.id);
+    const response = await new ProjectMethods().deleteUserFromProject(userId, projectId, this.user.name, <string>this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
 
   async getProjectUsers() {
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
-    }
 
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
@@ -118,10 +102,6 @@ class ProjectController extends Controller {
   }
 
   async getProjectUsersPaginated() {
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during verification.', { formError: 'Internal server error' }));
-    }
 
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' }));
@@ -152,10 +132,6 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
-    }
-
     const { name, state } = this.req.payload;
 
     const validationResponse = projectCreate(name, state);
@@ -164,7 +140,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().createProject(name, state, this.user.id);
+    const response = await new ProjectMethods().createProject(name, state, <string>this.user.id, this.user.name, <string>this.user.id);
 
     if (response) {
       return this.res(response);
@@ -196,10 +172,6 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
-    }
-
     const { projectId, name, state, leadId } = this.req.payload;
 
     const validationResponse = projectUpdate(projectId, name, state, leadId);
@@ -208,7 +180,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().updateProject(projectId, name, state, leadId, this.user.id);
+    const response = await new ProjectMethods().updateProject(projectId, name, state, leadId, this.user.name, <string>this.user.id);
 
     return this.res(response).code(response.statusCode);
   }
@@ -241,10 +213,6 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error' })).code(500);
-    }
-
     const { points, priority, state, type, title, description, projectId, projectName } = this.req.payload;
 
     const validationResponse = taskCreate(points, priority, state, type, title, description, projectId, projectName);
@@ -253,7 +221,18 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().createTask(points, priority, state, type, title, description, projectId, projectName, this.user.id);
+    const response = await new ProjectMethods().createTask(
+      points,
+      priority,
+      state,
+      type,
+      title,
+      description,
+      projectId,
+      projectName,
+      this.user.name,
+      <string>this.user.id
+      );
 
     if (response) {
       return this.res(CustomResponse(200, 'Project task created successfully.'));

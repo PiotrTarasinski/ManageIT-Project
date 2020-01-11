@@ -3,6 +3,7 @@ import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import { Op } from 'sequelize';
 import sequelize = require('sequelize');
 import permissions from '../../../../../utils/permissions';
+import { UserInstance } from '../../../../database/models/User';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -75,20 +76,18 @@ class ProjectMethods {
 
   // Return CustomResponse either with error code or 200
   // Backlogs to project
-  async addUserToProject(userId: string, projectId: string, loggedUserId: string) {
+  async addUserToProject(userId: string, projectId: string, userName: string, loggedUserId: string) {
 
     return await db.UserProject.create({
       projectId,
       userId
     })
       .then(async () => {
+        const addedUser = await db.User.findByPk(userId);
         return await db.Backlog.create({
-          userId: loggedUserId,
           projectId,
-          action: 'added',
-          message: 'to project.',
-          eventId: userId,
-          type: 'user'
+          content: `${userName} added user ${(<UserInstance>addedUser).name} to the project.`,
+          userId: loggedUserId
         })
         .then(() => CustomResponse(200, 'User created successfully'))
         .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
@@ -104,7 +103,7 @@ class ProjectMethods {
 
   // Returns CustomResponse
   // Backlogs to project
-  async deleteUserFromProject(userId: string, projectId: string, loggedUserId: string) {
+  async deleteUserFromProject(userId: string, projectId: string, userName: string, loggedUserId: string) {
     return await db.UserProject.destroy({
       where: {
         userId,
@@ -115,13 +114,11 @@ class ProjectMethods {
         if (!count) {
           return CustomResponse(400, 'User not in project.', { formError: 'Supplied user is not a part of this project.' });
         }
+        const removedUser = await db.User.findByPk(userId);
         return await db.Backlog.create({
           projectId,
-          action: 'removed',
-          message: 'from project.',
-          type: 'user',
-          userId: loggedUserId,
-          eventId: userId
+          content: `${userName} removed user ${(<UserInstance>removedUser).name} from the project.`,
+          userId: loggedUserId
         })
         .then(() => CustomResponse(200, 'Successfully removed user from project.'))
         .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
@@ -335,7 +332,7 @@ class ProjectMethods {
 
   // Creates and returns project or undefined
   // Backlogs to project
-  async createProject(name: string, state: string, leadId: string) {
+  async createProject(name: string, state: string, leadId: string, userName: string, loggedUserId: string) {
     return await db.Project.create({
       name,
       state,
@@ -346,11 +343,8 @@ class ProjectMethods {
         .then(async () => {
           await db.Backlog.create({
             projectId: <string>project.id,
-            action: 'created',
-            message: 'a project.',
-            type: 'project',
-            userId: leadId,
-            eventId: <string>project.id
+            content: `${userName} created this project.`,
+            userId: loggedUserId
           });
         });
         return project;
@@ -370,8 +364,8 @@ class ProjectMethods {
 
   // Returns CustomResponse
   // Backlogs to project
-  async updateProject(id: string, name: string, state: string, leadId: string, loggedUserId: string) {
-    const project = await db.Project.findByPk(id);
+  async updateProject(projectId: string, name: string, state: string, leadId: string, userName: string, loggedUserId: string) {
+    const project = await db.Project.findByPk(projectId);
 
     if (project) {
       if (name) {
@@ -386,12 +380,9 @@ class ProjectMethods {
       return await project.save()
       .then(async () => {
         return await db.Backlog.create({
-          projectId: id,
-          action: 'updated',
-          message: 'a project.',
-          type: 'project',
-          userId: loggedUserId,
-          eventId: id
+          projectId,
+          content: `${userName} updated project details.`,
+          userId: loggedUserId
         })
         .then(() => CustomResponse(200, 'Project updated successfully'))
         .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Database error.' }));
@@ -452,6 +443,7 @@ class ProjectMethods {
     description: string,
     projectId: string,
     projectName: string,
+    userName: string,
     loggedUserId: string) {
     const count = await db.Task.count({
       where: {
@@ -471,11 +463,8 @@ class ProjectMethods {
     .then(async (task) => {
       return await db.Backlog.create({
         projectId,
-        userId: loggedUserId,
-        eventId: <string>task.id,
-        action: 'created',
-        message: 'a task.',
-        type: 'task'
+        content: `${userName} created a task: ${task.title}.`,
+        userId: loggedUserId
       })
       .then(() => task)
       .catch(() => undefined);

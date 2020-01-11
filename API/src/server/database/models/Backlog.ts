@@ -8,18 +8,15 @@ export interface BacklogAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   projectId: string;
+  content: string;
   userId: string;
-  action: string;
-  message: string;
-  eventId?: string;
-  type: string;
 
   //
   // Here be associations!
   //
 
-  user?: UserInstance;
   project?: ProjectInstance;
+  user?: UserInstance;
 }
 
 export interface BacklogInstance extends Sequelize.Instance<BacklogAttributes>, BacklogAttributes {
@@ -36,15 +33,8 @@ export const BacklogFactory = (
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    userId: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      field: 'user_id',
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+    content: {
+      type: DataTypes.STRING
     },
     projectId: {
       type: DataTypes.UUID,
@@ -56,6 +46,17 @@ export const BacklogFactory = (
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE'
     },
+    userId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      field: 'user_id',
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
+      allowNull: true
+    },
     createdAt: {
       type: DataTypes.DATE,
       field: 'created_at'
@@ -63,19 +64,6 @@ export const BacklogFactory = (
     updatedAt: {
       type: DataTypes.DATE,
       field: 'updated_at'
-    },
-    message: {
-      type: DataTypes.STRING
-    },
-    action: {
-      type: DataTypes.STRING
-    },
-    eventId: {
-      type: DataTypes.UUID,
-      field: 'event_id'
-    },
-    type: {
-      type: DataTypes.STRING
     }
   };
 
@@ -83,8 +71,8 @@ export const BacklogFactory = (
 
 
   Backlog.associate = models => {
-    Backlog.belongsTo(models.User, { as: 'user', foreignKey: 'userId' });
     Backlog.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
+    Backlog.belongsTo(models.User, { as: 'user', foreignKey: 'userId' });
   };
 
   return Backlog;

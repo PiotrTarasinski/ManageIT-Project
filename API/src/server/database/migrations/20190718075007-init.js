@@ -297,17 +297,6 @@ module.exports = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-      userId: {
-        type: DataTypes.UUID,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-        field: 'user_id',
-        onUpdate: 'Set NULL',
-        onDelete: 'CASCADE',
-        allowNull: true
-      },
       projectId: {
         type: DataTypes.UUID,
         references: {
@@ -318,6 +307,16 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        field: 'user_id',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'
@@ -326,17 +325,7 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      message: {
-        type: DataTypes.STRING
-      },
-      action: {
-        type: DataTypes.STRING
-      },
-      eventId: {
-        type: DataTypes.UUID,
-        field: 'event_id'
-      },
-      type: {
+      content: {
         type: DataTypes.STRING
       }
     });

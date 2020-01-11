@@ -108,8 +108,8 @@ export const UserFactory =
       User.belongsToMany(models.Task, { through: 'taskUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
       User.belongsToMany(models.Task, { through: 'taskUserAssign', as: 'assignIn', foreignKey: 'user_id' });
       User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });
-      User.hasMany(models.Backlog, { as: 'userLogs', foreignKey: 'userId' });
       User.hasMany(models.UserProjectLabel, { foreignKey: 'userId' });
+      User.hasMany(models.Backlog, { as: 'userLogs', foreignKey: 'userId' });
     };
 
     return User;
