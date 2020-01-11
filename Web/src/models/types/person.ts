@@ -6,7 +6,7 @@ export interface IPerson {
   email?: string;
   avatar?: string;
   dateOfJoin?: Date;
-  role?: IRoleLabel;
+  roles?: IRoleLabel[];
   permissions?: userPermission;
 }
 

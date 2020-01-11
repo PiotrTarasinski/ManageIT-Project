@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme: Theme) =>
     avatar: {
       border: '1px solid',
       borderColor: deepPurple['A200'],
+      margin: 'auto',
     },
     headCellIcon: {
       marginRight: theme.spacing(1),
@@ -83,6 +84,17 @@ const useStyles = makeStyles((theme: Theme) =>
       '& svg': {
         fill: grey['50'],
       },
+    },
+    rolesContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      '& > *': {
+        margin: theme.spacing(0.5),
+      },
+    },
+    role: {
+      color: '#FFF',
     },
   }),
 );
