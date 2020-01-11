@@ -2,9 +2,9 @@ import { httpRequest } from '../httpRequest';
 import { taskState } from 'models/enums/task';
 
 const sprint = {
-  getSprint: (id: string) => {
-    return httpRequest.post('sprint/get_entries', {
-      id,
+  getSprint: (sprintId: string) => {
+    return httpRequest.post('sprint/get_tasks', {
+      sprintId,
     });
   },
 

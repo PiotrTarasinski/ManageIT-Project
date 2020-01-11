@@ -3,9 +3,13 @@ import { grey, deepPurple } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
+    mainContainer: {
+      backgroundColor: grey[50],
+      padding: theme.spacing(3),
+    },
+    paper: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
     },
     toolbar: {
       backgroundColor: deepPurple[500],
@@ -17,6 +21,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       color: grey[50],
+    },
+    headCellIcon: {
+      marginRight: theme.spacing(1),
     },
     search: {
       position: 'relative',
@@ -42,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    createProjectIcon: {
+    createNewTaskIcon: {
       color: grey[50],
     },
     inputRoot: {
@@ -55,46 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         width: 200,
       },
-    },
-    paper: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-    table: {
-      minWidth: 1100,
-    },
-    tableWrapper: {
-      overflowX: 'auto',
-    },
-    tableRow: {
-      '&:hover': {
-        cursor: 'pointer',
-      },
-    },
-    avatar: {
-      border: '1px solid',
-      borderColor: deepPurple['A200'],
-      margin: 'auto',
-    },
-    headCellIcon: {
-      marginRight: theme.spacing(1),
-    },
-    memberPermissionChip: {
-      color: grey['50'],
-      '& svg': {
-        fill: grey['50'],
-      },
-    },
-    rolesContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      '& > *': {
-        margin: theme.spacing(0.5),
-      },
-    },
-    role: {
-      color: '#FFF',
     },
   }),
 );

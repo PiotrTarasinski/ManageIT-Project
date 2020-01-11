@@ -6,7 +6,7 @@ export interface ITask {
   identifier: string;
   title: string;
   description?: string;
-  comments?: IComment[];
+  comments: IComment[];
   state: taskState;
   type: taskType;
   index: number;

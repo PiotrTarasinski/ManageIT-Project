@@ -67,12 +67,12 @@ function TeamTable(props: Props) {
   }, [order, orderBy, page, rowsPerPage, search]);
 
   const headCells: headCell[] = [
-    { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face' },
+    { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face', align: 'center' },
     { id: 'name', label: 'Name', icon: 'person' },
     { id: 'email', label: 'Email', icon: 'email' },
     { id: 'dateOfJoin', label: 'Date Of Join', icon: 'calendar_today' },
-    { id: 'role', label: 'Role', disableSorting: true, icon: 'work' },
-    { id: 'permissions', label: 'Permissions', icon: 'verified_user' },
+    { id: 'role', label: 'Role', disableSorting: true, icon: 'work', align: 'center' },
+    { id: 'permissions', label: 'Permissions', icon: 'verified_user', align: 'center' },
     { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
   ];
 
@@ -145,7 +145,7 @@ function TeamTable(props: Props) {
           />
           <TableBody>
             {props.projectMemberList &&
-              props.projectMemberList.map((member: IPerson) => {
+              props.projectMemberList.map(member => {
                 return (
                   <TableRow
                     hover
@@ -153,7 +153,7 @@ function TeamTable(props: Props) {
                     key={member.id}
                     className={classes.tableRow}
                   >
-                    <TableCell>
+                    <TableCell align="center">
                       <Avatar
                         alt={member.name}
                         src={member.avatar || defaultAvatar}
@@ -165,8 +165,21 @@ function TeamTable(props: Props) {
                     <TableCell>
                       {member.dateOfJoin ? new Date(member.dateOfJoin).toDateString() : ''}
                     </TableCell>
-                    <TableCell>{member.role || ''}</TableCell>
-                    <TableCell>{renderPermissionChip(member)}</TableCell>
+                    <TableCell align="center">
+                      <div className={classes.rolesContainer}>
+                        {(member.roles || []).map(role => {
+                          return (
+                            <Chip
+                              key={role.id}
+                              style={{ background: role.color }}
+                              className={classes.role}
+                              label={role.name}
+                            />
+                          );
+                        })}
+                      </div>
+                    </TableCell>
+                    <TableCell align="center">{renderPermissionChip(member)}</TableCell>
                     <TableCell align="center">
                       {member.id !== props.user.id && (
                         <Tooltip title="Edit member">

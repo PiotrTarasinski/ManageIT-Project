@@ -17,7 +17,7 @@ const user = {
   },
   setActiveProject: (projectId: string) => {
     return httpRequest.post('auth/set_active_project', {
-      id: projectId,
+      projectId,
     });
   },
   setActiveSprint: (sprintId: string) => {

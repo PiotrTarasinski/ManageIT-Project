@@ -27,7 +27,7 @@ import { ITask, ITaskList } from 'models/types/task';
 import SprintAssignTaskModal from 'modals/sprintAssignTaskModal/SprintAssignTaskModal';
 
 interface IDispatchProps {
-  getSprint: (id: string) => any;
+  getSprint: (sprintId: string) => any;
   moveTask: (
     taskList: ITaskList,
     sprintId: string,
@@ -191,7 +191,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
-  getSprint: (id: string) => dispatch(StoreAction.sprint.getSprint(id)),
+  getSprint: (sprintId: string) => dispatch(StoreAction.sprint.getSprint(sprintId)),
   moveTask: (
     taskList: ITaskList,
     sprintId: string,
