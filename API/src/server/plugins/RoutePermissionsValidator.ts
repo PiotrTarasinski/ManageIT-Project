@@ -46,11 +46,10 @@ class RoutePermissionsValidator implements IPlugin {
           }
         });
         if (user) {
-          const { isAdmin, isSupervisor, isModerator } = user;
           this.evaluateProjectPermissions(plugins.routePermissions.projects, {
-            isAdmin: <boolean>isAdmin,
-            isSupervisor: <boolean>isSupervisor,
-            isModerator: <boolean>isModerator
+            isAdmin: false,
+            isSupervisor: false,
+            isModerator: false
           });
           return reply.continue;
         }
