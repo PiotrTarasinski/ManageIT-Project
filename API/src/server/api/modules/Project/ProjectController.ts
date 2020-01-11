@@ -23,7 +23,7 @@ class ProjectController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const userProjects = await new ProjectMethods().getUserProjects(this.user.name, order, orderBy, page, rowsPerPage, search);
+    const userProjects = await new ProjectMethods().getUserProjects(<string>this.user.id, order, orderBy, page, rowsPerPage, search);
 
     if (!userProjects) {
       return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' })).code(500);
