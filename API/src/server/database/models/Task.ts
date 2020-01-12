@@ -20,7 +20,7 @@ export interface TaskAttributes {
   title: string;
   description?: string;
   projectId: string;
-  state: string;
+  state?: string;
 
   //
   // Here be associations!
@@ -34,63 +34,71 @@ export interface TaskAttributes {
 }
 
 export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAttributes {
-  addAssign: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserAssignAttributes>;
-  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserReviewerAttributes>;
+  addAssign: Sequelize.BelongsToManyAddAssociationMixin<
+    UserInstance,
+    UserInstance['id'],
+    TaskUserAssignAttributes
+  >;
+  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<
+    UserInstance,
+    UserInstance['id'],
+    TaskUserReviewerAttributes
+  >;
   removeAssign: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   removeReviewer: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   getLabels: Sequelize.BelongsToManyGetAssociationsMixin<LabelInstance>;
 }
 
 export const TaskFactory = (
-    sequelize: Sequelize.Sequelize,
-    DataTypes: Sequelize.DataTypes
+  sequelize: Sequelize.Sequelize,
+  DataTypes: Sequelize.DataTypes,
 ): Sequelize.Model<TaskInstance, TaskAttributes> => {
   const attributes: SequelizeAttributes<TaskAttributes> = {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: true,
     },
     projectId: {
       type: DataTypes.UUID,
       references: {
         model: 'projects',
-        key: 'id'
+        key: 'id',
       },
       field: 'project_id',
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onUpdate: 'CASCADE',
     },
     createdAt: {
       type: DataTypes.DATE,
-      field: 'created_at'
+      field: 'created_at',
     },
     updatedAt: {
       type: DataTypes.DATE,
-      field: 'updated_at'
+      field: 'updated_at',
     },
     identifier: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     type: {
-      type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
+      type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement']),
     },
     points: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
     },
     priority: {
-      type: DataTypes.ENUM(['High', 'Normal', 'Low'])
+      type: DataTypes.ENUM(['High', 'Normal', 'Low']),
     },
     state: {
       type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done', 'Awaiting']),
-      defaultValue: 'Awaiting'
+      defaultValue: 'Awaiting',
     },
     title: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     description: {
-      type: DataTypes.STRING
-    }
+      type: DataTypes.STRING,
+    },
   };
 
   const Task = sequelize.define<TaskInstance, TaskAttributes>('task', attributes);
