@@ -15,7 +15,7 @@ interface Login {
 
 const enums = {
   state: [
-    'To do', 'In progress', 'To reviev / test', 'Done'
+    'To do', 'In progress', 'To review / test', 'Done'
   ],
   type: [
     'Idea', 'Task', 'Improvement', 'Bug'
