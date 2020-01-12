@@ -4,6 +4,8 @@ import { Op } from 'sequelize';
 import sequelize = require('sequelize');
 import permissions from '../../../../../utils/permissions';
 import { UserInstance } from '../../../../database/models/User';
+import { ProjectInstance } from '../../../../database/models/Project';
+import { TaskInstance } from '../../../../database/models/Task';
 
 interface ProjectResponse {
   response: CustomResponseType;
@@ -393,13 +395,17 @@ class ProjectMethods {
   }
 
   // Get tasks assigned to project with given id
-  async getProjectTasks(id: string) {
-    return await db.Project.findByPk(id, {
+  async getProjectTasks(projectId: string) {
+    return await db.Project.find({
       include: [
         {
           model: db.Task,
           as: 'tasks',
           include: [
+            {
+              model: db.TaskSprint,
+              as: 'tasksSprints'
+            },
             {
               model: db.Label,
               as: 'labels'
@@ -418,10 +424,70 @@ class ProjectMethods {
           ]
         }
       ],
-      order: [
-        [{ model: db.Task, as: 'tasks' }, 'priority', 'ASC']
-      ]
-    });
+      where: {
+        '$tasks.tasksSprints.id$': { [Op.eq]: null },
+        id: projectId
+      }
+    })
+    .then(async (project) => {
+      if (project && project.tasks) {
+        const tasksNotDone = await db.Project.find({
+          include: [
+            {
+              model: db.Task,
+              as: 'tasks',
+              include: [
+                {
+                  model: db.TaskSprint,
+                  as: 'tasksSprints',
+                  where: {
+                    sprintId: { [Op.not]: project.activeSprintId }
+                  }
+                },
+                {
+                  model: db.Label,
+                  as: 'labels'
+                },
+                {
+                  model: db.Comment,
+                  as: 'comments',
+                  separate: true,
+                  include: [
+                    {
+                      model: db.User,
+                      as: 'user'
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          where: {
+            id: projectId
+          }
+        });
+        const tasks: TaskInstance[] = [];
+        if (tasksNotDone && tasksNotDone.tasks) {
+          tasksNotDone.tasks.forEach(task => {
+            let done: boolean = false;
+            if (task.tasksSprints) {
+              task.tasksSprints.forEach(taskSprint => {
+                if (taskSprint.state === 'Done') {
+                  done = true;
+                }
+              });
+              if (!done) {
+                tasks.push(task);
+              }
+            }
+          });
+
+        }
+        return { activeSprintId: project.activeSprintId, tasks: project.tasks.concat(tasks) };
+      }
+      return null;
+    }
+    );
   }
 
   // Returns an array of UserRoles

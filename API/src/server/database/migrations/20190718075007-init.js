@@ -172,17 +172,6 @@ module.exports = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
-      sprintId: {
-        type: DataTypes.UUID,
-        references: {
-          model: 'sprints',
-          key: 'id'
-        },
-        field: 'sprint_id',
-        allowNull: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      },
       projectId: {
         type: DataTypes.UUID,
         references: {

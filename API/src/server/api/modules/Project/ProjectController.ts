@@ -7,6 +7,7 @@ import ProjectTasksFormatter from '../../shared/formatter/ProjectTasksFormatter'
 import bulkFormat from '../../../../utils/bulkFormat';
 import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
 import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, taskCreate } from '../../validation/Validate';
+import TaskFormatter from '../../shared/formatter/TaskFormatter';
 
 class ProjectController extends Controller {
   async getUserProjects() {
@@ -202,7 +203,7 @@ class ProjectController extends Controller {
     const response = await new ProjectMethods().getProjectTasks(projectId);
 
     if (response) {
-      return this.res(await new ProjectTasksFormatter().format(response));
+      return this.res({ activeSprintId: response.activeSprintId, taskList: await bulkFormat(new TaskFormatter(), response.tasks) });
     }
 
     return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);

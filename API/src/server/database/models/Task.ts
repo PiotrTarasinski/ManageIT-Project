@@ -29,7 +29,7 @@ export interface TaskAttributes {
   sprints?: SprintInstance[];
   project?: ProjectInstance;
   comments?: CommentInstance[];
-  tasksSprints?: TaskSprintInstance;
+  tasksSprints?: TaskSprintInstance[];
 }
 
 export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAttributes {
@@ -94,7 +94,7 @@ export const TaskFactory = (
     Task.hasMany(models.Comment, { as: 'comments', foreignKey: 'taskId' });
     Task.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
     Task.belongsToMany(models.Label, { through: 'taskLabel', as: 'labels', foreignKey: 'task_id' });
-    Task.hasMany(models.TaskSprint, { as: 'taskSprint', foreignKey: 'taskId' });
+    Task.hasMany(models.TaskSprint, { as: 'tasksSprints', foreignKey: 'taskId' });
   };
 
   return Task;
