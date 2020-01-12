@@ -25,6 +25,7 @@ export type TaskSprintResponseFormat = {
 class TaskSprintFormatter implements ResponseFormatter<TaskSprintInstance, TaskSprintResponseFormat> {
   async format(taskSprint: TaskSprintInstance) {
     const task = <TaskInstance> await taskSprint.getTask();
+    console.log(task);
     const labels = await task.getLabels();
     return {
       id: <string>task.id,

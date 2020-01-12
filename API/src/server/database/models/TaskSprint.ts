@@ -60,7 +60,7 @@ export const TaskSprintFactory = (
         key: 'id'
       },
       field: 'task_id',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     },
     createdAt: {
