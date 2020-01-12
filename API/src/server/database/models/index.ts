@@ -14,6 +14,7 @@ import { TaskLabelInstance, TaskLabelAttributes, TaskLabelFactory } from './Task
 import { BacklogInstance, BacklogAttributes, BacklogFactory } from './Backlog';
 import { RoleLabelInstance, RoleLabelAttributes, RoleLabelFactory } from './RoleLabel';
 import { UserProjectLabelInstance, UserProjectLabelAttributes, UserProjectLabelFactory } from './UserProjectLabel';
+import { TaskSprintInstance, TaskSprintAttributes, TaskSprintFactory } from './TaskSprint';
 
 
 export type DbModels = {
@@ -30,6 +31,7 @@ export type DbModels = {
   Backlog: Sequelize.Model<BacklogInstance, BacklogAttributes>;
   RoleLabel: Sequelize.Model<RoleLabelInstance, RoleLabelAttributes>;
   UserProjectLabel: Sequelize.Model<UserProjectLabelInstance, UserProjectLabelAttributes>;
+  TaskSprint: Sequelize.Model<TaskSprintInstance, TaskSprintAttributes>;
 };
 
 export interface DbInterface extends DbModels {
@@ -46,7 +48,7 @@ export const sequelize = new Sequelize(
     port: <number>env.DB.PORT,
     dialect: env.DB.DIALECT,
     operatorsAliases: false,
-    logging: (env.NODE_ENV === 'development' && !env.DB.FORCE_SUPRESS_LOGS) || env.NODE_ENV === 'production' ? (sql: any) => logger.info(sql) : false,
+    logging: (env.NODE_ENV === 'development' && env.DB.FORCE_SUPRESS_LOGS) || env.NODE_ENV === 'production' ? (sql: any) => logger.info(sql) : false,
     pool: {
       max: 5,
       min: 0,
@@ -72,7 +74,8 @@ export const createModels = (): DbInterface => {
     TaskLabel: TaskLabelFactory(sequelize, Sequelize),
     Backlog: BacklogFactory(sequelize, Sequelize),
     RoleLabel: RoleLabelFactory(sequelize, Sequelize),
-    UserProjectLabel: UserProjectLabelFactory(sequelize, Sequelize)
+    UserProjectLabel: UserProjectLabelFactory(sequelize, Sequelize),
+    TaskSprint: TaskSprintFactory(sequelize, Sequelize)
   };
 
   Object.values(db).forEach((model) => {

@@ -401,27 +401,8 @@ class ProjectMethods {
           as: 'tasks',
           include: [
             {
-              model: db.User,
-              as: 'assign'
-            },
-            {
-              model: db.User,
-              as: 'reviewers'
-            },
-            {
               model: db.Label,
               as: 'labels'
-            },
-            {
-              model: db.Comment,
-              as: 'comments',
-              separate: true,
-              include: [
-                {
-                  model: db.User,
-                  as: 'user'
-                }
-              ]
             }
           ]
         }
@@ -437,7 +418,6 @@ class ProjectMethods {
   async createTask(
     points: string,
     priority: string,
-    state: string,
     type: string,
     title: string,
     description: string,
@@ -453,7 +433,6 @@ class ProjectMethods {
     return await db.Task.create({
       points: Number.parseInt(points, 10),
       priority,
-      state,
       type,
       identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
       title,
@@ -466,8 +445,7 @@ class ProjectMethods {
         content: `${userName} created a task: ${task.title}.`,
         userId: loggedUserId
       })
-      .then(() => task)
-      .catch(() => undefined);
+      .then(() => task);
     });
   }
 

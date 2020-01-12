@@ -7,32 +7,29 @@ import { TaskUserReviewerAttributes } from './TaskUserReviewer';
 import { SprintInstance } from './Sprint';
 import { ProjectInstance } from './Project';
 import { CommentInstance } from './Comment';
+import { TaskSprintInstance } from './TaskSprint';
 
 export interface TaskAttributes {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   identifier: string;
-  index?: number;
   points: number;
   priority: string;
-  state?: string;
   type: string;
   title: string;
   description?: string;
-  sprintId?: string;
   projectId: string;
 
   //
   // Here be associations!
   //
 
-  assign?: UserInstance[];
-  reviewers?: UserInstance[];
   labels?: LabelInstance[];
-  sprint?: SprintInstance;
+  sprints?: SprintInstance[];
   project?: ProjectInstance;
   comments?: CommentInstance[];
+  tasksSprints?: TaskSprintInstance;
 }
 
 export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAttributes {
@@ -53,17 +50,6 @@ export const TaskFactory = (
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    sprintId: {
-      type: DataTypes.UUID,
-      references: {
-        model: 'sprints',
-        key: 'id'
-      },
-      field: 'sprint_id',
-      allowNull: true,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    },
     projectId: {
       type: DataTypes.UUID,
       references: {
@@ -71,7 +57,6 @@ export const TaskFactory = (
         key: 'id'
       },
       field: 'project_id',
-      allowNull: false,
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     },
@@ -86,16 +71,8 @@ export const TaskFactory = (
     identifier: {
       type: DataTypes.STRING
     },
-    state: {
-      type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done']),
-      allowNull: true
-    },
     type: {
       type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
-    },
-    index: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     },
     points: {
       type: DataTypes.INTEGER
@@ -114,13 +91,10 @@ export const TaskFactory = (
   const Task = sequelize.define<TaskInstance, TaskAttributes>('task', attributes);
 
   Task.associate = models => {
-    Task.belongsTo(models.Sprint, { as: 'sprint', foreignKey: 'sprintId' });
     Task.hasMany(models.Comment, { as: 'comments', foreignKey: 'taskId' });
     Task.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
-    Task.belongsToMany(models.User, { through: 'taskUserAssign', as: 'assign', foreignKey: 'task_id' });
-    Task.belongsToMany(models.User, { through: 'taskUserReviewer', as: 'reviewers', foreignKey: 'task_id' });
     Task.belongsToMany(models.Label, { through: 'taskLabel', as: 'labels', foreignKey: 'task_id' });
-
+    Task.hasMany(models.TaskSprint, { as: 'taskSprint', foreignKey: 'taskId' });
   };
 
   return Task;

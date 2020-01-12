@@ -28,6 +28,13 @@ export const Validator = {
     return null;
   },
 
+  isBoolean(toTest: any, key: string): { key: string; message: string } | null {
+    if (typeof toTest !== 'boolean') {
+      return this.errorMessage(key, `${key} must be a boolean.`);
+    }
+    return null;
+  },
+
   includes(toTest: string, key: string, array: string[]): { key: string; message: string } | null {
     if (!array.includes(toTest)) {
       return this.errorMessage(key, `${key} must be in enum.`);

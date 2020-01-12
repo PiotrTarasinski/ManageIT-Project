@@ -232,15 +232,9 @@ export const sprintChangeTaskState = (sprintId: string, taskId: string, indexFro
 // Task
 //
 
-export const taskAddUser = (taskId: string, userId: string, type: string) => {
-  const errorsArray = [
-    validators.isString(taskId, 'taskId'),
-    validators.uuid(taskId, 'taskId'),
-    validators.isString(userId, 'userId'),
-    validators.uuid(userId, 'userId'),
-    validators.includes(type, 'type', enums.userType),
-    validators.isString(type, 'type')
-  ];
+export const taskAddUser = (taskId: string, sprintId: string, userId: string, type: string, remove: boolean) => {
+  const errorsArray = uuidPolicy(taskId, 'taskId')
+  .concat(uuidPolicy(sprintId, 'sprintId'), uuidPolicy(userId, 'userId'), enumPolicy(type, 'type', enums.userType), [validators.isBoolean(remove, 'remove')]);
 
   return makeResponse(errorsArray);
 };
@@ -248,7 +242,6 @@ export const taskAddUser = (taskId: string, userId: string, type: string) => {
 export const taskCreate = (
   points: number,
   priority: string,
-  state: string,
   type: string,
   title: string,
   description: string,
@@ -258,7 +251,6 @@ export const taskCreate = (
 
   const errorsArray = numberPolicy(points, 'points')
   .concat(enumPolicy(priority, 'priority', enums.priority),
-  enumPolicy(state, 'state', enums.state),
   enumPolicy(type, 'type', enums.type),
   stringPolicy(title, 'title'),
   uuidPolicy(projectId, 'projectId'),

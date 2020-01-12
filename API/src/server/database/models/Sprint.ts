@@ -3,6 +3,7 @@ import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
 import { TaskAttributes, TaskInstance } from './Task';
 import { ProjectInstance } from './Project';
+import { TaskSprintInstance } from './TaskSprint';
 
 export interface SprintAttributes {
   id?: string;
@@ -17,7 +18,7 @@ export interface SprintAttributes {
   // Here be associations!
   //
 
-  tasks?: TaskInstance[];
+  taskList?: TaskSprintInstance[];
   project?: ProjectInstance;
   users?: UserInstance[];
 }
@@ -63,7 +64,7 @@ export const SprintFactory = (
   const Sprint = sequelize.define<SprintInstance, SprintAttributes>('sprint', attributes);
 
   Sprint.associate = models => {
-    Sprint.hasMany(models.Task, { as: 'tasks', foreignKey: 'sprintId' });
+    Sprint.hasMany(models.TaskSprint, { as: 'taskList', foreignKey: 'sprintId' });
     Sprint.hasOne(models.Project, { as: 'project', foreignKey: 'activeSprintId' });
     Sprint.hasMany(models.User, { as: 'users', foreignKey: 'activeSprintId' });
   };

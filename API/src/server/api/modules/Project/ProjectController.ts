@@ -215,7 +215,7 @@ class ProjectController extends Controller {
 
     const { points, priority, state, type, title, description, projectId, projectName } = this.req.payload;
 
-    const validationResponse = taskCreate(points, priority, state, type, title, description, projectId, projectName);
+    const validationResponse = taskCreate(points, priority, type, title, description, projectId, projectName);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -224,7 +224,6 @@ class ProjectController extends Controller {
     const response = await new ProjectMethods().createTask(
       points,
       priority,
-      state,
       type,
       title,
       description,

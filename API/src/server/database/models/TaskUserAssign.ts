@@ -19,12 +19,12 @@ export const TaskUserAssignFactory = (
       type: DataTypes.UUID,
       primaryKey: true,
       references: {
-        model: 'tasks',
+        model: 'tasksSprints',
         key: 'id'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
-      field: 'task_id'
+      field: 'task_sprint_id'
     },
     userId: {
       type: DataTypes.UUID,

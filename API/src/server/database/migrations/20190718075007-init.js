@@ -205,16 +205,8 @@ module.exports = {
       identifier: {
         type: DataTypes.STRING
       },
-      state: {
-        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done']),
-        allowNull: true
-      },
       type: {
         type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
-      },
-      index: {
-        type: DataTypes.INTEGER,
-        allowNull: true
       },
       points: {
         type: DataTypes.INTEGER
@@ -395,17 +387,60 @@ module.exports = {
       }
     });
 
+    await queryInterface.createTable('tasksSprints', {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      sprintId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'sprints',
+          key: 'id'
+        },
+        field: 'sprint_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      taskId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'tasks',
+          key: 'id'
+        },
+        field: 'task_id',
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: 'created_at'
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: 'updated_at'
+      },
+      index: {
+        type: DataTypes.INTEGER
+      },
+      state: {
+        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done']),
+        allowNull: true
+      }
+    })
+
     await queryInterface.createTable('taskUserAssigns', {
       taskId: {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
-          model: 'tasks',
+          model: 'tasksSprints',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        field: 'task_id'
+        field: 'task_sprint_id'
       },
       userId: {
         type: DataTypes.UUID,
@@ -465,12 +500,12 @@ module.exports = {
         type: DataTypes.UUID,
         primaryKey: true,
         references: {
-          model: 'tasks',
+          model: 'tasksSprints',
           key: 'id'
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        field: 'task_id'
+        field: 'task_sprint_id'
       },
       userId: {
         type: DataTypes.UUID,

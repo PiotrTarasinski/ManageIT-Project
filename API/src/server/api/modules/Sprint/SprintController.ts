@@ -49,26 +49,22 @@ class SprintController extends Controller {
     return this.res(response).code(response.statusCode);
   }
 
-  async deleteTaskFromSpint() {
+  async removeTaskFromSprint() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { taskId } = this.req.payload;
+    const { taskId, sprintId } = this.req.payload;
 
-    const validationResponse = uuid(taskId, 'taskId');
+    const validationResponse = twoUUID(taskId, sprintId, 'taskId', 'sprintId');
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().deleteTaskFromSprint(taskId);
+    const response = await new SprintMethods().removeTaskFromSprint(taskId, sprintId);
 
-    if (response) {
-      return this.res(CustomResponse(200, 'Successfully deleted sprint task.'));
-    }
-
-    return this.res(CustomResponse(500, 'Couldn\'t delete sprint task.', { formError: 'Database error.' })).code(500);
+    return this.res(response).code(response.statusCode);
   }
 
   async addTaskUser() {
@@ -76,33 +72,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { taskId, userId, type } = this.req.payload;
+    const { taskId, sprintId, userId, type, remove } = this.req.payload;
 
-    const validationResponse = taskAddUser(taskId, userId, type);
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().addUserToTask(taskId, userId, type);
-
-    return this.res(response).code(response.statusCode);
-  }
-
-  async removeTaskUser() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    const { taskId, userId, type } = this.req.payload;
-
-    const validationResponse = taskAddUser(taskId, userId, type);
+    const validationResponse = taskAddUser(taskId, sprintId, userId, type, remove);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().removeUserFromTask(taskId, userId, type);
+    const response = await new SprintMethods().addUserToTask(taskId, sprintId, userId, type, remove);
 
     return this.res(response).code(response.statusCode);
   }
@@ -122,7 +100,11 @@ class SprintController extends Controller {
 
     const response = await new SprintMethods().updateTask(taskId, points, priority, type, title, description);
 
-    return this.res(response).code(response.statusCode);
+    if (response) {
+      return this.res(response);
+    }
+
+    return this.res(CustomResponse(500, 'Couldn\'t update task.', { formError: 'Database error.' })).code(500);
   }
 
   async addTaskToSprint() {
@@ -130,7 +112,7 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { taskId, sprintId } = this.req.payload;
+    const { taskId, sprintId, state, index } = this.req.payload;
 
     const validationResponse = twoUUID(taskId, sprintId, 'taskId', 'sprintId');
 
@@ -138,25 +120,7 @@ class SprintController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().addTaskToSprint(taskId, sprintId);
-
-    return this.res(response).code(response.statusCode);
-  }
-
-  async removeTaskFromSprint() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    const { taskId } = this.req.payload;
-
-    const validationResponse = uuid(taskId, 'taskId');
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().removeTaskFromSprint(taskId);
+    const response = await new SprintMethods().addTaskToSprint(taskId, sprintId, state, index);
 
     return this.res(response).code(response.statusCode);
   }

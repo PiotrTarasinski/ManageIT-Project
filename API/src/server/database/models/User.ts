@@ -105,8 +105,8 @@ export const UserFactory =
       User.belongsTo(models.Sprint, { as: 'activeSprint', foreignKey: 'activeSprintId' });
       User.hasMany(models.Project, { as: 'leadIn', foreignKey: 'leadId', constraints: false });
       User.belongsToMany(models.Project, { through: 'usersProjects', as: 'projectsIn', foreignKey: 'userId' });
-      User.belongsToMany(models.Task, { through: 'taskUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
-      User.belongsToMany(models.Task, { through: 'taskUserAssign', as: 'assignIn', foreignKey: 'user_id' });
+      User.belongsToMany(models.TaskSprint, { through: 'taskUserReviewer', as: 'reviewerIn', foreignKey: 'user_id' });
+      User.belongsToMany(models.TaskSprint, { through: 'taskUserAssign', as: 'assignIn', foreignKey: 'user_id' });
       User.hasMany(models.UserProject, { as: 'permissions', foreignKey: 'userId' });
       User.hasMany(models.UserProjectLabel, { foreignKey: 'userId' });
       User.hasMany(models.Backlog, { as: 'userLogs', foreignKey: 'userId' });
