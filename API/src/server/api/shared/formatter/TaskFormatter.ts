@@ -1,12 +1,8 @@
 import ResponseFormatter from '../template/ResponseFormatter';
 import { TaskInstance } from '../../../database/models/Task';
-import UserFormatter, { UserResponseFormat } from './UserFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
-import { UserInstance } from '../../../database/models/User';
 import LabelFormatter, { LabelResponseFormat } from './LabelFormatter';
 import CommentFormatter, { CommentResponseFormat } from './CommentsFormatter';
-import { CommentInstance } from '../../../database/models/Comment';
-import bulkFormatHideId from '../../../../utils/bulkFormatHideId';
 
 export type TaskResponseFormat = {
   id: string;
@@ -16,6 +12,7 @@ export type TaskResponseFormat = {
   priority: string;
   title: string;
   description?: string;
+  state?: string;
   labels?: LabelResponseFormat[];
   comments?: CommentResponseFormat[];
 };
@@ -31,6 +28,7 @@ class TaskFormatter implements ResponseFormatter<TaskInstance, TaskResponseForma
         points: task.points,
         priority: task.priority,
         title: task.title,
+        state: task.state,
         description: task.description,
         labels: await bulkFormat(new LabelFormatter(), labels),
         comments: await bulkFormat(new CommentFormatter(), task.comments)
@@ -43,6 +41,7 @@ class TaskFormatter implements ResponseFormatter<TaskInstance, TaskResponseForma
       points: task.points,
       priority: task.priority,
       title: task.title,
+      state: task.state,
       description: task.description,
       labels: await bulkFormat(new LabelFormatter(), labels)
     };

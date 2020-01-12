@@ -203,6 +203,10 @@ module.exports = {
       priority: {
         type: DataTypes.ENUM(['High', 'Normal', 'Low'])
       },
+      state: {
+        type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done', 'Awaiting']),
+        defaultValue: 'Awaiting'
+      },
       title: {
         type: DataTypes.STRING
       },

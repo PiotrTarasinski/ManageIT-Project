@@ -20,6 +20,7 @@ export interface TaskAttributes {
   title: string;
   description?: string;
   projectId: string;
+  state: string;
 
   //
   // Here be associations!
@@ -79,6 +80,10 @@ export const TaskFactory = (
     },
     priority: {
       type: DataTypes.ENUM(['High', 'Normal', 'Low'])
+    },
+    state: {
+      type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done', 'Awaiting']),
+      defaultValue: 'Awaiting'
     },
     title: {
       type: DataTypes.STRING
