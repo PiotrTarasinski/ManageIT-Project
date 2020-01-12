@@ -17,11 +17,25 @@ export type TaskResponseFormat = {
   title: string;
   description?: string;
   labels?: LabelResponseFormat[];
+  comments?: CommentResponseFormat[];
 };
 
 class TaskFormatter implements ResponseFormatter<TaskInstance, TaskResponseFormat> {
   async format(task: TaskInstance) {
     const labels = await task.getLabels();
+    if (task.comments) {
+      return {
+        id: <string>task.id,
+        identifier: task.identifier,
+        type: task.type,
+        points: task.points,
+        priority: task.priority,
+        title: task.title,
+        description: task.description,
+        labels: await bulkFormat(new LabelFormatter(), labels),
+        comments: await bulkFormat(new CommentFormatter(), task.comments)
+      };
+    }
     return {
       id: <string>task.id,
       identifier: task.identifier,

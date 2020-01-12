@@ -14,7 +14,20 @@ class SprintMethods {
           include: [
             {
               model: db.Task,
-              as: 'task'
+              as: 'task',
+              include: [
+                {
+                  model: db.Comment,
+                  separate: true,
+                  as: 'comments',
+                  include: [
+                    {
+                      model: db.User,
+                      as: 'user'
+                    }
+                  ]
+                }
+              ]
             },
             {
               model: db.User,
@@ -232,6 +245,10 @@ class SprintMethods {
     }
 
     return CustomResponse(404, 'Sprint doesn\'t exist.', { formError: 'Sprint not found.' });
+  }
+
+  async createSprint(projectId: string) {
+
   }
 
 
