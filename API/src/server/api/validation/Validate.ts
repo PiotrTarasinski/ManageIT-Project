@@ -196,7 +196,7 @@ export const userGetProjects = (order: string, orderBy: string, page: number, ro
 // Sprint
 //
 
-export const sprintAddComment = (taskId: string, content: string) => {
+export const sprintCreateComment = (taskId: string, content: string) => {
   const errorsArray = [
     validators.isString(content, 'content')
   ]

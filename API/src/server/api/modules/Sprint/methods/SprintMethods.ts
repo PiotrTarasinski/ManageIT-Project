@@ -195,29 +195,6 @@ class SprintMethods {
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 
-  // Update existing task
-  async updateTask(
-    taskId: string,
-    points: string,
-    priority: string,
-    type: string,
-    title: string,
-    description: string) {
-    const task = await db.Task.findByPk(taskId);
-
-    if (task) {
-      return await task.update({
-        points,
-        priority,
-        type,
-        title,
-        description
-      });
-    }
-
-    return null;
-  }
-
   async addTaskToSprint(taskId: string, sprintId: string, state: string, index: number) {
     const task = await db.Task.findByPk(taskId);
     if (task) {
@@ -257,57 +234,6 @@ class SprintMethods {
     return CustomResponse(404, 'Sprint doesn\'t exist.', { formError: 'Sprint not found.' });
   }
 
-  async addComment(id: string, userId: string, content: string) {
-    const comment = await db.Comment.create({
-      content,
-      userId,
-      taskId: id
-    });
-    if (comment) {
-      return await db.Comment.findByPk(comment.id, {
-        include: [
-          {
-            model: db.User,
-            as: 'user'
-          }
-        ]
-      });
-    }
-    return null;
-  }
-
-  async deleteComment(id: string) {
-    const comment = await db.Comment.findByPk(id);
-
-    console.log(comment);
-
-    if (comment) {
-      return await comment.destroy()
-      .then(() => CustomResponse(200, 'Successfully deleted comment.'))
-      .catch(() => CustomResponse(500, 'Couldn\'t delete comment', { formError: 'Database error.' }));
-    }
-
-    return CustomResponse(404, 'No such comment.', { formError: 'Comment not found.' });
-  }
-
-  async updateComment(id: string, content: string) {
-    const comment = await db.Comment.findByPk(id, {
-      include: [
-        {
-          model: db.User,
-          as: 'user'
-        }
-      ]
-    });
-
-    if (comment) {
-      return await comment.update({
-        content
-      });
-    }
-
-    return null;
-  }
 
 }
 

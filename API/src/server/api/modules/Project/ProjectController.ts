@@ -208,38 +208,6 @@ class ProjectController extends Controller {
     return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
   }
 
-  async createTask() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    const { points, priority, state, type, title, description, projectId, projectName } = this.req.payload;
-
-    const validationResponse = taskCreate(points, priority, type, title, description, projectId, projectName);
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new ProjectMethods().createTask(
-      points,
-      priority,
-      type,
-      title,
-      description,
-      projectId,
-      projectName,
-      this.user.name,
-      <string>this.user.id
-      );
-
-    if (response) {
-      return this.res(CustomResponse(200, 'Project task created successfully.'));
-    }
-
-    return this.res(CustomResponse(500, 'Couldn\'t create sprint task.', { formError: 'Database error.' })).code(500);
-  }
-
   async getProjectRoles() {
 
     if (!this.req.payload) {

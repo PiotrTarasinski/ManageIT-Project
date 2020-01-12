@@ -2,7 +2,7 @@ import Controller from '../../shared/controller/Controller';
 import SprintMethods from './methods/SprintMethods';
 import CustomResponse from '../../error/CustomError';
 import SprintFormatter from '../../shared/formatter/SprintFormatter';
-import { uuid, twoUUID, sprintChangeTaskState, taskAddUser, taskUpdate, sprintAddComment, sprintUpdateComment } from '../../validation/Validate';
+import { uuid, twoUUID, sprintChangeTaskState, taskAddUser, sprintUpdateComment } from '../../validation/Validate';
 import CommentFormatter from '../../shared/formatter/CommentsFormatter';
 
 class SprintController extends Controller {
@@ -85,27 +85,6 @@ class SprintController extends Controller {
     return this.res(response).code(response.statusCode);
   }
 
-  async updateTask() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    const { taskId, points, priority, type, title, description } = this.req.payload;
-
-    const validationResponse = taskUpdate(taskId, points, priority, type, title, description);
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().updateTask(taskId, points, priority, type, title, description);
-
-    if (response) {
-      return this.res(response);
-    }
-
-    return this.res(CustomResponse(500, 'Couldn\'t update task.', { formError: 'Database error.' })).code(500);
-  }
 
   async addTaskToSprint() {
     if (!this.req.payload) {
@@ -125,78 +104,8 @@ class SprintController extends Controller {
     return this.res(response).code(response.statusCode);
   }
 
-  async addComment() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
-    }
 
-    const { taskId, content } = this.req.payload;
-
-    const validationResponse = sprintAddComment(taskId, content);
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().addComment(taskId, this.user.id, content);
-
-    if (response) {
-      return this.res(await new CommentFormatter().format(response));
-    }
-    return this.res(CustomResponse(500, 'Couldn\'t add comment.', { formError: 'Database error.' })).code(500);
-  }
-
-  async deleteComment() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
-    }
-
-    const { commentId } = this.req.payload;
-
-    const validationResponse = uuid(commentId, 'commentId');
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().deleteComment(commentId);
-
-    return this.res(response).code(response.statusCode);
-  }
-
-  async updateComment() {
-    if (!this.req.payload) {
-      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
-    }
-
-    const { commentId, content } = this.req.payload;
-
-    const validationResponse = sprintUpdateComment(commentId, content);
-
-    if (validationResponse.errors) {
-      return this.res(validationResponse).code(validationResponse.statusCode);
-    }
-
-    const response = await new SprintMethods().updateComment(commentId, content);
-
-    if (response) {
-      return this.res(await new CommentFormatter().format(response));
-    }
-
-    return this.res(CustomResponse(500, 'Couldn\'t update comment.', { formError: 'Database error.' })).code(500);
-  }
 }
 
 export default SprintController;

@@ -413,42 +413,6 @@ class ProjectMethods {
     });
   }
 
-  // Create task for given project
-  // Backlogs to project
-  async createTask(
-    points: string,
-    priority: string,
-    type: string,
-    title: string,
-    description: string,
-    projectId: string,
-    projectName: string,
-    userName: string,
-    loggedUserId: string) {
-    const count = await db.Task.count({
-      where: {
-        projectId
-      }
-    });
-    return await db.Task.create({
-      points: Number.parseInt(points, 10),
-      priority,
-      type,
-      identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
-      title,
-      description,
-      projectId
-    })
-    .then(async (task) => {
-      return await db.Backlog.create({
-        projectId,
-        content: `${userName} created a task: ${task.title}.`,
-        userId: loggedUserId
-      })
-      .then(() => task);
-    });
-  }
-
   // Returns an array of UserRoles
   async getProjectRoles(projectId: string) {
     return await db.RoleLabel.findAll({

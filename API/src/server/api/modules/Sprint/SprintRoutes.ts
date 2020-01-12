@@ -36,13 +36,6 @@ class SprintRoutes extends MainRoutes {
         }
       },
       {
-        method: 'PUT',
-        path: '/update_task',
-        options: {
-          handler: (req, res) => new SprintController(req, res).updateTask()
-        }
-      },
-      {
         method: 'POST',
         path: '/add_task',
         options: {
@@ -54,27 +47,6 @@ class SprintRoutes extends MainRoutes {
         path: '/remove_task',
         options: {
           handler: (req, res) => new SprintController(req, res).removeTaskFromSprint()
-        }
-      },
-      {
-        method: 'POST',
-        path: '/add_comment',
-        options: {
-          handler: (req, res) => new SprintController(req, res).addComment()
-        }
-      },
-      {
-        method: 'DELETE',
-        path: '/delete_comment',
-        options: {
-          handler: (req, res) => new SprintController(req, res).deleteComment()
-        }
-      },
-      {
-        method: 'PUT',
-        path: '/update_comment',
-        options: {
-          handler: (req, res) => new SprintController(req, res).updateComment()
         }
       }
     ];

@@ -4,6 +4,7 @@ import FileRoutes from '../../../modules/File/FileRoutes';
 import ProjectRoutes from '../../../modules/Project/ProjectRoutes';
 import SprintRoutes from '../../../modules/Sprint/SprintRoutes';
 import BacklogRoutes from '../../../modules/Backlog/BacklogRoutes';
+import TaskRoutes from '../../../modules/Task/TaskRoutes';
 
 export default [
   AuthRoutes,
@@ -11,5 +12,6 @@ export default [
   FileRoutes,
   ProjectRoutes,
   SprintRoutes,
-  BacklogRoutes
+  BacklogRoutes,
+  TaskRoutes
 ];
