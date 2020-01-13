@@ -20,7 +20,7 @@ export interface TaskAttributes {
   title: string;
   description?: string;
   projectId: string;
-  state: string;
+  state?: 'To do' | 'In progress' | 'To review / test' | 'Done' | 'Awaiting';
 
   //
   // Here be associations!

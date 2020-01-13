@@ -13,6 +13,11 @@ interface Login {
   password: string;
 }
 
+interface Policy {
+  (toTest: string, key: string): ({ key: string, message: string } | null)[];
+  (type: string, key: string, enumArray: string[]): ({ key: string, message: string } | null)[];
+}
+
 const enums = {
   state: [
     'To do', 'In progress', 'To review / test', 'Done'
@@ -94,6 +99,32 @@ const numberPolicy = (num: number, key: string) => [
   validators.isNumber(num, key),
   validators.required(num, key)
 ];
+
+const validateArray = (array: any[], key: string, policy: Policy): ({ key: string, message: string } | null)[] => {
+  console.log(typeof array);
+  return array.map(item => {
+    console.log('err:', policy(item, key).reduce((previousValue, currentValue) => {
+      console.log(currentValue);
+      if (currentValue && !previousValue) {
+        return currentValue;
+      }
+      if (!currentValue && previousValue) {
+        return previousValue;
+      }
+      return previousValue;
+    }, null));
+    return policy(item, key).reduce((previousValue, currentValue) => {
+      console.log(currentValue);
+      if (currentValue && !previousValue) {
+        return currentValue;
+      }
+      if (!currentValue && previousValue) {
+        return previousValue;
+      }
+      return previousValue;
+    }, null);
+  });
+};
 
 //
 // Auth
@@ -210,6 +241,18 @@ export const sprintUpdateComment = (commentId: string, content: string) => {
     validators.isString(content, 'content')
   ]
   .concat(uuidPolicy(commentId, 'commentId'));
+
+  return makeResponse(errorsArray);
+};
+
+export const sprintCreate = (projectId: string, description: string, name: string, start: string, end: string, tasks: string[]) => {
+  const errorsArray = uuidPolicy(projectId, 'projectId')
+  .concat(
+    stringPolicy(description, 'description'),
+    stringPolicy(name, 'name'),
+    [validators.isDateString(start, 'start'), validators.isDateString(end, 'end')],
+    validateArray(tasks, 'tasks', uuidPolicy)
+  );
 
   return makeResponse(errorsArray);
 };

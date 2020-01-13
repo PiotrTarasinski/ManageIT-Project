@@ -59,6 +59,9 @@ module.exports = {
       },
       end: {
         type: DataTypes.DATE
+      },
+      state: {
+        type: DataTypes.ENUM(['Open', 'Closed'])
       }
     });
 
