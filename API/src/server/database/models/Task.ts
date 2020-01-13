@@ -34,16 +34,24 @@ export interface TaskAttributes {
 }
 
 export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAttributes {
-  addAssign: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserAssignAttributes>;
-  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<UserInstance, UserInstance['id'], TaskUserReviewerAttributes>;
+  addAssign: Sequelize.BelongsToManyAddAssociationMixin<
+    UserInstance,
+    UserInstance['id'],
+    TaskUserAssignAttributes
+  >;
+  addReviewer: Sequelize.BelongsToManyAddAssociationMixin<
+    UserInstance,
+    UserInstance['id'],
+    TaskUserReviewerAttributes
+  >;
   removeAssign: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   removeReviewer: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   getLabels: Sequelize.BelongsToManyGetAssociationsMixin<LabelInstance>;
 }
 
 export const TaskFactory = (
-    sequelize: Sequelize.Sequelize,
-    DataTypes: Sequelize.DataTypes
+  sequelize: Sequelize.Sequelize,
+  DataTypes: Sequelize.DataTypes
 ): Sequelize.Model<TaskInstance, TaskAttributes> => {
   const attributes: SequelizeAttributes<TaskAttributes> = {
     id: {
