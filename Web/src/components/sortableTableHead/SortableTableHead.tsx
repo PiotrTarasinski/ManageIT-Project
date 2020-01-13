@@ -1,9 +1,5 @@
 import React from 'react';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { Icon } from '@material-ui/core';
+import { Icon, Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from '@material-ui/core';
 import useStyles from './sortableTableHead.style';
 import { headCell } from 'models/types/table';
 import { orderTypes } from 'models/enums/orderTypes';
@@ -13,22 +9,25 @@ interface SortableTableHeadProps {
   order: orderTypes;
   orderBy: string;
   headCells: headCell[];
+  withCheckBox?: boolean;
+  isIndeterminate?: boolean;
+  isChecked?: boolean;
+  onSelectAllClick?: any;
 }
-
-// const headCells: headCell[] = [
-//   { id: 'avatar', label: 'Avatar', disableSorting: true, icon: 'face' },
-//   { id: 'name', label: 'name', icon: 'person' },
-//   { id: 'email', label: 'email', icon: 'email' },
-//   { id: 'dateOfJoin', label: 'Date Of Join', icon: 'calendar_today' },
-//   { id: 'role', label: 'Role', icon: 'work' },
-//   { id: 'permissions', label: 'Permissions', icon: 'verified_user' },
-//   { id: 'actions', label: 'Actions', disableSorting: true, icon: 'games', align: 'center' },
-// ];
 
 function SortableTableHead(props: SortableTableHeadProps) {
   const classes = useStyles();
 
-  const { order, orderBy, onRequestSort, headCells } = props;
+  const {
+    order,
+    orderBy,
+    onRequestSort,
+    headCells,
+    withCheckBox,
+    isIndeterminate,
+    isChecked,
+    onSelectAllClick,
+  } = props;
   const createSortHandler = (property: string) => () => {
     onRequestSort(property);
   };
@@ -36,6 +35,15 @@ function SortableTableHead(props: SortableTableHeadProps) {
   return (
     <TableHead>
       <TableRow>
+        {withCheckBox && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={isIndeterminate}
+              checked={isChecked}
+              onChange={onSelectAllClick}
+            />
+          </TableCell>
+        )}
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}

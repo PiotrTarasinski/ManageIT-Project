@@ -1,6 +1,6 @@
 import { INotification } from './notification';
 import { ProjectsListData } from './project';
-import { ITaskList } from './task';
+import { ITaskList, ITask } from './task';
 import { IPerson } from './person';
 
 export interface Action {
@@ -35,6 +35,7 @@ export interface ProjectState {
   readonly projectListCount: number;
   readonly projectMemberList: IPerson[];
   readonly projectMemberCount: number;
+  readonly projectTaskList: ITask[];
 }
 
 export interface SprintState {

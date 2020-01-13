@@ -6,11 +6,15 @@ const initialState: ProjectState = {
   projectListCount: 0,
   projectMemberList: [],
   projectMemberCount: 0,
+  projectTaskList: [],
 };
 
 export default (state = initialState, action: Action) => {
   switch (action.type) {
     case projectActionTypes.SET_PROJECT_LIST:
+      return { ...state, ...action.payload };
+
+    case projectActionTypes.SET_PROJECT_TASK_LIST:
       return { ...state, ...action.payload };
 
     case projectActionTypes.SET_PROJECT_MEMBER_LIST:

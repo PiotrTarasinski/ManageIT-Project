@@ -10,7 +10,7 @@ const sprint = {
 
   moveTask: (
     sprintId: string,
-    entryId: string,
+    taskId: string,
     indexFrom: number,
     indexTo: number,
     stateFrom: taskState,
@@ -18,7 +18,7 @@ const sprint = {
   ) => {
     return httpRequest.post('sprint/change_state', {
       sprintId,
-      entryId,
+      taskId,
       indexFrom,
       indexTo,
       stateFrom,

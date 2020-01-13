@@ -9,10 +9,16 @@ import { projectActionTypes } from 'models/enums/storeActions';
 import { orderTypes } from 'models/enums/orderTypes';
 import { IPerson } from 'models/types/person';
 import { ThunkDispatch } from 'redux-thunk';
+import { ITask } from 'models/types/task';
 
 const setProjectList = (projectList: ProjectsListData, projectListCount: number) => ({
   type: projectActionTypes.SET_PROJECT_LIST,
   payload: { projectList, projectListCount },
+});
+
+const setProjectTaskList = (projectTaskList: ITask[]) => ({
+  type: projectActionTypes.SET_PROJECT_TASK_LIST,
+  payload: { projectTaskList },
 });
 
 const setProjectMembers = (projectMemberList: IPerson[], projectMemberCount: number) => ({
@@ -31,6 +37,17 @@ const getProjectList = (
     .getProjectList(order, orderBy, page, rowsPerPage, search)
     .then((res: any) => {
       dispatch(setProjectList(res.data.projects, res.data.count));
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const getProjectTaskList = (projectId: string) => (dispatch: Dispatch<Action>) => {
+  return API.project
+    .getProjectTaskList(projectId)
+    .then((res: any) => {
+      dispatch(setProjectTaskList(res.data.taskList));
     })
     .catch((err: any) => {
       return handleError(err)(dispatch);
@@ -134,6 +151,7 @@ export {
   handleLeaveProject,
   handleDeleteProject,
   getProjectList,
+  getProjectTaskList,
   getProjectMembers,
   handleRemoveMember,
 };

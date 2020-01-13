@@ -15,6 +15,7 @@ enum applicationActionTypes {
 
 enum projectActionTypes {
   SET_PROJECT_LIST = 'SET_PROJECT_LIST',
+  SET_PROJECT_TASK_LIST = 'SET_PROJECT_TASK_LIST',
   SET_PROJECT_MEMBER_LIST = 'SET_PROJECT_MEMBER_LIST',
 }
 

@@ -63,6 +63,29 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 200,
       },
     },
+    tableWrapper: {
+      overflowX: 'auto',
+    },
+    table: {
+      minWidth: 1100,
+    },
+    tableRow: {
+      '&:hover': {
+        cursor: 'pointer',
+      },
+    },
+    labelsContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      '& > *': {
+        margin: theme.spacing(0.5),
+      },
+    },
+    label: {
+      color: '#FFF',
+      fontWeight: 'bold',
+    },
   }),
 );
 
