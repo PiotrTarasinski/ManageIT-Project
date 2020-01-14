@@ -9,7 +9,7 @@ module.exports = {
         updated_at: new Date(2019, 12, 1, 12),
         user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
         task_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
-        content: 'Cześć Pioter'
+        content: 'Hey Fraser, remember about real time form validation. Client requested it.'
       },
       {
         id: 'a6a315c7-f964-450d-90d4-2ba97f7fd2ef',
@@ -17,7 +17,7 @@ module.exports = {
         updated_at: new Date(2019, 12, 1, 13),
         user_id: '544dda84-8986-405c-8135-b0da3b956f0c',
         task_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
-        content: 'Cześć Szumik'
+        content: 'Consider it done as soon as backend guys fix their database problem.'
       },
       {
         id: '8f8a1ce6-9fc7-4132-b354-f555682c79b9',
@@ -25,23 +25,7 @@ module.exports = {
         updated_at: new Date(2019, 12, 1, 14),
         user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
         task_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
-        content: 'Jak sie masz w tym studiu?'
-      },
-      {
-        id: '37eee81a-1a80-4898-bef8-6de2bf9756da',
-        created_at: new Date(2019, 12, 1, 15),
-        updated_at: new Date(2019, 12, 1, 15),
-        user_id: '544dda84-8986-405c-8135-b0da3b956f0c',
-        task_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
-        content: 'A masz ochotę na zamach bombowy?'
-      },
-      {
-        id: '2cd0aab0-385c-4ade-bf78-ace4bdf2ac35',
-        created_at: new Date(2019, 12, 1, 16),
-        updated_at: new Date(2019, 12, 1, 16),
-        user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
-        task_id: '873a9c4b-ec2f-4297-90f5-370cc4c2a865',
-        content: 'No przecie!'
+        content: 'I\'ll talk with them and give You an ET of fix, cheers.'
       }
     ]);
   },

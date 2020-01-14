@@ -8,7 +8,7 @@ module.exports = {
         project_id: 'a6a02365-7052-4236-8894-ac594da9c108',
         created_at: new Date(2019, 12, 1),
         updated_at: new Date(2019, 12, 1),
-        name: 'Chuj kurwa',
+        name: 'Design',
         color: 'red'
       },
       {
