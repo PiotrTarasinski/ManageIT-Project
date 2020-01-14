@@ -86,6 +86,13 @@ class ProjectRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new ProjectController(req, res).getProjectRoles()
         }
+      },
+      {
+        method: 'DELETE',
+        path: '/tasks',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).deleteTasks()
+        }
       }
     ];
   }

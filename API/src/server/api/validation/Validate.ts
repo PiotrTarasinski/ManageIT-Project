@@ -78,6 +78,12 @@ export const twoUUID = (firstId: string, secondId: string, firstKey: string, sec
   return makeResponse(errorsArray);
 };
 
+export const UUIDarray = (array: string[], key: string) => {
+  const errorsArray = validateArray(array, key, uuidPolicy);
+
+  return makeResponse(errorsArray);
+};
+
 const uuidPolicy = (id: string, key: string) => [
   validators.isString(id, key),
   validators.required(id, key),

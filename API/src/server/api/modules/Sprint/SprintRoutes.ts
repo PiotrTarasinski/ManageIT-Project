@@ -23,9 +23,9 @@ class SprintRoutes extends MainRoutes {
       },
       {
         method: 'DELETE',
-        path: '/remove_task_from_sprint',
+        path: '/tasks',
         options: {
-          handler: (req, res) => new SprintController(req, res).removeTaskFromSprint()
+          handler: (req, res) => new SprintController(req, res).removeTasksFromSprint()
         }
       },
       {
@@ -40,13 +40,6 @@ class SprintRoutes extends MainRoutes {
         path: '/add_task',
         options: {
           handler: (req, res) => new SprintController(req, res).addTaskToSprint()
-        }
-      },
-      {
-        method: 'DELETE',
-        path: '/remove_task',
-        options: {
-          handler: (req, res) => new SprintController(req, res).removeTaskFromSprint()
         }
       },
       {

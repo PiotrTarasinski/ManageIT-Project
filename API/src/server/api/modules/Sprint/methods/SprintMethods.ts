@@ -1,8 +1,6 @@
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import db from '../../../../database';
 import { Op } from 'sequelize';
-import { rejects } from 'assert';
-import { login } from '../../../validation/Validate';
 import { SprintInstance } from '../../../../database/models/Sprint';
 
 class SprintMethods {
@@ -122,34 +120,61 @@ class SprintMethods {
   }
 
   // Removes task with given id from sprint
-  async removeTaskFromSprint(taskId: string, sprintId: string) {
-    const taskToRemove = await db.TaskSprint.find({
-      where: {
-        taskId,
-        sprintId
-      }
-    });
-    if (taskToRemove) {
-      const { index, state } = taskToRemove;
-      const tasks = await db.TaskSprint.findAll({
+  async removeTasksFromSprint(sprintId: string, tasks: string[]) {
+    let deleteCount = 0;
+    return Promise.all(tasks.map(async taskId => {
+      const taskToRemove = await db.TaskSprint.findOne({
         where: {
-          state,
-          sprintId,
-          index: { [Op.gt]: index }
+          taskId,
+          sprintId
         }
       });
-      tasks.forEach(async instance => {
-        instance.decrement('index', { by: 1 });
-      });
-      return taskToRemove.destroy()
+      if (taskToRemove) {
+        const { state } = taskToRemove;
+        return taskToRemove.destroy()
         .then(() => {
-          return CustomResponse(200, 'Successfully removed task from sprint.');
-        })
-        .catch((err) => {
-          return CustomResponse(500, 'Couldn\'t remove task from sprint.', { formError: 'Database error.' });
+          return state;
         });
-    }
-    return CustomResponse(404, 'Task not in project.', { formError: 'Task is not in this project.' });
+      }
+      return null;
+    }))
+    .then(async (stateArray) => {
+      const removesFrom = {
+        'In progress': 0,
+        'To review / test': 0,
+        'To do': 0,
+        Done: 0
+      };
+      const index = {
+        'In progress': 0,
+        'To review / test': 0,
+        'To do': 0,
+        Done: 0
+      };
+      stateArray.forEach(state => {
+        if (state) {
+          deleteCount++;
+          removesFrom[state as 'To do' | 'In progress' | 'To review / test' | 'Done']++;
+        }
+      });
+      const tasksToDecrement = await db.TaskSprint.findAll({
+        where: {
+          sprintId
+        }
+      });
+      tasksToDecrement.forEach(async task => {
+        if (removesFrom[task.state  as 'To do' | 'In progress' | 'To review / test' | 'Done']) {
+          await task.update({ index: index[task.state  as 'To do' | 'In progress' | 'To review / test' | 'Done']++ });
+        }
+      });
+      if (!deleteCount) {
+        return CustomResponse(500, 'Couldn\'t delete any tasks.', { formError: 'Database error.' });
+      }
+      if (deleteCount !== tasks.length) {
+        return CustomResponse(500, 'Couldn\'t delete one or more.', { formError: 'Database error.' });
+      }
+      return CustomResponse(200, 'Task deleted successfully.');
+    });
   }
 
   // Add assignee or reviewer to task

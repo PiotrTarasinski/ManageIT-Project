@@ -3,10 +3,9 @@ import ProjectMethods from './methods/ProjectMethods';
 import CustomResponse from '../../error/CustomError';
 import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
 import ProjectUsersFormatter from '../../shared/formatter/ProjectUsersFormatter';
-import ProjectTasksFormatter from '../../shared/formatter/ProjectTasksFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
 import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
-import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, taskCreate } from '../../validation/Validate';
+import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, sprintAddTask } from '../../validation/Validate';
 import TaskFormatter from '../../shared/formatter/TaskFormatter';
 
 class ProjectController extends Controller {
@@ -230,6 +229,24 @@ class ProjectController extends Controller {
     }
 
     return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error.' })).code(500);
+  }
+
+  async deleteTasks () {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { sprintId, tasks } = this.req.payload;
+
+    const validationResponse = sprintAddTask(sprintId, tasks);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().deleteTasks(sprintId, tasks, this.user.name, <string>this.user.id);
+
+    return this.res(response).code(response.statusCode);
   }
 }
 
