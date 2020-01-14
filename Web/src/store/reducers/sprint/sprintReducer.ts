@@ -23,9 +23,6 @@ export default (state = initialState, action: Action) => {
     case sprintActionTypes.UPDATE_TASK_LIST:
       return { ...state, taskList: action.payload };
 
-    case sprintActionTypes.SET_SELECTED_TASK:
-      return { ...state, selectedTask: action.payload };
-
     default:
       return { ...state };
   }

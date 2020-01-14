@@ -8,7 +8,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ITaskList, ITask } from 'models/types/task';
 import { reordedTaskList } from 'utils/reordedTaskList';
 import { IPerson } from 'models/types/person';
-import { displaySnackbar } from '../application';
+import { displaySnackbar, setSelectedTask } from '../application';
 
 const setSprint = (sprint: SprintState) => ({
   type: sprintActionTypes.SET_SPRINT,
@@ -18,11 +18,6 @@ const setSprint = (sprint: SprintState) => ({
 const updateTaskList = (taskList: ITaskList) => ({
   type: sprintActionTypes.UPDATE_TASK_LIST,
   payload: taskList,
-});
-
-const setSelectedTask = (task: ITask) => ({
-  type: sprintActionTypes.SET_SELECTED_TASK,
-  payload: task,
 });
 
 const getSprint = (id: string) => (dispatch: Dispatch<Action>) => {
@@ -86,7 +81,6 @@ const assigToTask = (
               return reviewer.id !== user.id;
             }));
       }
-      console.log(updatedTask);
       dispatch(setSelectedTask(updatedTask));
       dispatch(getSprint(sprintId));
       dispatch(
@@ -103,4 +97,4 @@ const assigToTask = (
     });
 };
 
-export { getSprint, moveTask, setSprint, assigToTask, setSelectedTask };
+export { getSprint, moveTask, setSprint, assigToTask };

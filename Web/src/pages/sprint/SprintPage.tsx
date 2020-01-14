@@ -186,8 +186,8 @@ function SprintPage(props: Props) {
         </DragDropContext>
       </div>
       <SprintAssignTaskModal
-        assignModalOpen={assignModalOpen}
-        setAssignModalOpen={setAssignModalOpen}
+        modalOpen={assignModalOpen}
+        setModalOpen={setAssignModalOpen}
         sprintId={props.match.params.id}
       />
     </PageContainer>
@@ -202,7 +202,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
   getSprint: (sprintId: string) => dispatch(StoreAction.sprint.getSprint(sprintId)),
-  setSelectedTask: (task: ITask) => dispatch(StoreAction.sprint.setSelectedTask(task)),
+  setSelectedTask: (task: ITask) => dispatch(StoreAction.application.setSelectedTask(task)),
   getAllProjectMembers: (projectId: string) =>
     dispatch(StoreAction.project.getAllProjectMembers(projectId)),
   moveTask: (

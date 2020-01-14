@@ -28,6 +28,7 @@ export interface UserState {
 export interface ApplicationState {
   readonly sidebarVisible: boolean;
   readonly notifications: INotification[];
+  readonly selectedTask?: ITask;
 }
 
 export interface ProjectState {
@@ -45,5 +46,4 @@ export interface SprintState {
   readonly endDate: Date;
   readonly description: string;
   readonly taskList: ITaskList;
-  readonly selectedTask?: ITask;
 }

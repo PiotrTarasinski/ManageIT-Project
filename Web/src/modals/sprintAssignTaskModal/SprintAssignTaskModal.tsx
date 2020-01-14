@@ -28,8 +28,8 @@ import { connect } from 'react-redux';
 import { assignType } from 'models/enums/task';
 
 interface IComponentProps {
-  assignModalOpen: boolean;
-  setAssignModalOpen: any;
+  modalOpen: boolean;
+  setModalOpen: any;
   sprintId: string;
 }
 
@@ -55,7 +55,7 @@ const SprintAssignTaskModal = (props: Props) => {
 
   const [activeTab, setActiveTab] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const { assignModalOpen, setAssignModalOpen, task, users, sprintId } = props;
+  const { modalOpen, setModalOpen, task, users, sprintId } = props;
 
   const handleAssign = (user: IPerson, remove: boolean) => {
     if (task) {
@@ -83,13 +83,13 @@ const SprintAssignTaskModal = (props: Props) => {
 
   return (
     <Dialog
-      open={assignModalOpen}
-      onClose={() => setAssignModalOpen(false)}
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle disableTypography id="form-dialog-title" className={classes.dialogTitle}>
         <Typography variant="h6">Assign to</Typography>
-        <IconButton aria-label="close" onClick={() => setAssignModalOpen(false)}>
+        <IconButton aria-label="close" onClick={() => setModalOpen(false)}>
           <Close />
         </IconButton>
       </DialogTitle>
@@ -148,7 +148,7 @@ const SprintAssignTaskModal = (props: Props) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-  task: state.sprint.selectedTask,
+  task: state.app.selectedTask,
   users: state.project.projectMemberList,
 });
 

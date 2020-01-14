@@ -11,6 +11,7 @@ enum applicationActionTypes {
   TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR',
   DISPLAY_SNACKBARS = 'DISPLAY_SNACKBARS',
   REMOVE_SNACKBARS = 'REMOVE_SNACKBARS',
+  SET_SELECTED_TASK = 'SET_SELECTED_TASK',
 }
 
 enum projectActionTypes {
@@ -22,7 +23,6 @@ enum projectActionTypes {
 enum sprintActionTypes {
   SET_SPRINT = 'SET_SPRINT',
   UPDATE_TASK_LIST = 'UPDATE_TASK_LIST',
-  SET_SELECTED_TASK = 'SET_SELECTED_TASK',
 }
 
 export {
