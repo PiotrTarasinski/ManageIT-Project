@@ -101,20 +101,11 @@ const numberPolicy = (num: number, key: string) => [
 ];
 
 const validateArray = (array: any[], key: string, policy: Policy): ({ key: string, message: string } | null)[] => {
-  console.log(typeof array);
+  if (!Array.isArray(array)) {
+    return [{ key, message: `${key} must be an array.` }];
+  }
   return array.map(item => {
-    console.log('err:', policy(item, key).reduce((previousValue, currentValue) => {
-      console.log(currentValue);
-      if (currentValue && !previousValue) {
-        return currentValue;
-      }
-      if (!currentValue && previousValue) {
-        return previousValue;
-      }
-      return previousValue;
-    }, null));
     return policy(item, key).reduce((previousValue, currentValue) => {
-      console.log(currentValue);
       if (currentValue && !previousValue) {
         return currentValue;
       }
@@ -251,6 +242,15 @@ export const sprintCreate = (projectId: string, description: string, name: strin
     stringPolicy(description, 'description'),
     stringPolicy(name, 'name'),
     [validators.isDateString(start, 'start'), validators.isDateString(end, 'end')],
+    validateArray(tasks, 'tasks', uuidPolicy)
+  );
+
+  return makeResponse(errorsArray);
+};
+
+export const sprintAddTask = (sprintId: string, tasks: string[]) => {
+  const errorsArray = uuidPolicy(sprintId, 'sprintId')
+  .concat(
     validateArray(tasks, 'tasks', uuidPolicy)
   );
 

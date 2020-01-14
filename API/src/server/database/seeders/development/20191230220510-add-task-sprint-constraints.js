@@ -58,15 +58,6 @@ module.exports = {
         state: 'In progress',
         },
       {
-        id: 'e80f5759-2cf4-4582-8f3d-91252c1c3658',
-        task_id: '6e4e354c-bed4-4d7d-ae14-cd25defd434c',
-        sprint_id: '38184a13-4273-499a-af73-f5a053cdb589',
-        created_at: new Date(2018, 12, 1),
-        updated_at: new Date(2019, 12, 1),
-        index: 3,
-        state: 'In progress',
-      },
-      {
         id: '33488802-9113-4b3e-ad3b-5309e603ce66',
         task_id: '6e4e354c-bed4-4d7d-ae14-cd25defd434c',
         sprint_id: '4783c6f9-1e63-4958-968e-7dd6a5b02915',
