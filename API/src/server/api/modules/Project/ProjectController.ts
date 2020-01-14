@@ -237,15 +237,15 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { sprintId, tasks } = this.req.payload;
+    const { projectId, tasks } = this.req.payload;
 
-    const validationResponse = sprintAddTask(sprintId, tasks);
+    const validationResponse = sprintAddTask(projectId, tasks);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().deleteTasks(sprintId, tasks, this.user.name, <string>this.user.id);
+    const response = await new ProjectMethods().deleteTasks(projectId, tasks, this.user.name, <string>this.user.id);
 
     return this.res(response).code(response.statusCode);
   }

@@ -69,7 +69,8 @@ export const TaskFactory = (
       },
       field: 'project_id',
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onUpdate: 'CASCADE',
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,

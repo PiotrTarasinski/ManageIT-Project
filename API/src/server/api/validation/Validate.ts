@@ -265,8 +265,8 @@ export const sprintCreate = (projectId: string, description: string, name: strin
   return makeResponse(errorsArray);
 };
 
-export const sprintAddTask = (sprintId: string, tasks: string[]) => {
-  const errorsArray = uuidPolicy(sprintId, 'sprintId')
+export const sprintAddTask = (projectId: string, tasks: string[]) => {
+  const errorsArray = uuidPolicy(projectId, 'projectId')
   .concat(
     validateArray(tasks, 'tasks', uuidPolicy)
   );

@@ -182,7 +182,7 @@ module.exports = {
           key: 'id'
         },
         field: 'project_id',
-        allowNull: false,
+        allowNull: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },

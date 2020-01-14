@@ -477,10 +477,15 @@ class ProjectMethods {
     return CustomResponse(404, 'No such role.', { formError: 'Role not found' });
   }
 
-  async deleteTasks(sprintId: string, tasks: string[], userName: string, loggedUserId: string) {
+  async deleteTasks(projectId: string, tasks: string[], userName: string, loggedUserId: string) {
 
     let deleteCount = 0;
 
+    const project = await db.Project.findByPk(projectId);
+
+    if (!project) {
+      return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
+    }
     return Promise.all(tasks.map(async taskId => {
       await db.Task.findByPk(taskId)
         .then(async task => {
@@ -488,8 +493,8 @@ class ProjectMethods {
             const { projectId, title } = task;
             if (!await db.TaskSprint.findOne({
               where: {
-                sprintId,
-                taskId
+                taskId,
+                sprintId: project.activeSprintId
               }
             })) {
               await task.destroy()
@@ -500,9 +505,16 @@ class ProjectMethods {
                     userId: loggedUserId
                   });
                 });
+            } else if (await db.TaskSprint.count({
+              where: {
+                taskId,
+                sprintId: { [Op.ne]: project.activeSprintId }
+              }
+            })) {
+              await task.update({ projectId: null });
             }
-            deleteCount++;
           }
+          deleteCount++;
         });
     }))
     .then(() => {
