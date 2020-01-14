@@ -12,10 +12,10 @@ export type SprintResponseFormat = {
   startDate: Date;
   endDate: Date;
   taskList?: {
-    toDoList: TaskResponseFormat[];
-    inProgressList: TaskResponseFormat[];
-    toReviewList: TaskResponseFormat[];
-    doneList: TaskResponseFormat[];
+    toDoList?: TaskResponseFormat[];
+    inProgressList?: TaskResponseFormat[];
+    toReviewList?: TaskResponseFormat[];
+    doneList?: TaskResponseFormat[];
   }
 };
 
@@ -43,10 +43,10 @@ class SprintFormatter implements ResponseFormatter<SprintInstance, SprintRespons
       startDate: new Date(sprint.start),
       endDate: new Date(sprint.end),
       taskList: {
-        toDoList: await bulkFormat(new TaskSprintFormatter(), toDoList),
-        inProgressList: await bulkFormat(new TaskSprintFormatter(), inProgressList),
-        toReviewList: await bulkFormat(new TaskSprintFormatter(), toReviewList),
-        doneList: await bulkFormat(new TaskSprintFormatter(), doneList)
+        toDoList: toDoList ? await bulkFormat(new TaskSprintFormatter(), toDoList) : [],
+        inProgressList: inProgressList ? await bulkFormat(new TaskSprintFormatter(), inProgressList) : [],
+        toReviewList: toReviewList ? await bulkFormat(new TaskSprintFormatter(), toReviewList) : [],
+        doneList: doneList ? await bulkFormat(new TaskSprintFormatter(), doneList) : []
       }
     };
   }

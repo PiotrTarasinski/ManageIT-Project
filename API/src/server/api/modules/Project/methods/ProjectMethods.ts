@@ -396,7 +396,7 @@ class ProjectMethods {
 
   // Get tasks assigned to project with given id
   async getProjectTasks(projectId: string) {
-    return await db.Project.find({
+    return await db.Project.findOne({
       include: [
         {
           model: db.Task,
@@ -425,69 +425,29 @@ class ProjectMethods {
         }
       ],
       where: {
-        '$tasks.tasksSprints.id$': { [Op.eq]: null },
         id: projectId
       }
     })
-    .then(async (project) => {
-      if (project && project.tasks) {
-        const tasksNotDone = await db.Project.find({
-          include: [
-            {
-              model: db.Task,
-              as: 'tasks',
-              include: [
-                {
-                  model: db.TaskSprint,
-                  as: 'tasksSprints',
-                  where: {
-                    sprintId: { [Op.not]: project.activeSprintId }
-                  }
-                },
-                {
-                  model: db.Label,
-                  as: 'labels'
-                },
-                {
-                  model: db.Comment,
-                  as: 'comments',
-                  separate: true,
-                  include: [
-                    {
-                      model: db.User,
-                      as: 'user'
-                    }
-                  ]
-                }
-              ]
+    .then(async tasksNotDone => {
+      const tasks: TaskInstance[] = [];
+      if (tasksNotDone && tasksNotDone.tasks) {
+        tasksNotDone.tasks.forEach(task => {
+          let done: boolean = false;
+          if (task.tasksSprints) {
+            task.tasksSprints.forEach(taskSprint => {
+              if (taskSprint.state === 'Done' || taskSprint.sprintId === tasksNotDone.activeSprintId) {
+                done = true;
+              }
+            });
+            if (!done) {
+              tasks.push(task);
             }
-          ],
-          where: {
-            id: projectId
           }
         });
-        const tasks: TaskInstance[] = [];
-        if (tasksNotDone && tasksNotDone.tasks) {
-          tasksNotDone.tasks.forEach(task => {
-            let done: boolean = false;
-            if (task.tasksSprints) {
-              task.tasksSprints.forEach(taskSprint => {
-                if (taskSprint.state === 'Done') {
-                  done = true;
-                }
-              });
-              if (!done) {
-                tasks.push(task);
-              }
-            }
-          });
-
-        }
-        return { activeSprintId: project.activeSprintId, tasks: project.tasks.concat(tasks) };
+        return { activeSprintId: tasksNotDone.activeSprintId, tasks };
       }
       return null;
-    }
-    );
+    });
   }
 
   // Returns an array of UserRoles

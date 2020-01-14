@@ -35,6 +35,13 @@ export const Validator = {
     return null;
   },
 
+  isDateString(toTest: any, key: string): { key: string; message: string } | null {
+    if (!/^(2[0-9][0-9][0-9])[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])$/.test(toTest)) {
+      return this.errorMessage(key, `${key} must be a date in format "YYYY-MM-DD".`);
+    }
+    return null;
+  },
+
   includes(toTest: string, key: string, array: string[]): { key: string; message: string } | null {
     if (!array.includes(toTest)) {
       return this.errorMessage(key, `${key} must be in enum.`);

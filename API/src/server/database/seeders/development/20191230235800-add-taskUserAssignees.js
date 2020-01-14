@@ -16,14 +16,14 @@ module.exports = {
         updated_at: new Date(2019, 12, 1),
       },
       {
-        task_sprint_id: '31b594f7-21ae-4db8-8507-28e69b2505ab',
+        task_sprint_id: '3b8b8a93-b548-44c7-98a3-7216e6ed3c83',
         user_id: '08fcba32-23b9-4678-ba4a-bc688b6472c1',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
       },
       {
-        task_sprint_id: '31b594f7-21ae-4db8-8507-28e69b2505ab',
-        user_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+        task_sprint_id: '3b8b8a93-b548-44c7-98a3-7216e6ed3c83',
+        user_id: '544dda84-8986-405c-8135-b0da3b956f0c',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
       }

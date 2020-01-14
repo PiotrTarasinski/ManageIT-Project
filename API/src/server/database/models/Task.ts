@@ -20,7 +20,7 @@ export interface TaskAttributes {
   title: string;
   description?: string;
   projectId: string;
-  state?: string;
+  state?: 'To do' | 'In progress' | 'To review / test' | 'Done' | 'Awaiting';
 
   //
   // Here be associations!
@@ -51,54 +51,54 @@ export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAt
 
 export const TaskFactory = (
   sequelize: Sequelize.Sequelize,
-  DataTypes: Sequelize.DataTypes,
+  DataTypes: Sequelize.DataTypes
 ): Sequelize.Model<TaskInstance, TaskAttributes> => {
   const attributes: SequelizeAttributes<TaskAttributes> = {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     projectId: {
       type: DataTypes.UUID,
       references: {
         model: 'projects',
-        key: 'id',
+        key: 'id'
       },
       field: 'project_id',
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     createdAt: {
       type: DataTypes.DATE,
-      field: 'created_at',
+      field: 'created_at'
     },
     updatedAt: {
       type: DataTypes.DATE,
-      field: 'updated_at',
+      field: 'updated_at'
     },
     identifier: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
     },
     type: {
-      type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement']),
+      type: DataTypes.ENUM(['Idea', 'Task', 'Bug', 'Improvement'])
     },
     points: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER
     },
     priority: {
-      type: DataTypes.ENUM(['High', 'Normal', 'Low']),
+      type: DataTypes.ENUM(['High', 'Normal', 'Low'])
     },
     state: {
       type: DataTypes.ENUM(['To do', 'In progress', 'To review / test', 'Done', 'Awaiting']),
-      defaultValue: 'Awaiting',
+      defaultValue: 'Awaiting'
     },
     title: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
     },
     description: {
-      type: DataTypes.STRING,
-    },
+      type: DataTypes.STRING
+    }
   };
 
   const Task = sequelize.define<TaskInstance, TaskAttributes>('task', attributes);

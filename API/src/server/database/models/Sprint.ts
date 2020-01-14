@@ -3,7 +3,7 @@ import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
 import { TaskAttributes, TaskInstance } from './Task';
 import { ProjectInstance } from './Project';
-import { TaskSprintInstance } from './TaskSprint';
+import { TaskSprintInstance, TaskSprintAttributes } from './TaskSprint';
 
 export interface SprintAttributes {
   id?: string;
@@ -13,6 +13,7 @@ export interface SprintAttributes {
   description: string;
   start: Date;
   end: Date;
+  state?: string;
 
   //
   // Here be associations!
@@ -25,8 +26,10 @@ export interface SprintAttributes {
 
 export interface SprintInstance extends Sequelize.Instance<SprintAttributes>, SprintAttributes {
   getTask: Sequelize.HasManyGetAssociationsMixin<TaskInstance>;
-  addTask: Sequelize.HasManyAddAssociationMixin<TaskInstance, TaskAttributes['id']>;
+  addTask: Sequelize.HasManyAddAssociationMixin<TaskInstance, TaskInstance['id']>;
+  createTaskList: Sequelize.HasManyCreateAssociationMixin<TaskSprintAttributes, TaskSprintInstance>;
   getUsers: Sequelize.HasManyGetAssociationsMixin<UserInstance>;
+  setProject: Sequelize.HasOneSetAssociationMixin<ProjectInstance, ProjectInstance['id']>;
 }
 
 export const SprintFactory = (
@@ -58,6 +61,10 @@ export const SprintFactory = (
     },
     end: {
       type: DataTypes.DATE
+    },
+    state: {
+      type: DataTypes.ENUM(['Open', 'Closed']),
+      defaultValue: 'Open'
     }
   };
 

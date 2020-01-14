@@ -48,6 +48,13 @@ class SprintRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new SprintController(req, res).removeTaskFromSprint()
         }
+      },
+      {
+        method: 'POST',
+        path: '/create_sprint',
+        options: {
+          handler: (req, res) => new SprintController(req, res).createSprint()
+        }
       }
     ];
   }

@@ -1,6 +1,9 @@
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import db from '../../../../database';
 import { Op } from 'sequelize';
+import { rejects } from 'assert';
+import { login } from '../../../validation/Validate';
+import { SprintInstance } from '../../../../database/models/Sprint';
 
 class SprintMethods {
 
@@ -31,17 +34,11 @@ class SprintMethods {
             },
             {
               model: db.User,
-              as: 'assignees',
-              through: {
-                attributes: []
-              }
+              as: 'assignees'
             },
             {
               model: db.User,
-              as: 'reviewers',
-              through: {
-                attributes: []
-              }
+              as: 'reviewers'
             }
           ]
         }
@@ -208,47 +205,170 @@ class SprintMethods {
     return CustomResponse(400, 'Wrong type.', { formError: 'Invalid payload input.' });
   }
 
-  async addTaskToSprint(taskId: string, sprintId: string, state: string, index: number) {
-    const task = await db.Task.findByPk(taskId);
-    if (task) {
-      const taskSprint = await db.TaskSprint.find({
-        where: {
-          taskId,
-          sprintId
-        }
-      });
-      if (taskSprint) {
-        return CustomResponse(400, 'Task already in sprint.', { formError: 'Task already in this sprint.' });
-      }
-      return await db.TaskSprint.create({
-        taskId,
-        sprintId,
-        state,
-        index
-      })
-        .then(async () => {
-          const tasks = await db.TaskSprint.findAll({
+  async addTaskToSprint(sprintId: string, tasks: string[]): Promise<SprintInstance | null> {
+    return await db.Sprint.findByPk(sprintId)
+    .then(async sprint => {
+      if (sprint) {
+        const index = {
+          'In progress': await db.TaskSprint.count({
             where: {
-              state,
               sprintId,
-              index: { [Op.gte]: index }
+              state: 'In progress'
             }
-          });
-          tasks.forEach(async instance => {
-            if (instance.taskId !== taskId) {
-              instance.increment('index', { by: 1 });
+          }),
+          'To review / test': await db.TaskSprint.count({
+            where: {
+              sprintId,
+              state: 'To review / test'
             }
-          });
-          return CustomResponse(200, 'Successfully added task to sprint.');
-        })
-        .catch(() => CustomResponse(500, 'Couldn\'t create constraint.', { formError: 'Database error.' }));
-    }
-
-    return CustomResponse(404, 'Sprint doesn\'t exist.', { formError: 'Sprint not found.' });
+          }),
+          'To do': await db.TaskSprint.count({
+            where: {
+              sprintId,
+              state: 'To do'
+            }
+          }),
+          Done: 0
+        };
+        return Promise.all(tasks.map(async taskId => {
+          const task = await db.Task.findByPk(taskId);
+          if (task && !await db.TaskSprint.count({
+            where: {
+              taskId,
+              sprintId
+            }
+          })) {
+            return sprint.createTaskList({
+              index: index[task.state === 'Awaiting' ? 'To do' : task.state as 'To do' | 'In progress' | 'To review / test' | 'Done']++,
+              state: task.state === 'Awaiting' ? 'To do' : <string>task.state,
+              taskId
+            });
+          }
+          return null;
+        }))
+      .then(async () => {
+        return await db.Sprint.findByPk(sprint.id, {
+          include: [
+            {
+              model: db.TaskSprint,
+              as: 'taskList',
+              include: [
+                {
+                  model: db.Task,
+                  as: 'task',
+                  include: [
+                    {
+                      model: db.Comment,
+                      separate: true,
+                      as: 'comments',
+                      include: [
+                        {
+                          model: db.User,
+                          as: 'user'
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  model: db.User,
+                  as: 'assignees',
+                  through: {
+                    attributes: []
+                  }
+                },
+                {
+                  model: db.User,
+                  as: 'reviewers',
+                  through: {
+                    attributes: []
+                  }
+                }
+              ]
+            }
+          ],
+          order: [
+            [{ model: db.TaskSprint, as: 'taskList' }, 'index', 'ASC']
+          ]
+        });
+      });
+      }
+      return sprint;
+    });
   }
 
-  async createSprint(projectId: string) {
-
+  async createSprint(projectId: string, description: string, name: string, start: Date, end: Date, tasks: string[]) {
+    return await db.Sprint.create({
+      name,
+      description,
+      start: new Date(start),
+      end: new Date(end)
+    })
+    .then(async sprint => {
+      await sprint.setProject(projectId);
+      const index = {
+        Awaiting: 0,
+        'In progress': 0,
+        'To review / test': 0,
+        'To do': 0,
+        Done: 0
+      };
+      return Promise.all(tasks.map(async taskId => {
+        const task = await db.Task.findByPk(taskId);
+        if (task) {
+          return sprint.createTaskList({
+            index: index[task.state === 'Awaiting' ? 'To do' : task.state as 'To do' | 'In progress' | 'To review / test' | 'Done']++,
+            state: task.state === 'Awaiting' ? 'To do' : <string>task.state,
+            taskId
+          });
+        }
+        return null;
+      }))
+      .then(async () => await db.Sprint.findByPk(sprint.id, {
+        include: [
+          {
+            model: db.TaskSprint,
+            as: 'taskList',
+            include: [
+              {
+                model: db.Task,
+                as: 'task',
+                include: [
+                  {
+                    model: db.Comment,
+                    separate: true,
+                    as: 'comments',
+                    include: [
+                      {
+                        model: db.User,
+                        as: 'user'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                model: db.User,
+                as: 'assignees',
+                through: {
+                  attributes: []
+                }
+              },
+              {
+                model: db.User,
+                as: 'reviewers',
+                through: {
+                  attributes: []
+                }
+              }
+            ]
+          }
+        ],
+        order: [
+          [{ model: db.TaskSprint, as: 'taskList' }, 'index', 'ASC']
+        ]
+      }));
+    });
   }
 
 
