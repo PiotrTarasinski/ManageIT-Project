@@ -12,7 +12,8 @@ export interface UserProjectLabelAttributes {
   roleLabels?: RoleLabelInstance;
 }
 
-export interface UserProjectLabelInstance extends Sequelize.Instance<UserProjectLabelAttributes>, UserProjectLabelAttributes { }
+export interface UserProjectLabelInstance extends Sequelize.Instance<UserProjectLabelAttributes>, UserProjectLabelAttributes {
+}
 
 export const UserProjectLabelFactory = (
   sequelize: Sequelize.Sequelize,

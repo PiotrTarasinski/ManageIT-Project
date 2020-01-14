@@ -5,8 +5,9 @@ import UserProjectFormatter from '../../shared/formatter/UserProjectFormatter';
 import ProjectUsersFormatter from '../../shared/formatter/ProjectUsersFormatter';
 import bulkFormat from '../../../../utils/bulkFormat';
 import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
-import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, sprintAddTask } from '../../validation/Validate';
+import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, sprintAddTask, projectUpdateUser } from '../../validation/Validate';
 import TaskFormatter from '../../shared/formatter/TaskFormatter';
+import UserFormatter from '../../shared/formatter/UserFormatter';
 
 class ProjectController extends Controller {
   async getUserProjects() {
@@ -247,6 +248,28 @@ class ProjectController extends Controller {
     const response = await new ProjectMethods().deleteTasks(sprintId, tasks, this.user.name, <string>this.user.id);
 
     return this.res(response).code(response.statusCode);
+  }
+
+  async updateProjectUser() {
+    if (!this.req.payload) {
+      return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
+    }
+
+    const { userId, projectId, permissions, roles } = this.req.payload;
+
+    const validationResponse = projectUpdateUser(userId, projectId, permissions, roles);
+
+    if (validationResponse.errors) {
+      return this.res(validationResponse).code(validationResponse.statusCode);
+    }
+
+    const response = await new ProjectMethods().updateProjectUser(userId, projectId, permissions, roles);
+
+    if (response) {
+      return this.res(await new UserFormatter().format(response));
+    }
+
+    return this.res(CustomResponse(500, 'Couldn\'t update user.', { formError: 'Database error.' })).code(500);
   }
 }
 

@@ -45,18 +45,28 @@ class TaskController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { taskId, points, priority, type, title, description } = this.req.payload;
+    const { taskId, points, priority, type, title, description, labels } = this.req.payload;
 
-    const validationResponse = taskUpdate(taskId, points, priority, type, title, description);
+    const validationResponse = taskUpdate(taskId, points, priority, type, title, description, labels);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new TaskMethods().updateTask(taskId, points, priority, type, title, description, this.user.name, <string>this.user.id);
+    const response = await new TaskMethods().updateTask(
+      taskId,
+      points,
+      priority,
+      type,
+      title,
+      description,
+      labels,
+      this.user.name,
+      <string>this.user.id
+      );
 
     if (response) {
-      return this.res(response);
+      return this.res(await new TaskFormatter().format(response));
     }
 
     return this.res(CustomResponse(500, 'Couldn\'t update task.', { formError: 'Database error.' })).code(500);
@@ -86,10 +96,6 @@ class TaskController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
-    }
-
     const { taskId, content } = this.req.payload;
 
     const validationResponse = sprintCreateComment(taskId, content);
@@ -98,7 +104,7 @@ class TaskController extends Controller {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new TaskMethods().createComment(taskId, this.user.id, content);
+    const response = await new TaskMethods().createComment(taskId, <string>this.user.id, content);
 
     if (response) {
       return this.res(await new CommentFormatter().format(response));
@@ -110,10 +116,6 @@ class TaskController extends Controller {
   async updateComment() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
     }
 
     const { commentId, content } = this.req.payload;
@@ -137,10 +139,6 @@ class TaskController extends Controller {
   async deleteComment() {
     if (!this.req.payload) {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
-    }
-
-    if (!this.user.id) {
-      return this.res(CustomResponse(500, 'Something went wrong during validation.', { formError: 'Internal server error. ' })).code(500);
     }
 
     const { commentId } = this.req.payload;

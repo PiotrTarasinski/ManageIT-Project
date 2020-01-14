@@ -93,6 +93,13 @@ class ProjectRoutes extends MainRoutes {
         options: {
           handler: (req, res) => new ProjectController(req, res).deleteTasks()
         }
+      },
+      {
+        method: 'PUT',
+        path: '/update_user',
+        options: {
+          handler: (req, res) => new ProjectController(req, res).updateProjectUser()
+        }
       }
     ];
   }

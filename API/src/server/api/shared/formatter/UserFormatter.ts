@@ -47,6 +47,27 @@ class UserFormatter implements ResponseFormatter<UserInstance, UserResponseForma
         avatar: user.avatar
       };
     }
+    if (user.permissions) {
+      if (user.usersProjectsLabels) {
+        return {
+          id: <string>user.id,
+          email: user.email,
+          name: user.name,
+          avatar: user.avatar,
+          permissions: user.permissions[0].permissions,
+          dateOfJoin: user.permissions[0].createdAt,
+          roles: await bulkFormat(new UserProjectLabelFormatter(), user.usersProjectsLabels)
+        };
+      }
+      return {
+        id: <string>user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        permissions: user.permissions[0].permissions,
+        dateOfJoin: user.permissions[0].createdAt
+      };
+    }
     return {
       id: <string>user.id,
       email: user.email,

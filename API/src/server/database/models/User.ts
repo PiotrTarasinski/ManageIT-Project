@@ -31,6 +31,7 @@ export interface UserAttributes {
   activeProject?: ProjectInstance[];
   activeSprint?: SprintInstance[];
   usersProjects?: UserProjectInstance;
+  permissions?: UserProjectInstance[];
   logs?: BacklogInstance[];
   usersProjectsLabels?: UserProjectLabelInstance[];
 }

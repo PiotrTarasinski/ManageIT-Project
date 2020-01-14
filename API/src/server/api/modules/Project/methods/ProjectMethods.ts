@@ -515,6 +515,69 @@ class ProjectMethods {
       return CustomResponse(200, 'Task deleted successfully.');
     });
   }
+
+  async updateProjectUser(userId: string, projectId: string, permissions: 'User' | 'Admin', roles: string[]): Promise<UserInstance | null> {
+    return await db.UserProject.findOne({
+      where: {
+        userId,
+        projectId
+      }
+    })
+    .then(async userProject => {
+      if (userProject) {
+        await userProject.update({ permissions });
+        await db.UserProjectLabel.destroy({
+          where: {
+            userId,
+            projectId
+          }
+        });
+        await Promise.all(roles.map(async role => {
+          await db.UserProjectLabel.create({
+            userId,
+            projectId,
+            roleLabelId: role
+          });
+        }));
+      }
+      if (roles.length === 0) {
+        return await db.User.findByPk(userId, {
+          include: [
+            {
+              model: db.UserProject,
+              where: {
+                projectId
+              },
+              as: 'permissions'
+            }
+          ]
+        });
+      }
+      return await db.User.findByPk(userId, {
+        include: [
+          {
+            model: db.UserProjectLabel,
+            where: {
+              projectId
+            },
+            include: [
+              {
+                model: db.RoleLabel,
+                as: 'roleLabels'
+              }
+            ]
+          },
+          {
+            model: db.UserProject,
+            where: {
+              projectId
+            },
+            as: 'permissions'
+          }
+        ]
+      });
+    });
+  }
 }
 
 export default ProjectMethods;

@@ -33,6 +33,9 @@ const enums = {
   ],
   projectState: [
     'Completed', 'In Development', 'Planning', 'Cancelled'
+  ],
+  permissions: [
+    'Admin', 'User'
   ]
 };
 
@@ -207,6 +210,13 @@ export const projectGetUsers = (projectId: string, order: string, orderBy: strin
   return makeResponse(errorsArray);
 };
 
+export const projectUpdateUser = (userId: string, projectId: string, permissions: string, roles: string[]) => {
+  const errorsArray = uuidPolicy(userId, 'userId')
+  .concat(uuidPolicy(projectId, 'projectId'), enumPolicy(permissions, 'permissions', enums.permissions), validateArray(roles, 'roles', uuidPolicy));
+
+  return makeResponse(errorsArray);
+};
+
 //
 // User
 //
@@ -278,6 +288,7 @@ export const sprintChangeTaskState = (sprintId: string, taskId: string, indexFro
 
 
 
+
 //
 // Task
 //
@@ -329,12 +340,27 @@ export const taskCreate = (
   return makeResponse(errorsArray);
 };
 
-export const taskUpdate = (id: string, points: number, priority: string, type: string, title: string, description: string) => {
+export const labelAddToTask = (taskId: string, labels: string[]) => {
+  const errorsArray = uuidPolicy(taskId, 'taskId')
+  .concat(validateArray(labels, 'labels', uuidPolicy));
+
+  return makeResponse(errorsArray);
+};
+
+export const labelAddToUser = (userId: string, roles: string[]) => {
+  const errorsArray = uuidPolicy(userId, 'userId')
+  .concat(validateArray(roles, 'roles', uuidPolicy));
+
+  return makeResponse(errorsArray);
+};
+
+export const taskUpdate = (id: string, points: number, priority: string, type: string, title: string, description: string, labels: string[]) => {
   const errorsArray = numberPolicy(points, 'points')
   .concat(enumPolicy(priority, 'priority', enums.priority),
   enumPolicy(type, 'type', enums.type),
   uuidPolicy(id, 'sprintId'),
-  [validators.isString(title, 'title'), validators.isString(description, 'description')]);
+  [validators.isString(title, 'title'), validators.isString(description, 'description')],
+  validateArray(labels, 'labels', uuidPolicy));
 
   return makeResponse(errorsArray);
 };

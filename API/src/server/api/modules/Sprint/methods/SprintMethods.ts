@@ -396,7 +396,6 @@ class SprintMethods {
     });
   }
 
-
 }
 
 export default SprintMethods;
