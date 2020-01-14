@@ -263,6 +263,17 @@ module.exports = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
+      projectId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'projects',
+          key: 'id'
+        },
+        field: 'project_id',
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'

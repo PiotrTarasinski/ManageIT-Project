@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
-import { UserAttributes, UserInstance } from './User';
+import { UserInstance } from './User';
 import { ProjectInstance } from './Project';
 
 export interface BacklogAttributes {

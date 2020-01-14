@@ -48,6 +48,7 @@ class TaskMethods {
       type: string,
       title: string,
       description: string,
+      labels: string[],
       userName: string,
       loggedUserId: string) {
     const task = await db.Task.findByPk(taskId);
@@ -61,12 +62,20 @@ class TaskMethods {
         description
       })
       .then(async () => {
+        await task.setLabels(labels);
         return await db.Backlog.create({
           projectId: task.projectId,
           content: `${userName} updated a task: ${task.title}.`,
           userId: loggedUserId
         })
-        .then(() => task);
+        .then(async () => await db.Task.findByPk(taskId, {
+          include: [
+            {
+              model: db.Label,
+              as: 'labels'
+            }
+          ]
+        }));
       });
     }
 

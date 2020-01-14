@@ -1,10 +1,7 @@
 import db from '../../../../database';
 import CustomResponse, { CustomResponseType } from '../../../error/CustomError';
 import { Op } from 'sequelize';
-import sequelize = require('sequelize');
-import permissions from '../../../../../utils/permissions';
 import { UserInstance } from '../../../../database/models/User';
-import { ProjectInstance } from '../../../../database/models/Project';
 import { TaskInstance } from '../../../../database/models/Task';
 
 interface ProjectResponse {
@@ -91,8 +88,8 @@ class ProjectMethods {
           content: `${userName} added user ${(<UserInstance>addedUser).name} to the project.`,
           userId: loggedUserId
         })
-        .then(() => CustomResponse(200, 'User created successfully'))
-        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
+          .then(() => CustomResponse(200, 'User created successfully'))
+          .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
       })
       .catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
@@ -122,8 +119,8 @@ class ProjectMethods {
           content: `${userName} removed user ${(<UserInstance>removedUser).name} from the project.`,
           userId: loggedUserId
         })
-        .then(() => CustomResponse(200, 'Successfully removed user from project.'))
-        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
+          .then(() => CustomResponse(200, 'Successfully removed user from project.'))
+          .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Internal server error.' }));
       })
       .catch(() => {
         return CustomResponse(500, 'Couldn\'t delete user.', { formError: 'Internal server error.' });
@@ -342,13 +339,13 @@ class ProjectMethods {
     })
       .then(async project => {
         await project.addUser(leadId, { through: { permissions: 'Admin' } })
-        .then(async () => {
-          await db.Backlog.create({
-            projectId: <string>project.id,
-            content: `${userName} created this project.`,
-            userId: loggedUserId
+          .then(async () => {
+            await db.Backlog.create({
+              projectId: <string>project.id,
+              content: `${userName} created this project.`,
+              userId: loggedUserId
+            });
           });
-        });
         return project;
       });
   }
@@ -380,15 +377,15 @@ class ProjectMethods {
         project.leadId = leadId;
       }
       return await project.save()
-      .then(async () => {
-        return await db.Backlog.create({
-          projectId,
-          content: `${userName} updated project details.`,
-          userId: loggedUserId
+        .then(async () => {
+          return await db.Backlog.create({
+            projectId,
+            content: `${userName} updated project details.`,
+            userId: loggedUserId
+          })
+            .then(() => CustomResponse(200, 'Project updated successfully'))
+            .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Database error.' }));
         })
-        .then(() => CustomResponse(200, 'Project updated successfully'))
-        .catch(() => CustomResponse(500, 'Couldn\'t create backlog.', { formError: 'Database error.' }));
-      })
         .catch(() => CustomResponse(500, 'Couldn\'t update project.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such project.', { formError: 'Project not found.' });
@@ -428,26 +425,26 @@ class ProjectMethods {
         id: projectId
       }
     })
-    .then(async tasksNotDone => {
-      const tasks: TaskInstance[] = [];
-      if (tasksNotDone && tasksNotDone.tasks) {
-        tasksNotDone.tasks.forEach(task => {
-          let done: boolean = false;
-          if (task.tasksSprints) {
-            task.tasksSprints.forEach(taskSprint => {
-              if (taskSprint.state === 'Done' || taskSprint.sprintId === tasksNotDone.activeSprintId) {
-                done = true;
+      .then(async tasksNotDone => {
+        const tasks: TaskInstance[] = [];
+        if (tasksNotDone && tasksNotDone.tasks) {
+          tasksNotDone.tasks.forEach(task => {
+            let done: boolean = false;
+            if (task.tasksSprints) {
+              task.tasksSprints.forEach(taskSprint => {
+                if (taskSprint.state === 'Done' || taskSprint.sprintId === tasksNotDone.activeSprintId) {
+                  done = true;
+                }
+              });
+              if (!done) {
+                tasks.push(task);
               }
-            });
-            if (!done) {
-              tasks.push(task);
             }
-          }
-        });
-        return { activeSprintId: tasksNotDone.activeSprintId, tasks };
-      }
-      return null;
-    });
+          });
+          return { activeSprintId: tasksNotDone.activeSprintId, tasks };
+        }
+        return null;
+      });
   }
 
   // Returns an array of UserRoles
@@ -474,10 +471,112 @@ class ProjectMethods {
       return await roleLabel.update({
         name, color
       })
-      .then(() => CustomResponse(200, 'Role updated successfully.'))
-      .catch(() => CustomResponse(500, 'Couldn\'t update role.', { formError: 'Database error.' }));
+        .then(() => CustomResponse(200, 'Role updated successfully.'))
+        .catch(() => CustomResponse(500, 'Couldn\'t update role.', { formError: 'Database error.' }));
     }
     return CustomResponse(404, 'No such role.', { formError: 'Role not found' });
+  }
+
+  async deleteTasks(sprintId: string, tasks: string[], userName: string, loggedUserId: string) {
+
+    let deleteCount = 0;
+
+    return Promise.all(tasks.map(async taskId => {
+      await db.Task.findByPk(taskId)
+        .then(async task => {
+          if (task) {
+            const { projectId, title } = task;
+            if (!await db.TaskSprint.findOne({
+              where: {
+                sprintId,
+                taskId
+              }
+            })) {
+              await task.destroy()
+                .then(async () => {
+                  await db.Backlog.create({
+                    projectId,
+                    content: `${userName} deleted a task: ${title}.`,
+                    userId: loggedUserId
+                  });
+                });
+            }
+            deleteCount++;
+          }
+        });
+    }))
+    .then(() => {
+      if (!deleteCount) {
+        return CustomResponse(500, 'Couldn\'t delete any tasks.', { formError: 'Database error.' });
+      }
+      if (deleteCount !== tasks.length) {
+        return CustomResponse(500, 'Couldn\'t delete one or more.', { formError: 'Database error.' });
+      }
+      return CustomResponse(200, 'Task deleted successfully.');
+    });
+  }
+
+  async updateProjectUser(userId: string, projectId: string, permissions: 'User' | 'Admin', roles: string[]): Promise<UserInstance | null> {
+    return await db.UserProject.findOne({
+      where: {
+        userId,
+        projectId
+      }
+    })
+    .then(async userProject => {
+      if (userProject) {
+        await userProject.update({ permissions });
+        await db.UserProjectLabel.destroy({
+          where: {
+            userId,
+            projectId
+          }
+        });
+        await Promise.all(roles.map(async role => {
+          await db.UserProjectLabel.create({
+            userId,
+            projectId,
+            roleLabelId: role
+          });
+        }));
+      }
+      if (roles.length === 0) {
+        return await db.User.findByPk(userId, {
+          include: [
+            {
+              model: db.UserProject,
+              where: {
+                projectId
+              },
+              as: 'permissions'
+            }
+          ]
+        });
+      }
+      return await db.User.findByPk(userId, {
+        include: [
+          {
+            model: db.UserProjectLabel,
+            where: {
+              projectId
+            },
+            include: [
+              {
+                model: db.RoleLabel,
+                as: 'roleLabels'
+              }
+            ]
+          },
+          {
+            model: db.UserProject,
+            where: {
+              projectId
+            },
+            as: 'permissions'
+          }
+        ]
+      });
+    });
   }
 }
 

@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { UserInstance } from './User';
-import { TaskAttributes, TaskInstance } from './Task';
+import { TaskInstance } from './Task';
 import { ProjectInstance } from './Project';
 import { TaskSprintInstance, TaskSprintAttributes } from './TaskSprint';
 

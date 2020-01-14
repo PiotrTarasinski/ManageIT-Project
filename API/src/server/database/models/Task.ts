@@ -8,6 +8,7 @@ import { SprintInstance } from './Sprint';
 import { ProjectInstance } from './Project';
 import { CommentInstance } from './Comment';
 import { TaskSprintInstance } from './TaskSprint';
+import { TaskLabelAttributes } from './TaskLabel';
 
 export interface TaskAttributes {
   id?: string;
@@ -47,6 +48,7 @@ export interface TaskInstance extends Sequelize.Instance<TaskAttributes>, TaskAt
   removeAssign: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   removeReviewer: Sequelize.BelongsToManyRemoveAssociationMixin<UserInstance, UserAttributes['id']>;
   getLabels: Sequelize.BelongsToManyGetAssociationsMixin<LabelInstance>;
+  setLabels: Sequelize.BelongsToManySetAssociationsMixin<LabelInstance, LabelInstance['id'], TaskLabelAttributes>;
 }
 
 export const TaskFactory = (
