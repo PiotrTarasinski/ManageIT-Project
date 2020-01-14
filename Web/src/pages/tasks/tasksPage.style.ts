@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme, fade } from '@material-ui/core/styles';
-import { grey, deepPurple } from '@material-ui/core/colors';
+import { grey, deepPurple, pink } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,6 +10,11 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: '100%',
       marginBottom: theme.spacing(2),
+    },
+    toolbarActive: {
+      backgroundColor: pink[500],
+      borderTopLeftRadius: theme.shape.borderRadius,
+      borderTopRightRadius: theme.shape.borderRadius,
     },
     toolbar: {
       backgroundColor: deepPurple[500],

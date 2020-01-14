@@ -10,6 +10,7 @@ import { orderTypes } from 'models/enums/orderTypes';
 import { IPerson } from 'models/types/person';
 import { ThunkDispatch } from 'redux-thunk';
 import { ITask } from 'models/types/task';
+import { getSprint, setSprint } from '../sprint';
 
 const setProjectList = (projectList: ProjectsListData, projectListCount: number) => ({
   type: projectActionTypes.SET_PROJECT_LIST,
@@ -43,11 +44,71 @@ const getProjectList = (
     });
 };
 
-const getProjectTaskList = (projectId: string) => (dispatch: Dispatch<Action>) => {
+const getProjectTaskList = (projectId: string) => (
+  dispatch: ThunkDispatch<AppState, any, Action>,
+) => {
   return API.project
     .getProjectTaskList(projectId)
     .then((res: any) => {
-      dispatch(setProjectTaskList(res.data.taskList));
+      const { taskList, activeSprintId } = res.data;
+      dispatch(setProjectTaskList(taskList));
+      if (activeSprintId) {
+        dispatch(getSprint(activeSprintId));
+      } else {
+        dispatch(
+          setSprint({
+            id: '',
+            name: '',
+            description: '',
+            taskList: {
+              toDoList: [],
+              inProgressList: [],
+              toReviewList: [],
+              doneList: [],
+            },
+            startDate: new Date(),
+            endDate: new Date(),
+          }),
+        );
+      }
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const addTasksToSprint = (projectId: string, sprintId: string, taskIdList: string[]) => (
+  dispatch: ThunkDispatch<AppState, any, Action>,
+) => {
+  return API.sprint
+    .addTasksToSprint(sprintId, taskIdList)
+    .then((res: any) => {
+      dispatch(getProjectTaskList(projectId));
+      dispatch(
+        displaySnackbar({
+          text: `Successfully added ${taskIdList.length > 1 ? 'tasks' : 'task'} to sprint`,
+          variant: 'success',
+        }),
+      );
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const deleteTasks = (projectId: string, taskIdList: string[]) => (
+  dispatch: ThunkDispatch<AppState, any, Action>,
+) => {
+  return API.project
+    .deleteTasks(projectId, taskIdList)
+    .then((res: any) => {
+      dispatch(getProjectTaskList(projectId));
+      dispatch(
+        displaySnackbar({
+          text: `Successfully removed ${taskIdList.length > 1 ? 'tasks' : 'task'}`,
+          variant: 'success',
+        }),
+      );
     })
     .catch((err: any) => {
       return handleError(err)(dispatch);
@@ -154,4 +215,6 @@ export {
   getProjectTaskList,
   getProjectMembers,
   handleRemoveMember,
+  addTasksToSprint,
+  deleteTasks,
 };

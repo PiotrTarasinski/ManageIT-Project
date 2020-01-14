@@ -55,4 +55,4 @@ const moveTask = (
     });
 };
 
-export { getSprint, moveTask };
+export { getSprint, moveTask, setSprint };

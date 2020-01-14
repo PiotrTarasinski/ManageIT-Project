@@ -7,7 +7,6 @@ const sprint = {
       sprintId,
     });
   },
-
   moveTask: (
     sprintId: string,
     taskId: string,
@@ -23,6 +22,12 @@ const sprint = {
       indexTo,
       stateFrom,
       stateTo,
+    });
+  },
+  addTasksToSprint: (sprintId: string, taskIdList: string[]) => {
+    return httpRequest.post('sprint/add_task', {
+      sprintId,
+      taskIdList,
     });
   },
 };
