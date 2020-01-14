@@ -114,15 +114,15 @@ class SprintController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { projectId, description, name, start, end, tasks } = this.req.payload;
+    const { projectId, description, name, startDate, endDate, tasks } = this.req.payload;
 
-    const validationResponse = sprintCreate(projectId, description, name, start, end, tasks);
+    const validationResponse = sprintCreate(projectId, description, name, startDate, endDate, tasks);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new SprintMethods().createSprint(projectId, description, name, start, end, tasks);
+    const response = await new SprintMethods().createSprint(projectId, description, name, startDate, endDate, tasks);
 
     if (response) {
       return this.res(await new SprintFormatter().format(response));

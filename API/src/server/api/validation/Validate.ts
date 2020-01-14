@@ -236,12 +236,13 @@ export const sprintUpdateComment = (commentId: string, content: string) => {
   return makeResponse(errorsArray);
 };
 
-export const sprintCreate = (projectId: string, description: string, name: string, start: string, end: string, tasks: string[]) => {
+export const sprintCreate = (projectId: string, description: string, name: string, startDate: string, endDate: string, tasks: string[]) => {
   const errorsArray = uuidPolicy(projectId, 'projectId')
   .concat(
     stringPolicy(description, 'description'),
     stringPolicy(name, 'name'),
-    [validators.isDateString(start, 'start'), validators.isDateString(end, 'end')],
+    stringPolicy(startDate, 'startDate'),
+    stringPolicy(endDate, 'endDate'),
     validateArray(tasks, 'tasks', uuidPolicy)
   );
 
