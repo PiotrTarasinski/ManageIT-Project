@@ -13,18 +13,21 @@ const useStyles = makeStyles((theme: Theme) =>
       color: grey[100],
       backgroundColor: deepPurple[500],
     },
-    textInfo: {
-      fontSize: '19px',
-      color: grey[600],
+    form: {
+      width: 480,
+      maxWidth: '100%',
     },
-    textHeader: {
-      fontSize: '19px',
-      color: grey[700],
-      fontWeight: 'bold',
-    },
-    avatar: {
-      border: '1px solid',
-      borderColor: deepPurple['A200'],
+    submitButton: {
+      display: 'block',
+      margin: theme.spacing(1, 0),
+      marginLeft: 'auto',
+      fontSize: 17,
+      fontWeight: theme.typography.fontWeightBold,
+      background: deepPurple['A400'],
+
+      '&:hover': {
+        background: deepPurple['A700'],
+      },
     },
   }),
 );

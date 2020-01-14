@@ -26,6 +26,7 @@ import { connect } from 'react-redux';
 import { ITask, ITaskList } from 'models/types/task';
 import SprintAssignTaskModal from 'modals/sprintAssignTaskModal/SprintAssignTaskModal';
 import { IPerson } from 'models/types/person';
+import TaskDetailsModal from 'modals/taskDetails/TaskDetailsModal';
 
 interface IDispatchProps {
   getSprint: (sprintId: string) => any;
@@ -55,6 +56,7 @@ function SprintPage(props: Props) {
 
   const [sprintOptionsDialOpen, setSprintOptionsDialOpen] = React.useState(false);
   const [assignModalOpen, setAssignModalOpen] = React.useState(false);
+  const [taskDeatailsModalOpen, setTaskDeatailsModalOpen] = React.useState(false);
 
   const { sprint, user, projectMemberList } = props;
 
@@ -89,6 +91,11 @@ function SprintPage(props: Props) {
     setAssignModalOpen(true);
   };
 
+  const openTaskDetailsModal = (task: ITask) => {
+    props.setSelectedTask(task);
+    setTaskDeatailsModalOpen(true);
+  };
+
   const renderTaskList = (taskList: ITask[], state: taskState) => {
     let icon = <CheckCircle className={classes.taskListIcon} />;
 
@@ -121,7 +128,12 @@ function SprintPage(props: Props) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <SprintTask key={item.id} task={item} openAssignModal={openAssignModal} />
+                      <SprintTask
+                        key={item.id}
+                        task={item}
+                        openAssignModal={openAssignModal}
+                        openTaskDetailsModal={openTaskDetailsModal}
+                      />
                     </div>
                   )}
                 </Draggable>
@@ -190,6 +202,7 @@ function SprintPage(props: Props) {
         setModalOpen={setAssignModalOpen}
         sprintId={props.match.params.id}
       />
+      <TaskDetailsModal modalOpen={taskDeatailsModalOpen} setModalOpen={setTaskDeatailsModalOpen} />
     </PageContainer>
   );
 }

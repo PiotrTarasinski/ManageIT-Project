@@ -7,6 +7,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Icon, InputBase } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import useStyles from './projectsTable.style';
+import CreateProjectModal from 'modals/createProject/CreateProjectModal';
 
 interface ProjectsTableToolbarProps {
   classes: ReturnType<typeof useStyles>;
@@ -15,6 +16,8 @@ interface ProjectsTableToolbarProps {
 
 const ProjectsTableToolbar = (props: ProjectsTableToolbarProps) => {
   const { classes, handleSearch } = props;
+
+  const [createProjectModalOpen, setCreateProjectModalOpen] = React.useState(false);
 
   return (
     <Toolbar className={classes.toolbar}>
@@ -37,10 +40,18 @@ const ProjectsTableToolbar = (props: ProjectsTableToolbarProps) => {
         />
       </div>
       <Tooltip title="New project">
-        <IconButton className={classes.createProjectIcon} aria-label="new project">
+        <IconButton
+          className={classes.createProjectIcon}
+          aria-label="new project"
+          onClick={() => setCreateProjectModalOpen(true)}
+        >
           <AddCircleIcon />
         </IconButton>
       </Tooltip>
+      <CreateProjectModal
+        modalOpen={createProjectModalOpen}
+        setModalOpen={setCreateProjectModalOpen}
+      />
     </Toolbar>
   );
 };

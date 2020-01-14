@@ -2,6 +2,12 @@ import { httpRequest } from '../httpRequest';
 import { orderTypes } from 'models/enums/orderTypes';
 
 const project = {
+  createProject: (name: string, identifier: string) => {
+    return httpRequest.post('project/create_project', {
+      name,
+      identifier,
+    });
+  },
   getProjectList: (
     order: orderTypes,
     orderBy: string,

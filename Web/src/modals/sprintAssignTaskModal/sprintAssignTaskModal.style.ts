@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      color: grey[100],
+      backgroundColor: deepPurple[500],
     },
     search: {
       position: 'relative',

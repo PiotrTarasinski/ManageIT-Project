@@ -12,6 +12,7 @@ import defaultAvatar from 'assets/images/utils/default_avatar.png';
 interface IProps {
   task: ITask;
   openAssignModal: (task: ITask) => any;
+  openTaskDetailsModal: (task: ITask) => any;
 }
 
 const SprintTask = (props: IProps) => {
@@ -44,7 +45,7 @@ const SprintTask = (props: IProps) => {
   };
 
   return (
-    <div className={classes.taskContainer} onClick={() => alert('Open task details')}>
+    <div className={classes.taskContainer} onClick={() => props.openTaskDetailsModal(task)}>
       <div className={classes.taskHeader}>
         <div>
           <div className={classes.taskType}>{renderTaskTypeIcon()}</div>

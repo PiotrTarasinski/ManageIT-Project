@@ -4,48 +4,29 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Tabs,
-  Tab,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Avatar,
-  ListItemSecondaryAction,
   IconButton,
-  InputBase,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { ITask } from 'models/types/task';
-import { PersonAdd, PersonAddDisabled, Search, Close } from '@material-ui/icons';
+import { Close } from '@material-ui/icons';
 import { IPerson } from 'models/types/person';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppState, Action } from 'models/types/store';
 import { StoreAction } from 'store/actions';
 import { connect } from 'react-redux';
-import { assignType } from 'models/enums/task';
 
 interface IComponentProps {
   modalOpen: boolean;
   setModalOpen: any;
-  sprintId: string;
 }
 
 interface IStoreProps {
   task?: ITask;
 }
 
-interface IDispatchProps {
-  assigToTask: (
-    task: ITask,
-    sprintId: string,
-    user: IPerson,
-    type: assignType,
-    remove: boolean,
-  ) => void;
-}
+interface IDispatchProps {}
 
 type Props = IComponentProps & IStoreProps & IDispatchProps;
 
@@ -55,19 +36,34 @@ const TaskDetailsModal = (props: Props) => {
   const { modalOpen, setModalOpen, task } = props;
 
   return (
-    <Dialog
-      open={modalOpen}
-      onClose={() => setModalOpen(false)}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle disableTypography id="form-dialog-title" className={classes.dialogTitle}>
-        <Typography variant="h6">zxc</Typography>
-        <IconButton aria-label="close" onClick={() => setModalOpen(false)}>
-          <Close />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent></DialogContent>
-    </Dialog>
+    <React.Fragment>
+      {task && (
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          aria-labelledby="form-dialog-title"
+          maxWidth="md"
+        >
+          <DialogTitle disableTypography id="form-dialog-title" className={classes.dialogTitle}>
+            <Typography variant="h6">{task.identifier} - Task Details</Typography>
+            <IconButton color="inherit" aria-label="close" onClick={() => setModalOpen(false)}>
+              <Close />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            <Typography className={classes.textInfo}>
+              <span className={classes.textHeader}>Title: </span>
+              {task.title}
+            </Typography>
+            <Typography className={classes.textHeader}>Labels: </Typography>
+            <Typography className={classes.textInfo}>
+              <Typography className={classes.textHeader}>Description: </Typography>
+              {task.description || 'No description was provided for this task'}
+            </Typography>
+          </DialogContent>
+        </Dialog>
+      )}
+    </React.Fragment>
   );
 };
 

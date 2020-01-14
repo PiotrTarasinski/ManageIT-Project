@@ -11,6 +11,9 @@ import { IPerson } from 'models/types/person';
 import { ThunkDispatch } from 'redux-thunk';
 import { ITask } from 'models/types/task';
 import { getSprint, setSprint } from '../sprint';
+import { History } from 'history';
+import { ROUTES } from 'models/variables/routes';
+import { setActiveProject } from '../user';
 
 const setProjectList = (projectList: ProjectsListData, projectListCount: number) => ({
   type: projectActionTypes.SET_PROJECT_LIST,
@@ -26,6 +29,25 @@ const setProjectMembers = (projectMemberList: IPerson[], projectMemberCount: num
   type: projectActionTypes.SET_PROJECT_MEMBER_LIST,
   payload: { projectMemberList, projectMemberCount },
 });
+
+const createProject = (name: string, identifier: string, history: History) => (
+  dispatch: ThunkDispatch<AppState, any, Action>,
+) => {
+  return API.project
+    .createProject(name, identifier)
+    .then((res: any) => {
+      dispatch(setActiveProject(res.data.id, history));
+      dispatch(
+        displaySnackbar({
+          text: `Successfully created project`,
+          variant: 'success',
+        }),
+      );
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
 
 const getProjectList = (
   order: orderTypes,
@@ -222,6 +244,7 @@ const handleRemoveMember = (
 };
 
 export {
+  createProject,
   handleLeaveProject,
   handleDeleteProject,
   getProjectList,
