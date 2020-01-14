@@ -45,4 +45,5 @@ export interface SprintState {
   readonly endDate: Date;
   readonly description: string;
   readonly taskList: ITaskList;
+  readonly selectedTask?: ITask;
 }

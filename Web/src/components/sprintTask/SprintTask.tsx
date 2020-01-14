@@ -49,10 +49,7 @@ const SprintTask = (props: IProps) => {
         <div>
           <div className={classes.taskType}>{renderTaskTypeIcon()}</div>
         </div>
-        <Typography className={classes.taskNumber}>
-          {task.identifier}
-          {task.index}
-        </Typography>
+        <Typography className={classes.taskNumber}>{task.identifier}</Typography>
         <Tooltip title="Assign to">
           <div
             className={classes.assignContainer}

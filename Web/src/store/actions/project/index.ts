@@ -100,7 +100,7 @@ const deleteTasks = (projectId: string, taskIdList: string[]) => (
   dispatch: ThunkDispatch<AppState, any, Action>,
 ) => {
   return API.project
-    .deleteTasks(projectId, taskIdList)
+    .deleteTasks(taskIdList)
     .then((res: any) => {
       dispatch(getProjectTaskList(projectId));
       dispatch(
@@ -125,6 +125,19 @@ const getProjectMembers = (
 ) => (dispatch: Dispatch<Action>) => {
   return API.project
     .getProjectMembers(projectId, order, orderBy, page, rowsPerPage, search)
+    .then((res: any) => {
+      dispatch(setProjectMembers(res.data.users, res.data.count));
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+const getAllProjectMembers = (projectId: string) => (
+  dispatch: ThunkDispatch<AppState, any, Action>,
+) => {
+  return API.project
+    .getAllProjectMembers(projectId)
     .then((res: any) => {
       dispatch(setProjectMembers(res.data.users, res.data.count));
     })
@@ -213,6 +226,7 @@ export {
   handleDeleteProject,
   getProjectList,
   getProjectTaskList,
+  getAllProjectMembers,
   getProjectMembers,
   handleRemoveMember,
   addTasksToSprint,

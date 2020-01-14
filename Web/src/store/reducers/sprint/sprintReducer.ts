@@ -18,9 +18,13 @@ const initialState: SprintState = {
 export default (state = initialState, action: Action) => {
   switch (action.type) {
     case sprintActionTypes.SET_SPRINT:
-      return action.payload;
+      return { ...state, ...action.payload };
+
     case sprintActionTypes.UPDATE_TASK_LIST:
       return { ...state, taskList: action.payload };
+
+    case sprintActionTypes.SET_SELECTED_TASK:
+      return { ...state, selectedTask: action.payload };
 
     default:
       return { ...state };

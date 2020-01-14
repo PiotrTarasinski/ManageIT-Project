@@ -17,4 +17,9 @@ enum taskPriority {
   LOW = 'Low',
 }
 
-export { taskState, taskType, taskPriority };
+enum assignType {
+  ASSIGN = 'Assign',
+  REVIEW = 'Review',
+}
+
+export { taskState, taskType, taskPriority, assignType };

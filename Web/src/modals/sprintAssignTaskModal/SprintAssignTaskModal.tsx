@@ -15,32 +15,54 @@ import {
   IconButton,
   InputBase,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
 import defaultAvatar from 'assets/images/utils/default_avatar.png';
 import { ITask } from 'models/types/task';
-import { PersonAdd, PersonAddDisabled, Search } from '@material-ui/icons';
+import { PersonAdd, PersonAddDisabled, Search, Close } from '@material-ui/icons';
 import { IPerson } from 'models/types/person';
+import { ThunkDispatch } from 'redux-thunk';
+import { AppState, Action } from 'models/types/store';
+import { StoreAction } from 'store/actions';
+import { connect } from 'react-redux';
+import { assignType } from 'models/enums/task';
 
-interface IProps {
+interface IComponentProps {
   assignModalOpen: boolean;
   setAssignModalOpen: any;
-  task?: ITask;
+  sprintId: string;
 }
 
-const SprintAssignTaskModal = (props: IProps) => {
+interface IStoreProps {
+  task?: ITask;
+  users: IPerson[];
+}
+
+interface IDispatchProps {
+  assigToTask: (
+    task: ITask,
+    sprintId: string,
+    user: IPerson,
+    type: assignType,
+    remove: boolean,
+  ) => void;
+}
+
+type Props = IComponentProps & IStoreProps & IDispatchProps;
+
+const SprintAssignTaskModal = (props: Props) => {
   const classes = useStyles();
 
   const [activeTab, setActiveTab] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const { assignModalOpen, setAssignModalOpen, task } = props;
+  const { assignModalOpen, setAssignModalOpen, task, users, sprintId } = props;
 
-  const users: IPerson[] = [
-    { id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab', name: 'Piotr Tarasiński' },
-    { id: '2', name: 'Szymmon Tarasiński', email: 'szymko@gmail.com' },
-    { id: '3', name: 'Szymmon Tokarzewski' },
-    { id: '4', name: 'Agnieszka Skwarczyńska' },
-    { id: '5', name: 'Samanta Wiśniewska' },
-  ];
+  const handleAssign = (user: IPerson, remove: boolean) => {
+    if (task) {
+      const assignAs = activeTab === 0 ? assignType.ASSIGN : assignType.REVIEW;
+      props.assigToTask(task, sprintId, user, assignAs, remove);
+    }
+  };
 
   const renderAssignIcon = (user: IPerson) => {
     let selectedType: IPerson[] = [];
@@ -50,11 +72,11 @@ const SprintAssignTaskModal = (props: IProps) => {
 
     return selectedType.filter((assigne: IPerson) => assigne.id === user.id).length > 0 ? (
       <Tooltip title="Unassign">
-        <PersonAddDisabled />
+        <PersonAddDisabled onClick={() => handleAssign(user, true)} />
       </Tooltip>
     ) : (
       <Tooltip title="Assign">
-        <PersonAdd />
+        <PersonAdd onClick={() => handleAssign(user, false)} />
       </Tooltip>
     );
   };
@@ -65,7 +87,12 @@ const SprintAssignTaskModal = (props: IProps) => {
       onClose={() => setAssignModalOpen(false)}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Assign to</DialogTitle>
+      <DialogTitle disableTypography id="form-dialog-title" className={classes.dialogTitle}>
+        <Typography variant="h6">Assign to</Typography>
+        <IconButton aria-label="close" onClick={() => setAssignModalOpen(false)}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <Tabs
           value={activeTab}
@@ -102,15 +129,13 @@ const SprintAssignTaskModal = (props: IProps) => {
               )
               .map((user: IPerson) => {
                 return (
-                  <ListItem key={user.id}>
+                  <ListItem key={user.id} className={classes.listItem}>
                     <ListItemAvatar>
                       <Avatar className={classes.avatar} src={user.avatar || defaultAvatar} />
                     </ListItemAvatar>
                     <ListItemText primary={user.name} secondary={user.email} />
                     <ListItemSecondaryAction>
-                      <IconButton edge="end" aria-label="delete">
-                        {renderAssignIcon(user)}
-                      </IconButton>
+                      <IconButton>{renderAssignIcon(user)}</IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
                 );
@@ -122,4 +147,14 @@ const SprintAssignTaskModal = (props: IProps) => {
   );
 };
 
-export default SprintAssignTaskModal;
+const mapStateToProps = (state: AppState) => ({
+  task: state.sprint.selectedTask,
+  users: state.project.projectMemberList,
+});
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
+  assigToTask: (task: ITask, sprintId: string, user: IPerson, type: assignType, remove: boolean) =>
+    dispatch(StoreAction.sprint.assigToTask(task, sprintId, user, type, remove)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SprintAssignTaskModal);

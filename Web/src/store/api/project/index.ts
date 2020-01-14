@@ -34,6 +34,11 @@ const project = {
       search,
     });
   },
+  getAllProjectMembers: (projectId: string) => {
+    return httpRequest.post('project/get_all_project_users', {
+      projectId,
+    });
+  },
   removeMember: (userId: string, projectId: string) => {
     return httpRequest.delete('project/user', {
       data: {
@@ -42,11 +47,10 @@ const project = {
       },
     });
   },
-  deleteTasks: (projectId: string, taskIdList: string[]) => {
+  deleteTasks: (tasks: string[]) => {
     return httpRequest.delete('project/tasks', {
       data: {
-        projectId,
-        taskIdList,
+        tasks,
       },
     });
   },

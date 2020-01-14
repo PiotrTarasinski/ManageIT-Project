@@ -6,6 +6,11 @@ const useStyles = makeStyles((theme: Theme) =>
     tabContent: {
       padding: theme.spacing(2, 0),
     },
+    dialogTitle: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
@@ -36,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1, 0),
       maxHeight: 256,
       overflowY: 'auto',
+    },
+    listItem: {
+      paddingRight: 68,
     },
     avatar: {
       border: '1px solid',
