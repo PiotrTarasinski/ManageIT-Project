@@ -5,6 +5,8 @@ import { UserProjectAttributes, UserProjectInstance } from './UserProject';
 import { SprintInstance } from './Sprint';
 import { TaskInstance } from './Task';
 import { BacklogInstance } from './Backlog';
+import { RoleLabelInstance } from './RoleLabel';
+import { LabelInstance } from './Label';
 
 export interface ProjectAttributes {
   id?: string;
@@ -25,6 +27,8 @@ export interface ProjectAttributes {
   activeSprint?: SprintInstance;
   tasks?: TaskInstance[];
   projectLogs?: BacklogInstance[];
+  projectRoles?: RoleLabelInstance[];
+  projectLabels?: LabelInstance[];
 }
 
 export interface ProjectInstance extends Sequelize.Instance<ProjectAttributes>, ProjectAttributes {
@@ -90,7 +94,8 @@ export const ProjectFactory = (
     Project.hasMany(models.Task, { as: 'tasks', foreignKey: 'projectId' });
     Project.hasMany(models.Backlog, { as: 'projectLogs', foreignKey: 'projectId' });
     Project.hasMany(models.UserProjectLabel, { foreignKey: 'projectId' });
-    Project.hasMany(models.RoleLabel, { as: 'projectLabels', foreignKey: 'projectId' });
+    Project.hasMany(models.RoleLabel, { as: 'projectRoles', foreignKey: 'projectId' });
+    Project.hasMany(models.Label, { as: 'projectLabels', foreignKey: 'projectId' });
   };
 
   return Project;

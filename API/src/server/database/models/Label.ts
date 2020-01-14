@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { SequelizeAttributes } from '../../../typings/SequelizeAttributes';
 import { TaskInstance } from './Task';
+import { ProjectInstance } from './Project';
 
 export interface LabelAttributes {
   id?: string;
@@ -8,12 +9,14 @@ export interface LabelAttributes {
   updatedAt?: Date;
   name: string;
   color: string;
+  projectId: string;
 
   //
   // Here be associations!
   //
 
   tasksIn?: TaskInstance[];
+  project?: ProjectInstance;
 }
 
 export interface LabelInstance extends Sequelize.Instance<LabelAttributes>, LabelAttributes {}
@@ -27,6 +30,16 @@ export const LabelFactory = (
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
+    },
+    projectId: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'projects',
+        key: 'id'
+      },
+      field: 'project_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -48,6 +61,7 @@ export const LabelFactory = (
 
   Label.associate = models => {
     Label.belongsToMany(models.Task, { through: 'taskLabel', as: 'tasksIn', foreignKey: 'label_id' });
+    Label.belongsTo(models.Project, { as: 'project', foreignKey: 'projectId' });
   };
 
   return Label;

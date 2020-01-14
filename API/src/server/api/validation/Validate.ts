@@ -289,6 +289,24 @@ export const taskAddUser = (taskId: string, sprintId: string, userId: string, ty
   return makeResponse(errorsArray);
 };
 
+//
+// Label
+//
+
+export const labelCreate = (projectId: string, name: string, color: string) => {
+  const errorsArray = uuidPolicy(projectId, 'projectId')
+  .concat(stringPolicy(name, 'name'), stringPolicy(color, 'color'));
+
+  return makeResponse(errorsArray);
+};
+
+export const labelUpdate = (labelId: string, name: string, color: string) => {
+  const errorsArray = uuidPolicy(labelId, 'labelId')
+  .concat(stringPolicy(name, 'name'), stringPolicy(color, 'color'));
+
+  return makeResponse(errorsArray);
+};
+
 export const taskCreate = (
   points: number,
   priority: string,
