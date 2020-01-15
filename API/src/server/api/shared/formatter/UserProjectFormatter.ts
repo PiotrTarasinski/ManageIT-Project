@@ -16,9 +16,15 @@ export type UserProjectResponseFormat = {
 
 class UserProjectFormatter implements ResponseFormatter<UserProjectInstance, UserProjectResponseFormat> {
   async format(user: UserProjectInstance) {
-    return await {
+    if (user.rows[0].projectsIn) {
+      return {
+        count: user.count,
+        projects: await bulkFormat(new ProjectsInFormatter(), <ProjectAttributes[]>user.rows[0].projectsIn)
+      };
+    }
+    return {
       count: user.count,
-      projects: await bulkFormat(new ProjectsInFormatter(), <ProjectAttributes[]>user.rows[0].projectsIn)
+      projects: []
     };
   }
 }

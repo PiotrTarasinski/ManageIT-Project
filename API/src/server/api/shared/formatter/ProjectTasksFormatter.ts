@@ -18,7 +18,7 @@ class ProjectTasksFormatter implements ResponseFormatter<ProjectInstance, Projec
     return {
       id: <string>project.id,
       name: project.name,
-      state: project.state,
+      state: <string>project.state,
       leadId: project.leadId,
       activeSprintId: project.activeSprintId,
       taskList: await bulkFormat(new TaskFormatter(), <TaskInstance[]>project.tasks)

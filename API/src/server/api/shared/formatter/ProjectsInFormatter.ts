@@ -22,7 +22,7 @@ class ProjectsInFormatter implements ResponseFormatter<ProjectInstance, UserProj
         id: <string>project.id,
         createdAt: <Date>project.createdAt,
         name: project.name,
-        state: project.state,
+        state: <string>project.state,
         lead: {
           id: <string>project.lead.id,
           name: project.lead.name,
@@ -34,7 +34,7 @@ class ProjectsInFormatter implements ResponseFormatter<ProjectInstance, UserProj
       id: <string>project.id,
       createdAt: <Date>project.createdAt,
       name: project.name,
-      state: project.state
+      state: <string>project.state
     };
   }
 }
