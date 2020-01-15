@@ -23,7 +23,7 @@ module.exports = {
         id: '410d159a-c736-4a41-abc8-22cf049885bb',
         created_at: new Date(2018, 12, 1),
         updated_at: new Date(2019, 12, 1),
-        name: 'Bag End',
+        name: 'Design',
         color: 'green',
         project_id: 'a6a02365-7052-4236-8894-ac594da9c108'
       },
