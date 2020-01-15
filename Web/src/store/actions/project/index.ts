@@ -122,7 +122,7 @@ const deleteTasks = (projectId: string, taskIdList: string[]) => (
   dispatch: ThunkDispatch<AppState, any, Action>,
 ) => {
   return API.project
-    .deleteTasks(taskIdList)
+    .deleteTasks(projectId, taskIdList)
     .then((res: any) => {
       dispatch(getProjectTaskList(projectId));
       dispatch(

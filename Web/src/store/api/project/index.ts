@@ -53,9 +53,10 @@ const project = {
       },
     });
   },
-  deleteTasks: (tasks: string[]) => {
+  deleteTasks: (projectId: string, tasks: string[]) => {
     return httpRequest.delete('project/tasks', {
       data: {
+        projectId,
         tasks,
       },
     });
