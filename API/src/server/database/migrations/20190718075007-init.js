@@ -82,8 +82,12 @@ module.exports = {
       name: {
         type: DataTypes.STRING,
       },
+      identifier: {
+        type: DataTypes.STRING,
+      },
       state: {
         type: DataTypes.ENUM(['Completed', 'In Development', 'Planning', 'Cancelled']),
+        defaultValue: 'Planning'
       },
       leadId: {
         type: DataTypes.UUID,

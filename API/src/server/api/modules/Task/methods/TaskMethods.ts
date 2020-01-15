@@ -12,7 +12,6 @@ class TaskMethods {
     title: string,
     description: string,
     projectId: string,
-    projectName: string,
     userName: string,
     loggedUserId: string) {
     const count = await db.Task.count({
@@ -20,11 +19,17 @@ class TaskMethods {
         projectId
       }
     });
+    const project = await db.Project.findByPk(projectId);
+
+
+    if (!project) {
+      return null;
+    }
     return await db.Task.create({
       points: Number.parseInt(points, 10),
       priority,
       type,
-      identifier: `${projectName.substr(0, 3).toUpperCase()}-${count}`,
+      identifier: `${project.identifier}-${count}`,
       title,
       description,
       projectId

@@ -13,7 +13,8 @@ export interface ProjectAttributes {
   createdAt?: Date;
   updatedAt?: Date;
   name: string;
-  state: string;
+  state?: string;
+  identifier: string;
   leadId?: string;
   activeSprintId?: string;
 
@@ -58,8 +59,12 @@ export const ProjectFactory = (
     name: {
       type: DataTypes.STRING
     },
+    identifier: {
+      type: DataTypes.STRING
+    },
     state: {
-      type: DataTypes.ENUM(['Completed', 'In Development', 'Planning', 'Cancelled'])
+      type: DataTypes.ENUM(['Completed', 'In Development', 'Planning', 'Cancelled']),
+      defaultValue: 'Planning'
     },
     activeSprintId: {
       type: DataTypes.UUID,

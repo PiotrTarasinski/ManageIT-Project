@@ -185,9 +185,11 @@ export const login = (payload: Login) => {
 // Project
 //
 
-export const projectCreate = (name: string, state: string) => {
+export const projectCreate = (name: string, identifier: string) => {
   const errorsArray = stringPolicy(name, 'name')
-  .concat(enumPolicy(state, 'state', enums.projectState));
+  .concat(stringPolicy(identifier, 'identifier'),
+  // tslint:disable-next-line:max-line-length
+  [validators.lengthMin(identifier, 'identifier', 3), validators.lengthMax(identifier, 'identifier', 6), validators.lengthMin(name, 'name', 4), validators.lengthMax(name, 'name', 48)]);
 
   return makeResponse(errorsArray);
 };
@@ -324,8 +326,7 @@ export const taskCreate = (
   type: string,
   title: string,
   description: string,
-  projectId: string,
-  projectName: string
+  projectId: string
   ) => {
 
   const errorsArray = numberPolicy(points, 'points')
@@ -333,7 +334,6 @@ export const taskCreate = (
   enumPolicy(type, 'type', enums.type),
   stringPolicy(title, 'title'),
   uuidPolicy(projectId, 'projectId'),
-  stringPolicy(projectName, 'projectName'),
   [validators.isString(description, 'description')]
   );
 

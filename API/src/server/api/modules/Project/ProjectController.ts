@@ -133,15 +133,15 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { name, state } = this.req.payload;
+    const { name, identifier } = this.req.payload;
 
-    const validationResponse = projectCreate(name, state);
+    const validationResponse = projectCreate(name, identifier);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
     }
 
-    const response = await new ProjectMethods().createProject(name, state, <string>this.user.id, this.user.name, <string>this.user.id);
+    const response = await new ProjectMethods().createProject(name, identifier, <string>this.user.id, this.user.name, <string>this.user.id);
 
     if (response) {
       return this.res(response);

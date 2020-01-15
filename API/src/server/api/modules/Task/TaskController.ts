@@ -12,9 +12,9 @@ class TaskController extends Controller {
       return this.res(CustomResponse(400, 'Payload is required.', { formError: 'Invalid payload input.' })).code(400);
     }
 
-    const { points, priority, type, title, description, projectId, projectName } = this.req.payload;
+    const { points, priority, type, title, description, projectId } = this.req.payload;
 
-    const validationResponse = taskCreate(points, priority, type, title, description, projectId, projectName);
+    const validationResponse = taskCreate(points, priority, type, title, description, projectId);
 
     if (validationResponse.errors) {
       return this.res(validationResponse).code(validationResponse.statusCode);
@@ -27,7 +27,6 @@ class TaskController extends Controller {
       title,
       description,
       projectId,
-      projectName,
       this.user.name,
       <string>this.user.id
       );

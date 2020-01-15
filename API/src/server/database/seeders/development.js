@@ -120,6 +120,7 @@ module.exports = [
       "name":"Bitwolf",
       state: 'Planning',
       lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+      identifier: 'ENV'
     },
   },
   {
@@ -131,6 +132,7 @@ module.exports = [
       "name":"Tresom",
       state: 'Planning',
       lead_id: 'aa26cf54-3a77-44a6-82c5-8174248f450d',
+      identifier: 'ENV'
     },
   },
   {
@@ -142,6 +144,7 @@ module.exports = [
       "name":"Veribet",
       state: 'Planning',
       lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e',
+      identifier: 'ENV'
     },
   },
   {
@@ -153,6 +156,7 @@ module.exports = [
       "name":"Vagram",
       state: 'Cancelled',
       lead_id: 'a21c87bb-1ef1-4074-a302-72808e3efa5e',
+      identifier: 'ENV'
     },
   },
   {
@@ -164,6 +168,7 @@ module.exports = [
       "name":"Sub-Ex",
       state: 'Planning',
       lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+      identifier: 'ENV'
     },
   },
   {
@@ -175,6 +180,7 @@ module.exports = [
       "name":"Regrant",
       state: 'Cancelled',
       lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+      identifier: 'ENV'
     },
   },
   {
@@ -186,6 +192,7 @@ module.exports = [
       "name":"Bigtax",
       state: 'Completed',
       lead_id: 'e0d71f75-c32c-4c61-9879-6d65f353d3ab',
+      identifier: 'ENV'
     },
   },
   {
@@ -196,7 +203,8 @@ module.exports = [
       updated_at: new Date(2019, 12, 1),
       "name":"Namfix",
       state: 'In Development',
-      lead_id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f'
+      lead_id: '9c620dc5-ec2f-43b1-9b1e-92c7ce01a45f',
+      identifier: 'ENV'
     }
   },
   {
@@ -208,6 +216,7 @@ module.exports = [
       "name":"Hatity",
       state: 'In Development',
       lead_id: 'e894430a-9aa9-4e80-8302-4ce16a2550ec',
+      identifier: 'ENV'
     },
   },
   {

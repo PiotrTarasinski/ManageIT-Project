@@ -331,10 +331,10 @@ class ProjectMethods {
 
   // Creates and returns project or undefined
   // Backlogs to project
-  async createProject(name: string, state: string, leadId: string, userName: string, loggedUserId: string) {
+  async createProject(name: string, identifier: string, leadId: string, userName: string, loggedUserId: string) {
     return await db.Project.create({
       name,
-      state,
+      identifier,
       leadId
     })
       .then(async project => {
