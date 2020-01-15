@@ -1,24 +1,26 @@
 import ResponseFormatter from '../../shared/template/ResponseFormatter';
-import { UserAttributes } from '../../../database/models/User';
+import { UserAttributes, UserInstance } from '../../../database/models/User';
 import { ProjectInstance } from '../../../database/models/Project';
 import UserFormatter, { UserResponseFormat } from './UserFormatter';
 import bulkFormatHideId from '../../../../utils/bulkFormatHideId';
+import UserWithLabelFormatter, { UserWithLabelResponseFormat } from './UserWithLabelsFormatter';
 
 type ProjectUsersInstance = {
   count: number;
-  rows: ProjectInstance[];
+  project: ProjectInstance;
 };
 
 export type ProjectUsersResponseFormat = {
   count: number;
-  users: UserResponseFormat[];
+  users: UserWithLabelResponseFormat[];
 };
 
 class ProjectUsersFormatter implements ResponseFormatter<ProjectUsersInstance, ProjectUsersResponseFormat> {
-  async format(project: ProjectUsersInstance) {
+  async format(projectCountObject: ProjectUsersInstance) {
     return {
-      count: project.count,
-      users: await bulkFormatHideId(new UserFormatter(), <UserAttributes[]>project.rows[0].users)
+      count: projectCountObject.count,
+      // tslint:disable-next-line:max-line-length
+      users: await Promise.all((<UserInstance[]>projectCountObject.project.users).map(async user => await new UserWithLabelFormatter().format(user, projectCountObject.project.id)))
     };
   }
 }

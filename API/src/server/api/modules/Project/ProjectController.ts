@@ -8,6 +8,7 @@ import RoleLabelFormatter from '../../shared/formatter/RoleLabelFormatter';
 import { userGetProjects, twoUUID, uuid, projectGetUsers, projectCreate, projectUpdate, sprintAddTask, projectUpdateUser } from '../../validation/Validate';
 import TaskFormatter from '../../shared/formatter/TaskFormatter';
 import UserFormatter from '../../shared/formatter/UserFormatter';
+import { ProjectInstance } from '../../../database/models/Project';
 
 class ProjectController extends Controller {
   async getUserProjects() {
@@ -95,11 +96,11 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
     }
 
-    if (projectUsers.rows.length === 0) {
-      return this.res(projectUsers);
+    if (projectUsers.project) {
+      return this.res(await new ProjectUsersFormatter().format(<{ project: ProjectInstance, count: any}>projectUsers));
     }
 
-    return this.res(await new ProjectUsersFormatter().format(projectUsers));
+    return this.res(CustomResponse(404, 'No such project.', { formError: 'Project not found.' })).code(400);
   }
 
   async getProjectUsersPaginated() {
@@ -122,10 +123,11 @@ class ProjectController extends Controller {
       return this.res(CustomResponse(500, 'Database error.', { formError: 'Internal server error' }));
     }
 
-    if (projectUsers.rows.length === 0) {
-      return this.res(projectUsers);
+    if (projectUsers.project) {
+      return this.res(await new ProjectUsersFormatter().format(<{ project: ProjectInstance, count: any}>projectUsers));
     }
-    return this.res(await new ProjectUsersFormatter().format(projectUsers));
+
+    return this.res(CustomResponse(404, 'No such project.', { formError: 'Project not found.' })).code(400);
   }
 
   async createProject() {

@@ -142,15 +142,6 @@ class ProjectMethods {
               where: {
                 projectId
               }
-            },
-            {
-              model: db.UserProjectLabel,
-              include: [
-                {
-                  model: db.RoleLabel,
-                  as: 'roleLabels'
-                }
-              ]
             }
           ]
         }
@@ -159,15 +150,14 @@ class ProjectMethods {
         id: projectId,
         [Op.or]: [
           { '$users.name$': { [Op.iLike]: `%${search}%` } },
-          { '$users.email$': { [Op.iLike]: `%${search}%` } },
-          { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
+          { '$users.email$': { [Op.iLike]: `%${search}%` } }
         ]
       },
       group: 'users.id'
     });
 
     if (orderBy === 'dateOfJoin' || orderBy === 'permissions') {
-      const users = await db.Project.findAll({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
+      const users = await db.Project.findOne({ // Gratki dla teamu sequelize za wzorowe wykonanie asocjacji m:n
         subQuery: false,
         include: [
           {
@@ -180,18 +170,6 @@ class ProjectMethods {
                 where: {
                   projectId
                 }
-              },
-              {
-                model: db.UserProjectLabel,
-                where: {
-                  projectId
-                },
-                include: [
-                  {
-                    model: db.RoleLabel,
-                    as: 'roleLabels'
-                  }
-                ]
               }
             ]
           }
@@ -200,8 +178,7 @@ class ProjectMethods {
           id: projectId,
           [Op.or]: [
             { '$users.name$': { [Op.iLike]: `%${search}%` } },
-            { '$users.email$': { [Op.iLike]: `%${search}%` } },
-            { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
+            { '$users.email$': { [Op.iLike]: `%${search}%` } }
           ]
         },
         order: [
@@ -214,7 +191,7 @@ class ProjectMethods {
 
       return { rows: users, count: (<any>count).length };
     }
-    const users = await db.Project.findAll({
+    const users = await db.Project.findOne({
       subQuery: false,
       include: [
         {
@@ -227,18 +204,6 @@ class ProjectMethods {
               where: {
                 projectId
               }
-            },
-            {
-              model: db.UserProjectLabel,
-              where: {
-                projectId
-              },
-              include: [
-                {
-                  model: db.RoleLabel,
-                  as: 'roleLabels'
-                }
-              ]
             }
           ]
         }
@@ -247,8 +212,7 @@ class ProjectMethods {
         id: projectId,
         [Op.or]: [
           { '$users.name$': { [Op.iLike]: `%${search}%` } },
-          { '$users.email$': { [Op.iLike]: `%${search}%` } },
-          { '$users.usersProjectsLabels.roleLabels.name$': { [Op.iLike]: `%${search}%` } }
+          { '$users.email$': { [Op.iLike]: `%${search}%` } }
         ]
       },
       order: [
@@ -258,7 +222,7 @@ class ProjectMethods {
       offset: (page * rowsPerPage)
     });
 
-    return { rows: users, count: (<any>count).length };
+    return { project: users, count: (<any>count).length };
   }
 
   // Returns users from project
@@ -278,22 +242,13 @@ class ProjectMethods {
               where: {
                 projectId
               }
-            },
-            {
-              model: db.UserProjectLabel,
-              include: [
-                {
-                  model: db.RoleLabel,
-                  as: 'roleLabels'
-                }
-              ]
             }
           ]
         }
       ],
       group: 'users.id'
     });
-    const users = await db.Project.findAll({
+    const users = await db.Project.findOne({
       where: {
         id: projectId
       },
@@ -314,7 +269,7 @@ class ProjectMethods {
               include: [
                 {
                   model: db.RoleLabel,
-                  as: 'roleLabels'
+                  as: 'roleLabel'
                 }
               ]
             }
@@ -326,7 +281,7 @@ class ProjectMethods {
       ]
     });
 
-    return { rows: users, count: (<any>count).length };
+    return { project: users, count: (<any>count).length };
   }
 
   // Creates and returns project or undefined
@@ -575,7 +530,7 @@ class ProjectMethods {
             include: [
               {
                 model: db.RoleLabel,
-                as: 'roleLabels'
+                as: 'roleLabel'
               }
             ]
           },

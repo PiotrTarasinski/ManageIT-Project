@@ -9,10 +9,11 @@ export interface UserProjectLabelAttributes {
   createdAt?: Date;
   updatedAt?: Date;
 
-  roleLabels?: RoleLabelInstance;
+  roleLabel?: RoleLabelInstance;
 }
 
 export interface UserProjectLabelInstance extends Sequelize.Instance<UserProjectLabelAttributes>, UserProjectLabelAttributes {
+  getRoleLabel: Sequelize.BelongsToGetAssociationMixin<RoleLabelInstance>;
 }
 
 export const UserProjectLabelFactory = (
@@ -68,7 +69,7 @@ export const UserProjectLabelFactory = (
   UserProjectLabel.associate = models => {
     UserProjectLabel.belongsTo(models.User, { foreignKey: 'projectId' });
     UserProjectLabel.belongsTo(models.Project, { foreignKey: 'userId' });
-    UserProjectLabel.belongsTo(models.RoleLabel, { as: 'roleLabels', foreignKey: 'roleLabelId' });
+    UserProjectLabel.belongsTo(models.RoleLabel, { as: 'roleLabel', foreignKey: 'roleLabelId' });
   };
 
   return UserProjectLabel;

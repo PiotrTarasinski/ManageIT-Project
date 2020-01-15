@@ -10,7 +10,7 @@ export type UserProjectLabelResponseFormat = {
 
 class UserProjectLabelFormatter implements ResponseFormatter<UserProjectLabelInstance, UserProjectLabelResponseFormat> {
   async format(userProjectLabel: UserProjectLabelInstance) {
-    const { id, name, color }: RoleLabelInstance = <RoleLabelInstance>userProjectLabel.roleLabels;
+    const { id, name, color }: RoleLabelInstance = <RoleLabelInstance>userProjectLabel.roleLabel;
     return {
       id: <string>id,
       name,

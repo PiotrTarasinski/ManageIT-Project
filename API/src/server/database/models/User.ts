@@ -39,6 +39,8 @@ export interface UserAttributes {
 export interface UserInstance extends Sequelize.Instance<UserAttributes>, UserAttributes {
   setActiveProject: Sequelize.BelongsToSetAssociationMixin<ProjectInstance, ProjectInstance['id']>;
   setActiveSprint: Sequelize.BelongsToSetAssociationMixin<SprintInstance, SprintInstance['id']>;
+
+  getUsersProjectsLabels: Sequelize.HasManyGetAssociationsMixin<UserProjectLabelInstance>;
 }
 
 export const UserFactory =
