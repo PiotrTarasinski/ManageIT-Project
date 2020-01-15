@@ -189,7 +189,7 @@ class ProjectMethods {
         offset: (page * rowsPerPage)
       });
 
-      return { rows: users, count: (<any>count).length };
+      return { project: users, count: (<any>count).length };
     }
     const users = await db.Project.findOne({
       subQuery: false,

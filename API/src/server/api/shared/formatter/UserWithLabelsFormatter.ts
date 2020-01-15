@@ -25,6 +25,7 @@ class UserWithLabelFormatter implements ResponseFormatter<UserInstance, UserWith
         email: user.email,
         avatar: user.avatar,
         permissions: (<UserProjectInstance[]>user.permissions)[0].permissions,
+        dateOfJoin: (<UserProjectInstance[]>user.permissions)[0].createdAt,
         roles: await bulkFormat(new RoleLabelFormatter(), labels)
       };
     }
@@ -33,7 +34,8 @@ class UserWithLabelFormatter implements ResponseFormatter<UserInstance, UserWith
       name: user.name,
       email: user.email,
       avatar: user.avatar,
-      permissions: (<UserProjectInstance[]>user.permissions)[0].permissions
+      permissions: (<UserProjectInstance[]>user.permissions)[0].permissions,
+      dateOfJoin: (<UserProjectInstance[]>user.permissions)[0].createdAt
     };
   }
 }
