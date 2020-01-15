@@ -2,6 +2,12 @@ import { httpRequest } from '../httpRequest';
 import { orderTypes } from 'models/enums/orderTypes';
 
 const project = {
+  createProject: (name: string, identifier: string) => {
+    return httpRequest.post('project/create_project', {
+      name,
+      identifier,
+    });
+  },
   getProjectList: (
     order: orderTypes,
     orderBy: string,
@@ -34,11 +40,23 @@ const project = {
       search,
     });
   },
+  getAllProjectMembers: (projectId: string) => {
+    return httpRequest.post('project/get_all_project_users', {
+      projectId,
+    });
+  },
   removeMember: (userId: string, projectId: string) => {
     return httpRequest.delete('project/user', {
       data: {
         userId,
         projectId,
+      },
+    });
+  },
+  deleteTasks: (tasks: string[]) => {
+    return httpRequest.delete('project/tasks', {
+      data: {
+        tasks,
       },
     });
   },

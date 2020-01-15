@@ -3,10 +3,12 @@ import { Action, SprintState, AppState } from 'models/types/store';
 import { handleError } from 'utils/handleError';
 import { API } from 'store/api';
 import { sprintActionTypes } from 'models/enums/storeActions';
-import { taskState } from 'models/enums/task';
+import { taskState, assignType } from 'models/enums/task';
 import { ThunkDispatch } from 'redux-thunk';
-import { ITaskList } from 'models/types/task';
+import { ITaskList, ITask } from 'models/types/task';
 import { reordedTaskList } from 'utils/reordedTaskList';
+import { IPerson } from 'models/types/person';
+import { displaySnackbar, setSelectedTask } from '../application';
 
 const setSprint = (sprint: SprintState) => ({
   type: sprintActionTypes.SET_SPRINT,
@@ -55,4 +57,44 @@ const moveTask = (
     });
 };
 
-export { getSprint, moveTask };
+const assigToTask = (
+  task: ITask,
+  sprintId: string,
+  user: IPerson,
+  type: assignType,
+  remove: boolean,
+) => (dispatch: ThunkDispatch<AppState, any, Action>) => {
+  return API.sprint
+    .assigToTask(task.id, sprintId, user.id, type, remove)
+    .then((res: any) => {
+      let updatedTask: ITask = { ...task };
+      if (type === assignType.ASSIGN) {
+        !remove
+          ? updatedTask.assign.push(user)
+          : (updatedTask.assign = updatedTask.assign.filter(assign => {
+              return assign.id !== user.id;
+            }));
+      } else if (type === assignType.REVIEW) {
+        !remove
+          ? updatedTask.reviewers.push(user)
+          : (updatedTask.reviewers = updatedTask.reviewers.filter(reviewer => {
+              return reviewer.id !== user.id;
+            }));
+      }
+      dispatch(setSelectedTask(updatedTask));
+      dispatch(getSprint(sprintId));
+      dispatch(
+        displaySnackbar({
+          text: `Successfully ${remove ? 'unassigned' : 'assigned'} ${user.name} to ${
+            task.identifier
+          }`,
+          variant: 'success',
+        }),
+      );
+    })
+    .catch((err: any) => {
+      return handleError(err)(dispatch);
+    });
+};
+
+export { getSprint, moveTask, setSprint, assigToTask };

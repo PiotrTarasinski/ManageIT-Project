@@ -1,5 +1,5 @@
 import { httpRequest } from '../httpRequest';
-import { taskState } from 'models/enums/task';
+import { taskState, assignType } from 'models/enums/task';
 
 const sprint = {
   getSprint: (sprintId: string) => {
@@ -7,10 +7,9 @@ const sprint = {
       sprintId,
     });
   },
-
   moveTask: (
     sprintId: string,
-    entryId: string,
+    taskId: string,
     indexFrom: number,
     indexTo: number,
     stateFrom: taskState,
@@ -18,11 +17,40 @@ const sprint = {
   ) => {
     return httpRequest.post('sprint/change_state', {
       sprintId,
-      entryId,
+      taskId,
       indexFrom,
       indexTo,
       stateFrom,
       stateTo,
+    });
+  },
+  addTasksToSprint: (sprintId: string, tasks: string[]) => {
+    return httpRequest.post('sprint/add_task', {
+      sprintId,
+      tasks,
+    });
+  },
+  removeTasksFromSprint: (sprintId: string, tasks: string[]) => {
+    return httpRequest.delete('sprint/tasks', {
+      data: {
+        sprintId,
+        tasks,
+      },
+    });
+  },
+  assigToTask: (
+    taskId: string,
+    sprintId: string,
+    userId: string,
+    type: assignType,
+    remove: boolean,
+  ) => {
+    return httpRequest.post('sprint/add_user', {
+      taskId,
+      sprintId,
+      userId,
+      type,
+      remove,
     });
   },
 };
