@@ -14,17 +14,19 @@ import {
   Edit,
   Close,
 } from '@material-ui/icons';
-import { taskState, taskType, taskPriority } from 'models/enums/task';
+import { taskState } from 'models/enums/task';
 import SprintTask from 'components/sprintTask/SprintTask';
 import { daysBetween } from 'utils/daysBetween';
 import { RouteComponentProps } from 'react-router-dom';
-import { SprintState, AppState, Action } from 'models/types/store';
+import { SprintState, AppState, Action, UserState } from 'models/types/store';
 import { ThunkDispatch } from 'redux-thunk';
 import { StoreAction } from 'store/actions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ITask, ITaskList } from 'models/types/task';
 import SprintAssignTaskModal from 'modals/sprintAssignTaskModal/SprintAssignTaskModal';
+import { IPerson } from 'models/types/person';
+import TaskDetailsModal from 'modals/taskDetails/TaskDetailsModal';
 
 interface IDispatchProps {
   getSprint: (sprintId: string) => any;
@@ -37,24 +39,32 @@ interface IDispatchProps {
     stateFrom: taskState,
     stateTo: taskState,
   ) => any;
+  getAllProjectMembers: (projectId: string) => void;
+  setSelectedTask: (task: ITask) => void;
 }
 
 interface IStoreProps {
+  user: UserState;
   sprint: SprintState;
+  projectMemberList: IPerson[];
 }
 
 type Props = RouteComponentProps<any> & IStoreProps & IDispatchProps;
 
 function SprintPage(props: Props) {
+  const classes = useStyles();
+
   const [sprintOptionsDialOpen, setSprintOptionsDialOpen] = React.useState(false);
   const [assignModalOpen, setAssignModalOpen] = React.useState(false);
-  const [selectedTask, setSelectedTask] = React.useState();
+  const [taskDeatailsModalOpen, setTaskDeatailsModalOpen] = React.useState(false);
 
-  const classes = useStyles();
-  const { sprint } = props;
+  const { sprint, user, projectMemberList } = props;
 
   useEffect(() => {
     props.getSprint(props.match.params.id);
+    if (user.activeProjectId) {
+      props.getAllProjectMembers(user.activeProjectId);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -77,8 +87,13 @@ function SprintPage(props: Props) {
   };
 
   const openAssignModal = (task: ITask) => {
-    setSelectedTask(task);
+    props.setSelectedTask(task);
     setAssignModalOpen(true);
+  };
+
+  const openTaskDetailsModal = (task: ITask) => {
+    props.setSelectedTask(task);
+    setTaskDeatailsModalOpen(true);
   };
 
   const renderTaskList = (taskList: ITask[], state: taskState) => {
@@ -113,7 +128,12 @@ function SprintPage(props: Props) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <SprintTask key={item.id} task={item} openAssignModal={openAssignModal} />
+                      <SprintTask
+                        key={item.id}
+                        task={item}
+                        openAssignModal={openAssignModal}
+                        openTaskDetailsModal={openTaskDetailsModal}
+                      />
                     </div>
                   )}
                 </Draggable>
@@ -178,20 +198,26 @@ function SprintPage(props: Props) {
         </DragDropContext>
       </div>
       <SprintAssignTaskModal
-        assignModalOpen={assignModalOpen}
-        setAssignModalOpen={setAssignModalOpen}
-        task={selectedTask}
+        modalOpen={assignModalOpen}
+        setModalOpen={setAssignModalOpen}
+        sprintId={props.match.params.id}
       />
+      <TaskDetailsModal modalOpen={taskDeatailsModalOpen} setModalOpen={setTaskDeatailsModalOpen} />
     </PageContainer>
   );
 }
 
 const mapStateToProps = (state: AppState) => ({
+  user: state.user,
   sprint: state.sprint,
+  projectMemberList: state.project.projectMemberList,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, any, Action>) => ({
   getSprint: (sprintId: string) => dispatch(StoreAction.sprint.getSprint(sprintId)),
+  setSelectedTask: (task: ITask) => dispatch(StoreAction.application.setSelectedTask(task)),
+  getAllProjectMembers: (projectId: string) =>
+    dispatch(StoreAction.project.getAllProjectMembers(projectId)),
   moveTask: (
     taskList: ITaskList,
     sprintId: string,

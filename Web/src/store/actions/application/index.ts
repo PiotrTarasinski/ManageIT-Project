@@ -1,5 +1,6 @@
 import { applicationActionTypes } from 'models/enums/storeActions';
 import { INotification } from 'models/types/notification';
+import { ITask } from 'models/types/task';
 
 const toggleSidebar = (sidebarVisible: boolean) => ({
   type: applicationActionTypes.TOGGLE_SIDEBAR,
@@ -15,4 +16,9 @@ const removeSnackbars = () => ({
   type: applicationActionTypes.REMOVE_SNACKBARS,
 });
 
-export { toggleSidebar, displaySnackbar, removeSnackbars };
+const setSelectedTask = (task: ITask) => ({
+  type: applicationActionTypes.SET_SELECTED_TASK,
+  payload: task,
+});
+
+export { toggleSidebar, displaySnackbar, removeSnackbars, setSelectedTask };
