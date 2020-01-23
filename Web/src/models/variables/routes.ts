@@ -15,7 +15,7 @@ export const ROUTES: IRouteObj = {
   home: {
     pathname: '/home',
     params: [],
-    component: HomePage,
+    component: LoginPage,
     permission: false,
     sidebarVisible: false,
   },

@@ -177,54 +177,60 @@ function Navigation(props: Props) {
             <img src={logo} alt="ManageIT" />
           </Link>
           <div className={classes.spacer}></div>
-          <Button
-            aria-controls="user-menu"
-            aria-haspopup="true"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
-              setUserMenu(event.currentTarget)
-            }
-          >
-            <Avatar
-              alt="Avatar"
-              className={classes.appBarAvatar}
-              src={user.avatar || defaultAvatar}
-            />
-            <Typography className={classes.appBarUsername}>{user.name || 'Username'}</Typography>
-          </Button>
-          <Menu
-            id="user-menu"
-            anchorEl={userMenu}
-            keepMounted
-            open={Boolean(userMenu)}
-            onClose={() => setUserMenu(null)}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            className={classes.appBarUserMenu}
-          >
-            <MenuItem
-              component={Link}
-              to={`${ROUTES.profile.pathname}/${user.id}`}
-              onClick={() => setUserMenu(null)}
-            >
-              <ListItemIcon>
-                <AccountBox />
-              </ListItemIcon>
-              <ListItemText>My Profile</ListItemText>
-            </MenuItem>
-            <MenuItem className={classes.appBarLogoutButton} onClick={() => logOut()}>
-              <ListItemIcon>
-                <ExitToApp />
-              </ListItemIcon>
-              <ListItemText>Logout</ListItemText>
-            </MenuItem>
-          </Menu>
+          {user.isAuth && (
+            <React.Fragment>
+              <Button
+                aria-controls="user-menu"
+                aria-haspopup="true"
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+                  setUserMenu(event.currentTarget)
+                }
+              >
+                <Avatar
+                  alt="Avatar"
+                  className={classes.appBarAvatar}
+                  src={user.avatar || defaultAvatar}
+                />
+                <Typography className={classes.appBarUsername}>
+                  {user.name || 'Username'}
+                </Typography>
+              </Button>
+              <Menu
+                id="user-menu"
+                anchorEl={userMenu}
+                keepMounted
+                open={Boolean(userMenu)}
+                onClose={() => setUserMenu(null)}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                className={classes.appBarUserMenu}
+              >
+                <MenuItem
+                  component={Link}
+                  to={`${ROUTES.profile.pathname}/${user.id}`}
+                  onClick={() => setUserMenu(null)}
+                >
+                  <ListItemIcon>
+                    <AccountBox />
+                  </ListItemIcon>
+                  <ListItemText>My Profile</ListItemText>
+                </MenuItem>
+                <MenuItem className={classes.appBarLogoutButton} onClick={() => logOut()}>
+                  <ListItemIcon>
+                    <ExitToApp />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
+                </MenuItem>
+              </Menu>
+            </React.Fragment>
+          )}
         </Toolbar>
       </AppBar>
       {sidebarVisible && (

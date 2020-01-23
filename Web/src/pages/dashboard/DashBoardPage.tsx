@@ -7,7 +7,7 @@ function DashBoardPage() {
 
   return (
     <PageContainer className={classes.mainContainer}>
-      <h1>elo</h1>
+      <div></div>
     </PageContainer>
   );
 }
